@@ -1,16 +1,16 @@
 """Punto de entrada: ejecuta ambos modelos, imprime las tablas y guarda las figuras."""
 
 from .analysis import compare, rainy_hours
-from .config import FIGURES_DIR
+from .config import ADJUSTED_WEIGHTS, FIGURES_DIR
 from .model import tf_continuous, tf_table
 from .reporting import plot_comparison, plot_contributions, plot_inputs, table
 from .simulation import run
 
 
 def main():
-    base, adjusted = run(tf_table), run(tf_continuous)
+    base, adjusted = run(tf_table), run(tf_continuous, ADJUSTED_WEIGHTS)
     print(table(base, "Modelo base (Tf por tabla)"), end="\n\n")
-    print(table(adjusted, "Modelo ajustado (Tf continuo)"), end="\n\n")
+    print(table(adjusted, "Modelo ajustado (pesos 0.4, 0.4, 0.2 y Tf continuo)"), end="\n\n")
 
     summary = compare(base, adjusted)
     print("Horas con lluvia probable o lluvia:", ", ".join(rainy_hours(adjusted)))

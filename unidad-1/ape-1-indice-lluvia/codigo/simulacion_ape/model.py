@@ -15,9 +15,9 @@ def tf_table(temp):
     return tf_continuous(10 + 2 * np.floor((np.asarray(temp) - 10) / 2))
 
 
-def rain_index(h, n, tf):
-    """I = 0.5H + 0.3N + 0.2Tf, redondeado para que valores como 0.60 no se lean como 0.5999."""
-    w_h, w_n, w_tf = WEIGHTS
+def rain_index(h, n, tf, weights=WEIGHTS):
+    """I = w_h·H + w_n·N + w_tf·Tf (por defecto 0.5, 0.3, 0.2), redondeado para que valores como 0.60 no se lean como 0.5999."""
+    w_h, w_n, w_tf = weights
     return np.round(w_h * h + w_n * n + w_tf * tf, 4)
 
 

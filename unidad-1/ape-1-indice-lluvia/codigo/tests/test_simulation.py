@@ -1,5 +1,6 @@
 import numpy as np
 
+from simulacion_ape.config import ADJUSTED_WEIGHTS, WEIGHTS
 from simulacion_ape.model import classify, rain_index, tf_continuous, tf_table
 from simulacion_ape.simulation import run
 
@@ -26,3 +27,13 @@ def test_classify_uses_guide_thresholds_inclusive_at_lower_bound():
 def test_run_returns_one_row_per_reading():
     result = run(tf_table)
     assert len(result["index"]) == len(result["state"]) == 9
+
+
+def test_both_weight_sets_sum_to_one():
+    assert sum(WEIGHTS) == 1 and round(sum(ADJUSTED_WEIGHTS), 10) == 1
+
+
+def test_adjusted_model_uses_new_weights_and_continuous_tf():
+    result = run(tf_continuous, ADJUSTED_WEIGHTS)
+    assert result["index"].tolist()[:2] == [0.58, 0.62]
+    assert result["state"][0] == "Baja posibilidad"

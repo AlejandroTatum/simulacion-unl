@@ -55,7 +55,7 @@ def plot_contributions(result, path):
 def plot_comparison(base, adjusted, path):
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(HOURS, base["index"], marker="o", label="Modelo base (tabla)")
-    ax.plot(HOURS, adjusted["index"], marker="s", linestyle="--", label="Modelo ajustado (Tf continuo)")
+    ax.plot(HOURS, adjusted["index"], marker="s", linestyle="--", label="Modelo ajustado (0.4·H + 0.4·N + 0.2·Tf)")
     _threshold_lines(ax)
     ax.set(xlabel="Hora", ylabel="Índice I", title="Índice de lluvia durante el día", ylim=(0.3, 1))
     ax.legend(loc="upper left")

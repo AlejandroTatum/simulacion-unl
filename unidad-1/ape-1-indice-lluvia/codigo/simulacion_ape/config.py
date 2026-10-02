@@ -5,7 +5,9 @@ from pathlib import Path
 import numpy as np
 
 # Pesos de la humedad (H), la nubosidad (N) y el factor de temperatura (Tf).
-WEIGHTS = (0.5, 0.3, 0.2)
+# Ambos conjuntos suman 1, así el índice queda entre 0 y 1.
+WEIGHTS = (0.5, 0.3, 0.2)  # modelo base (guía)
+ADJUSTED_WEIGHTS = (0.4, 0.4, 0.2)  # modelo ajustado: humedad y nubosidad pesan igual
 
 # Límite inferior de cada estado, evaluado de mayor a menor.
 STATES = ((0.75, "Lluvia"), (0.60, "Lluvia probable"), (0.40, "Baja posibilidad"))
