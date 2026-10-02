@@ -12,7 +12,7 @@ Repositorio con las prácticas (APE) de la asignatura, organizadas por unidad.
 
 | Unidad | APE | Tema | Carpeta |
 | --- | --- | --- | --- |
-| 1 | — | *Pendiente* | — |
+| 1 | 1 | Construcción y simulación computacional de un modelo matemático (índice de lluvia) | [unidad-1/ape-1-indice-lluvia](unidad-1/ape-1-indice-lluvia) |
 
 ## Contenido de cada APE
 
