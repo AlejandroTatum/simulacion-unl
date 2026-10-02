@@ -9,7 +9,7 @@ Repositorio de la asignatura Simulación (UNL, Ing. José Guamán). Reglas oblig
 - `codigo/requirements.txt` lista todas las librerías de terceros que importa el código, con versión fijada.
   El docente instala solo con `pip install -r requirements.txt`.
 - Usar semilla configurable en toda simulación aleatoria.
-- Al terminar una APE: completar su `README.md` (prompts, iteraciones, correcciones, resultados) y
+- Al terminar una APE: completar su `README.md` (en "Proceso con IA" solo la lista de títulos de las iteraciones, sin detalle; correcciones y resultados) y
   agregar una fila en la tabla "Prácticas" del `README.md` raíz y en el `README.md` de su unidad.
 - El `README.md` raíz está dirigido al docente: describe el contenido, no las reglas internas.
 - Los comentarios y docstrings del código van en español; los identificadores (nombres de funciones y variables) en inglés.

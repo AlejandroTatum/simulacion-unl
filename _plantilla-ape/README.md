@@ -12,13 +12,8 @@
 
 ## 3. Proceso con IA
 
-### Iteración 1
-- **Prompt:** <prompt usado>
-- **Resultado:** <qué devolvió la IA>
-- **Decisión:** <qué se aceptó, qué se cambió y por qué>
-
-### Iteración 2
-- ...
+1. <Título de la iteración 1>
+2. <Título de la iteración 2>
 
 ## 4. Errores de la IA y correcciones
 
