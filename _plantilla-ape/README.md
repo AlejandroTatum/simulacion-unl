@@ -28,12 +28,16 @@
 
 ```text
 codigo/simulacion_ape/
-├── config.py       # Parámetros de la simulación
-├── model.py        # Entidades y reglas del sistema
-├── simulation.py   # Motor de ejecución de corridas
-├── analysis.py     # Estadísticas de resultados
-├── reporting.py    # Tablas y gráficas
-└── __main__.py     # Punto de entrada que conecta las capas
+├── __main__.py                  # Delgado: solo llama al controlador
+├── model/
+│   ├── config.py                # Parámetros de la simulación
+│   ├── dice.py                  # Entidades y reglas del sistema
+│   ├── simulation.py            # Motor de ejecución de corridas
+│   └── analysis.py              # Estadísticas de resultados
+├── view/
+│   └── console_view.py          # Salida de resultados (tablas, gráficas)
+└── controller/
+    └── simulation_controller.py # Orquesta modelo y vistas
 ```
 
 <Justificación de la arquitectura elegida.>

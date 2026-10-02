@@ -1,8 +1,8 @@
 import numpy as np
 
-from simulacion_ape.config import ADJUSTED_WEIGHTS, WEIGHTS
-from simulacion_ape.model import classify, rain_index, tf_continuous, tf_table
-from simulacion_ape.simulation import run
+from simulacion_ape.model.config import ADJUSTED_WEIGHTS, WEIGHTS
+from simulacion_ape.model.rain_model import classify, rain_index, tf_continuous, tf_table
+from simulacion_ape.model.simulation import run
 
 
 def test_guide_example_gives_index_081():

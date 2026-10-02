@@ -1,7 +1,7 @@
 """Aplica el modelo a las lecturas del día con la regla de Tf y los pesos indicados."""
 
 from .config import CLOUDINESS, HUMIDITY, TEMPERATURE, WEIGHTS
-from .model import classify, rain_index
+from .rain_model import classify, rain_index
 
 
 def run(tf_rule, weights=WEIGHTS):

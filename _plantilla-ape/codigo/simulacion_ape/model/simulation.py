@@ -3,7 +3,7 @@
 import random
 
 from .config import SimulationConfig
-from .model import roll_die
+from .dice import roll_die
 
 
 def run(config: SimulationConfig) -> list[int]:

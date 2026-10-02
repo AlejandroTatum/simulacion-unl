@@ -1,22 +1,11 @@
-"""Tablas en consola y figuras."""
+"""Vista de gráficas: figuras de matplotlib guardadas en archivos."""
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from .config import CLOUDINESS, HOURS, HUMIDITY, STATES, TEMPERATURE, WEIGHTS
-
-
-def table(result, title):
-    lines = [title, f"{'Hora':<6} {'Hum':>4} {'Nub':>4} {'Temp':>5} {'H':>5} {'N':>5} {'Tf':>5} {'I':>6}  Estado"]
-    for k, hour in enumerate(HOURS):
-        lines.append(
-            f"{hour:<6} {HUMIDITY[k]:>4} {CLOUDINESS[k]:>4} {TEMPERATURE[k]:>5} "
-            f"{result['H'][k]:>5.2f} {result['N'][k]:>5.2f} {result['Tf'][k]:>5.2f} "
-            f"{result['index'][k]:>6.4f}  {result['state'][k]}"
-        )
-    return "\n".join(lines)
+from ..model.config import CLOUDINESS, HOURS, HUMIDITY, STATES, TEMPERATURE, WEIGHTS
 
 
 def _threshold_lines(ax):

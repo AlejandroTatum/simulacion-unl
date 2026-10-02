@@ -23,18 +23,16 @@ Cada práctica está en `unidad-<n>/ape-<m>-<tema>/` y contiene:
 | `README.md` | Proceso seguido con IA para llegar al código: prompts, iteraciones, correcciones y resultados. |
 | `documento/` | Informe entregado (PDF) y su archivo editable. |
 | `referencias.bib` | Bibliografía del informe en formato BibTeX. |
-| `codigo/` | Implementación en Python organizada por capas, con su `requirements.txt` y pruebas. |
+| `codigo/` | Implementación en Python organizada en MVC, con su `requirements.txt` y pruebas. |
 
-El código de cada APE separa responsabilidades en módulos:
+El código de cada APE sigue la arquitectura MVC, con una carpeta por capa:
 
-| Módulo | Responsabilidad |
+| Carpeta / módulo | Responsabilidad |
 | --- | --- |
-| `config.py` | Parámetros de la simulación (incluida la semilla). |
-| `model.py` | Entidades y reglas del sistema simulado. |
-| `simulation.py` | Ejecución de las corridas. |
-| `analysis.py` | Cálculo de estadísticas. |
-| `reporting.py` | Presentación de tablas y gráficas. |
-| `__main__.py` | Punto de entrada que conecta los módulos. |
+| `model/` | Parámetros, reglas del sistema, simulación y análisis (sin imprimir ni graficar). |
+| `view/` | Presentación: tablas en consola y figuras. |
+| `controller/` | Coordina el modelo y las vistas. |
+| `__main__.py` | Punto de entrada delgado que llama al controlador. |
 
 ## Cómo ejecutar una APE
 

@@ -4,8 +4,8 @@ Repositorio de la asignatura Simulación (UNL, Ing. José Guamán). Reglas oblig
 
 - Cada práctica vive en `unidad-<n>/ape-<m>-<tema>/` y se crea copiando `_plantilla-ape/`.
 - Cada APE entrega: `README.md` (proceso con IA), `documento/` (PDF + editable), `referencias.bib` y `codigo/`.
-- Nunca concentrar la solución en un solo script (`main.py` con todo). Respetar la separación por capas
-  (`config`, `model`, `simulation`, `analysis`, `reporting`, `__main__` delgado) y agregar pruebas en `tests/`.
+- Arquitectura MVC: `model/`, `view/`, `controller/` en carpetas, `__main__.py` delgado; nunca todo en un solo
+  script (`main.py` con todo). Agregar pruebas en `tests/`.
 - `codigo/requirements.txt` lista todas las librerías de terceros que importa el código, con versión fijada.
   El docente instala solo con `pip install -r requirements.txt`.
 - Usar semilla configurable en toda simulación aleatoria.

@@ -1,6 +1,6 @@
-from simulacion_ape.analysis import summarize
-from simulacion_ape.config import SimulationConfig
-from simulacion_ape.simulation import run
+from simulacion_ape.model.analysis import summarize
+from simulacion_ape.model.config import SimulationConfig
+from simulacion_ape.model.simulation import run
 
 
 def test_same_seed_reproduces_results():

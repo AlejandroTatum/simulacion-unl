@@ -1,6 +1,6 @@
-"""Presentación de resultados: tablas, gráficas y salida por consola."""
+"""Vista de consola: formato y salida de los resultados."""
 
-from .analysis import Summary
+from ..model.analysis import Summary
 
 
 def format_summary(summary: Summary) -> str:
@@ -9,3 +9,7 @@ def format_summary(summary: Summary) -> str:
         f"Mean: {summary.mean:.4f}\n"
         f"Std dev: {summary.std_dev:.4f}"
     )
+
+
+def show_summary(summary: Summary) -> None:
+    print(format_summary(summary))
