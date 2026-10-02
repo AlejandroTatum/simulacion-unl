@@ -53,8 +53,8 @@ def plot_index(result, title, path):
 
 def plot_comparison(base, adjusted, path):
     fig, ax = plt.subplots(figsize=(8, 4))
-    ax.plot(HOURS, base["index"], marker="o", label="Índice original (0.5·H + 0.3·N + 0.2·Tf)")
-    ax.plot(HOURS, adjusted["index"], marker="s", linestyle="--", label="Índice ajustado (0.4·H + 0.4·N + 0.2·Tf)")
+    ax.plot(HOURS, base["index"], marker="o", label="Modelo base (0.5·H + 0.3·N + 0.2·Tf)")
+    ax.plot(HOURS, adjusted["index"], marker="s", linestyle="--", label="Modelo ajustado (0.4·H + 0.4·N + 0.2·Tf)")
     _threshold_lines(ax)
-    ax.set(xlabel="Hora", ylabel="Índice I", title="Comparación del índice original y ajustado", ylim=(0.3, 1))
+    ax.set(xlabel="Hora", ylabel="Índice I", title="Comparación del modelo base y el modelo ajustado", ylim=(0.3, 1))
     _save(fig, ax, path)

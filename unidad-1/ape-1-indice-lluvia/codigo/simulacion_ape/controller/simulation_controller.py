@@ -14,10 +14,11 @@ def main():
 
     FIGURES_DIR.mkdir(exist_ok=True)
     chart_view.plot_inputs(base, FIGURES_DIR / "entradas.png")
-    for name, result, weights in (("original", base, WEIGHTS), ("ajustado", adjusted, ADJUSTED_WEIGHTS)):
+    models = (("original", "Modelo base", base, WEIGHTS), ("ajustado", "Modelo ajustado", adjusted, ADJUSTED_WEIGHTS))
+    for name, label, result, weights in models:
         chart_view.plot_contributions(
-            result, weights, f"Aporte de cada variable al índice {name}", FIGURES_DIR / f"contribuciones_{name}.png"
+            result, weights, f"{label}: aporte de cada variable al índice", FIGURES_DIR / f"contribuciones_{name}.png"
         )
-        chart_view.plot_index(result, f"Índice {name} durante el día", FIGURES_DIR / f"indice_{name}.png")
+        chart_view.plot_index(result, f"{label}: índice durante el día", FIGURES_DIR / f"indice_{name}.png")
     chart_view.plot_comparison(base, adjusted, FIGURES_DIR / "comparacion.png")
     console_view.show_figures_saved(FIGURES_DIR)
