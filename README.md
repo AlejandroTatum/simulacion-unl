@@ -48,5 +48,3 @@ pip install -r requirements.txt
 python -m simulacion_ape         # ejecuta la simulación
 pytest                           # ejecuta las pruebas
 ```
-
-Las simulaciones usan una semilla fija, por lo que los resultados son reproducibles.
