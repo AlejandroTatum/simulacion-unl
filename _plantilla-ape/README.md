@@ -27,7 +27,7 @@
 ## 5. Arquitectura del código
 
 ```text
-codigo/src/simulacion_ape/
+codigo/simulacion_ape/
 ├── config.py       # Parámetros de la simulación
 ├── model.py        # Entidades y reglas del sistema
 ├── simulation.py   # Motor de ejecución de corridas
@@ -43,7 +43,7 @@ codigo/src/simulacion_ape/
 ```bash
 cd codigo
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -r requirements.txt
 python -m simulacion_ape
 pytest
 ```

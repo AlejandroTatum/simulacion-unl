@@ -1,0 +1,4 @@
+# Libraries required to run this APE: pip install -r requirements.txt
+# Add every third-party library the code imports (e.g. numpy, scipy, matplotlib),
+# pinned to the version used during development.
+pytest==8.3.3
