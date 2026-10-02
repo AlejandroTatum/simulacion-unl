@@ -20,7 +20,7 @@ Cada práctica está en `unidad-<n>/ape-<m>-<tema>/` y contiene:
 
 | Elemento | Descripción |
 | --- | --- |
-| `README.md` | Proceso seguido con IA para llegar al código: prompts, iteraciones, correcciones y resultados. |
+| `README.md` | Proceso seguido con IA para llegar al código: iteraciones, correcciones y resultados. |
 | `documento/` | Informe entregado (PDF) y su archivo editable. |
 | `referencias.bib` | Bibliografía del informe en formato BibTeX. |
 | `codigo/` | Implementación en Python organizada en MVC, con su `requirements.txt` y pruebas. |
