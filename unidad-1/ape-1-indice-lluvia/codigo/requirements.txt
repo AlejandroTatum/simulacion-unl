@@ -1,0 +1,4 @@
+# Libraries required to run this APE: pip install -r requirements.txt
+numpy>=2.0
+matplotlib>=3.9
+pytest>=8.0
