@@ -1,1 +1,1 @@
-"""APE simulation package. Replace the example model with the practice's system."""
+"""Paquete de simulación de la APE. Reemplazar el modelo de ejemplo por el sistema de la práctica."""

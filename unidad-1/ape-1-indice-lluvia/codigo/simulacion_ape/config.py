@@ -1,13 +1,13 @@
-"""Model parameters and input data from the practice guide."""
+"""Parámetros del modelo y datos de entrada tomados de la guía de la práctica."""
 
 from pathlib import Path
 
 import numpy as np
 
-# Weights of humidity (H), cloudiness (N) and temperature factor (Tf).
+# Pesos de la humedad (H), la nubosidad (N) y el factor de temperatura (Tf).
 WEIGHTS = (0.5, 0.3, 0.2)
 
-# Lower bound of each state, checked from highest to lowest.
+# Límite inferior de cada estado, evaluado de mayor a menor.
 STATES = ((0.75, "Lluvia"), (0.60, "Lluvia probable"), (0.40, "Baja posibilidad"))
 DEFAULT_STATE = "Sin lluvia"
 

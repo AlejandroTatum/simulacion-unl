@@ -5,7 +5,7 @@ from simulacion_ape.simulation import run
 
 
 def test_guide_example_gives_index_081():
-    # Guide example: humidity 90 %, cloudiness 80 %, 18 °C -> I = 0.81
+    # Ejemplo de la guía: humedad 90 %, nubosidad 80 %, 18 °C -> I = 0.81
     assert rain_index(0.9, 0.8, tf_table(18)) == 0.81
 
 

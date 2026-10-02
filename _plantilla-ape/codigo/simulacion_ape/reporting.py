@@ -1,4 +1,4 @@
-"""Presentation of results: tables, plots, and console output."""
+"""Presentación de resultados: tablas, gráficas y salida por consola."""
 
 from .analysis import Summary
 

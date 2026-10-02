@@ -1,6 +1,6 @@
-"""Entities and rules of the simulated system.
+"""Entidades y reglas del sistema simulado.
 
-Example model: a fair die roll. Replace with the practice's system.
+Modelo de ejemplo: lanzamiento de un dado justo. Reemplazar por el sistema de la práctica.
 """
 
 import random

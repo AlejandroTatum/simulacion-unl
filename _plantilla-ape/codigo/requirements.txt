@@ -1,4 +1,4 @@
-# Libraries required to run this APE: pip install -r requirements.txt
-# Add every third-party library the code imports (e.g. numpy, scipy, matplotlib),
-# pinned to the version used during development.
+# Librerías necesarias para ejecutar esta APE: pip install -r requirements.txt
+# Agregar cada librería externa que importe el código (p. ej. numpy, scipy, matplotlib),
+# con la versión usada durante el desarrollo.
 pytest==8.3.3

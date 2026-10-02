@@ -1,4 +1,4 @@
-"""Simulation parameters, kept apart from the logic that uses them."""
+"""Parámetros de la simulación, separados de la lógica que los usa."""
 
 from dataclasses import dataclass
 

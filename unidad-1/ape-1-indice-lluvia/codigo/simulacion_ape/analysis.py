@@ -1,4 +1,4 @@
-"""Comparison between the base and adjusted models."""
+"""Comparación entre el modelo base y el modelo ajustado."""
 
 import numpy as np
 
@@ -6,7 +6,7 @@ from .config import HOURS
 
 
 def rainy_hours(result):
-    """Hours whose state is at least 'Lluvia probable'."""
+    """Horas cuyo estado es al menos 'Lluvia probable'."""
     return [hour for hour, i in zip(HOURS, result["index"]) if i >= 0.60]
 
 

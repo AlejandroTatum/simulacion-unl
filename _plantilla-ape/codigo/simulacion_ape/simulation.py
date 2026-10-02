@@ -1,4 +1,4 @@
-"""Simulation engine: runs the model a configured number of times."""
+"""Motor de simulación: ejecuta el modelo el número de veces configurado."""
 
 import random
 

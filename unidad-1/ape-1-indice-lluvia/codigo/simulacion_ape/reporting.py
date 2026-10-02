@@ -1,4 +1,4 @@
-"""Console tables and figures."""
+"""Tablas en consola y figuras."""
 
 import matplotlib
 
@@ -37,7 +37,7 @@ def plot_inputs(result, path):
 
 
 def plot_contributions(result, path):
-    """Stacked weighted terms: shows how much each variable pushes the index."""
+    """Términos ponderados apilados: muestra cuánto aporta cada variable al índice."""
     fig, ax = plt.subplots(figsize=(8, 4))
     bottom = 0
     for weight, key, label in zip(WEIGHTS, ("H", "N", "Tf"), ("0.5·H", "0.3·N", "0.2·Tf")):

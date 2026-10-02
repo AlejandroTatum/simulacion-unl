@@ -1,4 +1,4 @@
-"""Runs the model over the day's readings with a given temperature-factor rule."""
+"""Aplica el modelo a las lecturas del día con la regla de factor de temperatura indicada."""
 
 from .config import CLOUDINESS, HUMIDITY, TEMPERATURE
 from .model import classify, rain_index

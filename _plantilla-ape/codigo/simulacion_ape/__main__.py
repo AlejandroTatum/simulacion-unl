@@ -1,4 +1,4 @@
-"""Thin entry point: wires configuration, simulation, analysis, and reporting."""
+"""Punto de entrada delgado: conecta configuración, simulación, análisis y reportes."""
 
 from .analysis import summarize
 from .config import SimulationConfig

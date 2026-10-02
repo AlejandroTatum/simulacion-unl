@@ -12,4 +12,6 @@ Repositorio de la asignatura Simulación (UNL, Ing. José Guamán). Reglas oblig
 - Al terminar una APE: completar su `README.md` (prompts, iteraciones, correcciones, resultados) y
   agregar una fila en la tabla "Prácticas" del `README.md` raíz y en el `README.md` de su unidad.
 - El `README.md` raíz está dirigido al docente: describe el contenido, no las reglas internas.
-- El código (identificadores y comentarios) va en inglés; el informe y los README, en español.
+- Los comentarios y docstrings del código van en español; los identificadores (nombres de funciones y variables) en inglés.
+- El informe y los README van en español.
+- Bibliografía: solo las diapositivas de la semana, sin citas en el texto (indicación del docente).

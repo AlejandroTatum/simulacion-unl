@@ -1,4 +1,4 @@
-"""Entry point: runs both models, prints the tables and saves the figures."""
+"""Punto de entrada: ejecuta ambos modelos, imprime las tablas y guarda las figuras."""
 
 from .analysis import compare, rainy_hours
 from .config import FIGURES_DIR

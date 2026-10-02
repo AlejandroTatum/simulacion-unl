@@ -1,4 +1,4 @@
-"""Statistics computed from simulation outcomes."""
+"""Estadísticas calculadas a partir de los resultados de la simulación."""
 
 from dataclasses import dataclass
 from statistics import mean, stdev
