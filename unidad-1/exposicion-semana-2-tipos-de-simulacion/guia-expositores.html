@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Guía de expositores — Tipos de simulación</title>
+<style>
+  @font-face { font-family: "Graduate"; src: url(assets/fonts/graduate-400.woff2) format("woff2"); font-weight: 400; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-500.woff2) format("woff2"); font-weight: 500; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-600.woff2) format("woff2"); font-weight: 600; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-700.woff2) format("woff2"); font-weight: 700; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-800.woff2) format("woff2"); font-weight: 800; font-display: block; }
+
+  :root { --ink: #17181C; --coal: #131316; --paper: #F4F4F7; --white: #FFFFFF; --yellow: #FFD600; --blue: #3D6BFF; --muted: #5E616D;
+          --display: "Graduate", Georgia, serif; --text: "Barlow", system-ui, sans-serif; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: A4; margin: 12mm 0 12mm; }
+  @page :first { margin: 0; }
+  html, body { margin: 0; background: var(--white); color: var(--ink); font: 500 9.6pt/1.35 var(--text); }
+  .wrap { padding: 0 15mm; }
+
+  /* Cover */
+  .cover { height: 297mm; background: var(--coal); color: var(--white); padding: 26mm 18mm 18mm; display: flex; flex-direction: column;
+           position: relative; overflow: hidden; break-after: page; }
+  .cover::after { content: ''; position: absolute; right: 0; bottom: 0; width: 120mm; height: 80mm;
+    background-image: radial-gradient(rgba(255, 214, 0, .35) 1.6px, transparent 2px); background-size: 5mm 5mm;
+    -webkit-mask-image: linear-gradient(135deg, transparent 35%, #000); mask-image: linear-gradient(135deg, transparent 35%, #000); }
+  .cover h1 { font: 400 46pt/1.02 var(--display); margin: 0; }
+  .cover h1 span { color: var(--yellow); }
+  .cover .sub { font: 600 15pt var(--text); color: #C9CAD3; margin: 7mm 0 0; }
+  .cover .shot { margin-top: 12mm; border: 1.2mm solid var(--white); border-radius: 5mm; box-shadow: 4mm 4mm 0 var(--yellow); overflow: hidden; }
+  .cover .shot img { display: block; width: 100%; }
+  .cover .team { margin-top: auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 3mm; position: relative; z-index: 1; }
+  .cover .team div { border: .8mm solid var(--white); border-radius: 4mm; padding: 4mm; }
+  .cover .team b { display: block; font: 400 13pt var(--display); color: var(--yellow); }
+  .cover .team span { font: 600 9.5pt var(--text); color: #C9CAD3; }
+
+  .kicker { display: flex; align-items: center; gap: 3mm; margin: 0 0 3mm; font: 800 9pt/1 var(--text); letter-spacing: .2em; text-transform: uppercase; color: var(--blue); }
+  .kicker::before { content: ''; width: 10mm; height: 1.2mm; background: currentColor; }
+  .cover .kicker { color: var(--yellow); margin-bottom: 6mm; }
+  h2.title { font: 400 26pt/1.05 var(--display); margin: 0 0 6mm; }
+  h2.title span { color: var(--blue); }
+  .page-break { break-before: page; }
+
+  /* Timeline */
+  .timeline { display: flex; height: 22mm; border: .9mm solid var(--ink); border-radius: 4mm; overflow: hidden; box-shadow: 2.5mm 2.5mm 0 var(--yellow); margin: 4mm 0 3mm; }
+  .timeline div { display: flex; flex-direction: column; justify-content: center; padding: 0 3mm; border-right: .9mm solid var(--ink); }
+  .timeline div:last-child { border-right: 0; }
+  .timeline b { font: 400 12pt var(--display); }
+  .timeline span { font: 700 8.5pt var(--text); }
+  .t-b { background: var(--blue); color: var(--white); } .t-y { background: var(--yellow); } .t-w { background: var(--white); } .t-k { background: var(--coal); color: var(--white); }
+  .ticks { display: flex; justify-content: space-between; font: 700 8pt var(--text); color: var(--muted); margin-bottom: 5mm; }
+
+  table.plan { width: 100%; border-collapse: separate; border-spacing: 0; border: .9mm solid var(--ink); border-radius: 4mm; overflow: hidden; background: var(--paper); margin-bottom: 5mm; }
+  .plan th { background: var(--ink); color: var(--white); font: 800 8.5pt var(--text); letter-spacing: .12em; text-transform: uppercase; text-align: left; padding: 3mm 4mm; }
+  .plan td { padding: 2mm 4mm; border-top: .4mm solid #DEDEE6; vertical-align: top; }
+  .plan td:first-child { font: 400 12pt var(--display); }
+  .plan td.n { font: 800 10.5pt var(--text); white-space: nowrap; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .box { background: var(--paper); border: .9mm solid var(--ink); border-radius: 4mm; padding: 5mm; box-shadow: 2.5mm 2.5mm 0 var(--yellow); break-inside: avoid; }
+  .box.b { box-shadow: 2.5mm 2.5mm 0 var(--blue); }
+  .box h3 { font: 400 13pt var(--display); margin: 0 0 3mm; }
+  .box ul { margin: 0; padding-left: 5mm; } .box li { margin: 1.2mm 0; }
+  kbd { display: inline-block; min-width: 7mm; text-align: center; font: 800 9pt var(--text); border: .6mm solid var(--ink); border-radius: 1.5mm; padding: .4mm 1.5mm; background: var(--yellow); }
+
+  /* Member header */
+  .member { display: grid; grid-template-columns: 1fr auto; gap: 6mm; align-items: end; padding: 6mm 8mm; border-radius: 5mm; border: .9mm solid var(--ink);
+            box-shadow: 3mm 3mm 0 var(--yellow); margin-bottom: 6mm; background: var(--coal); color: var(--white); break-inside: avoid; }
+  .member.blue { background: var(--blue); box-shadow: 3mm 3mm 0 var(--ink); }
+  .member.yellow { background: var(--yellow); color: var(--ink); box-shadow: 3mm 3mm 0 var(--ink); }
+  .member.white { background: var(--paper); color: var(--ink); box-shadow: 3mm 3mm 0 var(--blue); }
+  .member .kicker { color: inherit; opacity: .85; }
+  .member h2 { font: 400 32pt/1 var(--display); margin: 0; }
+  .member .idea { margin: 3mm 0 0; font: 700 12pt/1.3 var(--text); max-width: 120mm; }
+  .member .meta { text-align: right; font: 800 9pt var(--text); letter-spacing: .1em; text-transform: uppercase; }
+  .member .meta b { display: block; font: 400 24pt var(--display); letter-spacing: 0; text-transform: none; }
+
+  /* Slide card */
+  .card { display: grid; grid-template-columns: 50mm 1fr; gap: 5mm; background: var(--paper); border: .9mm solid var(--ink); border-radius: 4mm;
+          padding: 4mm; margin-bottom: 4mm; break-inside: avoid; }
+  .card .thumb { position: relative; }
+  .card .thumb img { width: 100%; display: block; border-radius: 2mm; border: .6mm solid var(--ink); }
+  .card .time { margin-top: 2.5mm; display: inline-block; font: 800 8.5pt var(--text); background: var(--ink); color: var(--white); border-radius: 99px; padding: 1mm 3mm; }
+  .card .num { position: absolute; top: -2.5mm; left: -2.5mm; width: 9mm; height: 9mm; border-radius: 50%; background: var(--yellow); border: .6mm solid var(--ink);
+               display: grid; place-items: center; font: 800 10pt var(--text); }
+  .card h4 { font: 400 13pt/1.1 var(--display); margin: 0 0 2mm; }
+  .card ul { margin: 0 0 2.5mm; padding-left: 4.5mm; } .card li { margin: .8mm 0; }
+  .tag { display: flex; gap: 2.5mm; align-items: flex-start; border-radius: 2.5mm; padding: 2mm 3mm; margin-top: 1.8mm; font-weight: 600; }
+  .tag b { flex: none; font: 800 7.5pt var(--text); letter-spacing: .12em; text-transform: uppercase; padding-top: .6mm; min-width: 17mm; }
+  .tag.live { background: #E6ECFF; } .tag.live b { color: var(--blue); }
+  .tag.ask { background: #FFF5C2; }
+  .tag.ex { background: #ECECF1; }
+
+  .handoff { display: flex; gap: 4mm; align-items: center; background: var(--coal); color: var(--white); border-radius: 4mm; padding: 4.5mm 6mm; break-inside: avoid;
+             border: .9mm solid var(--ink); box-shadow: 2.5mm 2.5mm 0 var(--yellow); margin-top: 2mm; }
+  .handoff b { font: 800 8pt var(--text); letter-spacing: .14em; text-transform: uppercase; color: var(--yellow); flex: none; }
+  .handoff q { font: 600 italic 11.5pt var(--text); }
+
+  .faq { break-inside: avoid; background: var(--paper); border: .9mm solid var(--ink); border-radius: 4mm; padding: 2.2mm 4.5mm; margin-bottom: 2.2mm; font-size: 9pt; }
+  .faq .who { float: right; font: 800 8pt var(--text); letter-spacing: .1em; text-transform: uppercase; background: var(--yellow); border: .5mm solid var(--ink); border-radius: 99px; padding: .6mm 2.5mm; }
+  .faq p { margin: 0; } .faq p.q { font: 700 11pt var(--text); margin-bottom: 1.5mm; }
+
+  .check { list-style: none; padding: 0; margin: 0; }
+  .check li { padding-left: 8mm; position: relative; margin: 2mm 0; }
+  .check li::before { content: ''; position: absolute; left: 0; top: .4mm; width: 4.5mm; height: 4.5mm; border: .6mm solid var(--ink); border-radius: 1mm; background: var(--white); }
+
+  .foot { position: fixed; bottom: -12mm; left: 15mm; right: 15mm; display: flex; justify-content: space-between; font: 800 7.5pt var(--text); letter-spacing: .16em; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <p class="kicker">Simulación · Semana 2 · Guía de expositores</p>
+  <h1>Tipos de<br><span>simulación</span></h1>
+  <p class="sub">Guion, tiempos y momentos en vivo para una exposición de 30 minutos.</p>
+  <div class="shot"><img src="assets/thumbs/s-01.jpg" alt="Portada de la presentación"></div>
+  <div class="team">
+    <div><b>Víctor</b><span>Diapositivas 1–3 · 5 min</span></div>
+    <div><b>Jimmy</b><span>Diapositivas 4–6 · 5 min</span></div>
+    <div><b>Cael</b><span>Diapositivas 7–9 · 5:30 min</span></div>
+    <div><b>Francis</b><span>Diapositivas 10–12 · 5:30 min</span></div>
+    <div><b>Alejandro</b><span>Diapositivas 13–19 · 5 min</span></div>
+  </div>
+</section>
+
+
+<main class="wrap" id="doc">
+  <p class="kicker">Reparto</p>
+  <h2 class="title">Quién habla y <span>cuándo</span></h2>
+  <div class="timeline">
+    <div class="t-w" style="flex: 5"><b>Víctor</b><span>1–3 · Apertura</span></div>
+    <div class="t-k" style="flex: 5"><b>Jimmy</b><span>4–6 · Eje 1</span></div>
+    <div class="t-b" style="flex: 5.5"><b>Cael</b><span>7–9 · Eje 2</span></div>
+    <div class="t-y" style="flex: 5.5"><b>Francis</b><span>10–12 · Eje 3</span></div>
+    <div class="t-w" style="flex: 5"><b>Alejandro</b><span>13–19 · Cierre</span></div>
+    <div class="t-k" style="flex: 4"><b>Todos</b><span>Preguntas</span></div>
+  </div>
+  <div class="ticks"><span>0:00</span><span>5:00</span><span>10:00</span><span>15:30</span><span>21:00</span><span>26:00</span><span>30:00</span></div>
+
+  <table class="plan">
+    <tr><th>Integrante</th><th>Diapositivas</th><th>Tema</th><th>Minutos</th></tr>
+    <tr><td>Víctor</td><td class="n">1 – 3</td><td>Apertura: presentación del grupo, qué es simular y las 3 preguntas</td><td class="n">0:00 – 5:00</td></tr>
+    <tr><td>Jimmy</td><td class="n">4 – 6</td><td>Estática vs. dinámica: Monte Carlo y crecimiento de población</td><td class="n">5:00 – 10:00</td></tr>
+    <tr><td>Cael</td><td class="n">7 – 9</td><td>Determinística vs. estocástica: tiro parabólico y dado</td><td class="n">10:00 – 15:30</td></tr>
+    <tr><td>Francis</td><td class="n">10 – 12</td><td>Discreta vs. continua: cola del banco y café</td><td class="n">15:30 – 21:00</td></tr>
+    <tr><td>Alejandro</td><td class="n">13 – 19</td><td>Los ejes se combinan, ejercicio de clasificación, conclusiones y referencias</td><td class="n">21:00 – 26:00</td></tr>
+    <tr><td>Todos</td><td class="n">19</td><td>Preguntas del docente y del curso; responde quien expuso ese tema</td><td class="n">26:00 – 30:00</td></tr>
+  </table>
+
+  <div class="grid2">
+    <div class="box"><h3>Controles</h3><ul>
+      <li><kbd>→</kbd> o <kbd>Espacio</kbd> siguiente · <kbd>←</kbd> anterior</li>
+      <li><kbd>F</kbd> pantalla completa · <kbd>N</kbd> notas del expositor</li>
+      <li><b>Otra semilla</b>: nueva corrida (modelos con azar)</li>
+      <li><b>Repetir</b>: misma corrida (modelos sin azar)</li>
+    </ul></div>
+    <div class="box b"><h3>Reglas del grupo</h3><ul>
+      <li>Explicar, no leer: la diapositiva muestra, ustedes cuentan.</li>
+      <li>Dejar correr la simulación antes de hablar de su resultado.</li>
+      <li>Usar la frase de pase para entregar al siguiente compañero.</li>
+      <li>Código de color: <b style="color: var(--blue)">azul</b> = 1.ª opción, <b style="background: var(--yellow); padding: 0 1mm">amarillo</b> = 2.ª opción.</li>
+    </ul></div>
+  </div>
+  <div class="grid2" style="margin-top: 5mm">
+    <div class="box"><h3>Antes de exponer</h3><ul class="check">
+      <li>Abrir <b>tipos-de-simulacion.html</b> en el navegador y probar <kbd>F</kbd>.</li>
+      <li>Revisar que las simulaciones corran en el proyector.</li>
+      <li>Tener el PDF de respaldo por si falla el navegador.</li>
+    </ul></div>
+    <div class="box b"><h3>Ensayo</h3><ul class="check">
+      <li>Ensayo completo con cronómetro: 26 minutos más preguntas.</li>
+      <li>Cada uno practica su frase de pase.</li>
+      <li>Repasar las preguntas probables de su eje.</li>
+    </ul></div>
+  </div>
+</main>
+
+<script>
+'use strict';
+const MEMBERS = [
+  {
+    name: 'Víctor', theme: '', range: 'Diapositivas 1 – 3', time: '0:00 – 5:00',
+    idea: 'Simular es experimentar con un modelo. Hoy lo clasificamos con 3 preguntas.',
+    slides: [
+      { n: 1, t: '0:00 – 1:00', h: 'Portada',
+        say: ['Saludar y presentar al grupo: Víctor, Jimmy, Cael, Francis y Alejandro.', 'Anunciar el tema: hay muchas formas de simular, hoy las clasificamos con 3 preguntas.'],
+        live: 'La animación de fondo es una simulación corriendo: mencionarlo de pasada.' },
+      { n: 2, t: '1:00 – 3:00', h: 'Simular es experimentar',
+        say: ['Sistema: algo real que es caro, lento o peligroso de probar (un banco, un tanque).', 'Modelo: lo describimos con variables y reglas.', 'Corridas: ejecutamos el modelo en la computadora y probamos sin riesgo.'],
+        ex: 'Un simulador de vuelo: el piloto aprende sin arriesgar un avión real.' },
+      { n: 3, t: '3:00 – 5:00', h: 'Tres preguntas',
+        say: ['Cada pregunta es un eje y separa dos tipos de simulación.', '¿Importa el tiempo? ¿Hay azar? ¿Cambia a saltos?', 'Explicar el código de color: azul la primera opción, amarillo la segunda.'],
+        ask: '“¿Un videojuego de fútbol tiene azar?” Dejar que respondan; lo retomamos con Cael.',
+        ex: 'Las 3 preguntas son como un examen médico: cada una mira algo distinto del mismo paciente.' },
+    ],
+    pass: 'Ya tenemos las 3 preguntas. Jimmy arranca con la primera: ¿importa el tiempo?',
+  },
+  {
+    name: 'Jimmy', theme: 'white', range: 'Diapositivas 4 – 6', time: '5:00 – 10:00',
+    idea: 'Primer eje: ¿el tiempo importa? Una foto contra una película.',
+    slides: [
+      { n: 4, t: '5:00 – 6:45', h: 'Estática: sin reloj',
+        say: ['La simulación estática es una foto: el tiempo no interviene.', 'Monte Carlo: lanzamos puntos al azar y contamos cuántos caen dentro del círculo.', 'Con muchos puntos, la proporción nos da una estimación de π.'],
+        live: 'Dejar que el contador llegue a 4000 puntos y leer el valor de π. Luego “otra semilla”: cambia un poco, pero sigue cerca de 3.14.',
+        ex: 'Calcular la probabilidad de ganar la lotería: no importa el día, solo las combinaciones.' },
+      { n: 5, t: '6:45 – 8:45', h: 'Dinámica: el tiempo manda',
+        say: ['La simulación dinámica es una película: el estado cambia con el tiempo.', 'Lo importante es la trayectoria completa, no solo el valor final.', 'La población crece rápido y luego se frena al llegar a su capacidad.'],
+        live: 'Mostrar cómo avanzan t y la población en la esquina superior.',
+        ex: 'El saldo de una cuenta mes a mes, la fila de un supermercado durante el día.' },
+      { n: 6, t: '8:45 – 10:00', h: 'Estática vs. dinámica',
+        say: ['Una foto contra una película.', 'Pregunta clave: ¿necesito ver cómo cambia el sistema o solo un resultado?'],
+        ask: '“¿El pronóstico del clima de la semana es estático o dinámico?” (Dinámico.)' },
+    ],
+    pass: 'Ya sabemos si el tiempo importa. Ahora Cael nos cuenta qué pasa cuando aparece el azar.',
+  },
+  {
+    name: 'Cael', theme: 'blue', range: 'Diapositivas 7 – 9', time: '10:00 – 15:30',
+    idea: 'Segundo eje: ¿hay azar? Sin azar, una corrida basta; con azar, hay que repetir.',
+    slides: [
+      { n: 7, t: '10:00 – 11:45', h: 'Determinística',
+        say: ['Sin azar: todas las entradas son fijas y conocidas.', 'Misma entrada, misma salida: siempre.', 'Una sola corrida ya nos da la respuesta.'],
+        live: 'Esperar las 3 corridas del tiro parabólico: las tres dan 40.77 m. Apretar “repetir”: vuelve a dar lo mismo.',
+        ex: 'Una calculadora: 2 + 2 siempre da 4. Una receta exacta de cocina.' },
+      { n: 8, t: '11:45 – 14:00', h: 'Estocástica: lanzar un dado',
+        say: ['Hay al menos una entrada al azar: nunca sabemos qué número sale.', 'Cada corrida da un resultado distinto.', 'Pero con muchas tiradas aparece un patrón: el promedio se acerca a 3.5.'],
+        ask: 'Antes de iniciar: “¿Qué número creen que sale más?” Luego mirar las barras.',
+        live: 'Dejar llegar a 300 tiradas (promedio cerca de 3.47). Apretar “otra semilla”: otra secuencia, pero el promedio vuelve a acercarse a 3.5.',
+        ex: 'Clientes que llegan a un banco, fallas de una máquina, la demanda de un producto.' },
+      { n: 9, t: '14:00 – 15:30', h: 'Determinística vs. estocástica',
+        say: ['Determinística: una respuesta exacta, una corrida basta.', 'Estocástica: muchas respuestas, se resumen con un promedio.', 'La semilla permite repetir exactamente un experimento con azar.'],
+        ask: 'Volver a la pregunta del videojuego de fútbol: tiene azar, entonces es estocástico.' },
+    ],
+    pass: 'Ya vimos el tiempo y el azar. Falta una pregunta: ¿cómo cambia el estado? Francis.',
+  },
+  {
+    name: 'Francis', theme: 'yellow', range: 'Diapositivas 10 – 12', time: '15:30 – 21:00',
+    idea: 'Tercer eje: ¿el estado cambia a saltos o de forma suave?',
+    slides: [
+      { n: 10, t: '15:30 – 17:45', h: 'Discreta: a saltos',
+        say: ['El estado cambia solo en momentos puntuales: los eventos.', 'Entre un evento y otro no pasa nada: por eso el gráfico son escalones.', 'El reloj de la simulación salta de un evento al siguiente.'],
+        live: 'Señalar un escalón que sube (llega un cliente) y uno que baja (se va un cliente). Mirar cómo suben los contadores de eventos y de la cola.',
+        ex: 'La cola de un banco, un estacionamiento, una línea de producción.' },
+      { n: 11, t: '17:45 – 19:30', h: 'Continua: sin saltos',
+        say: ['El estado cambia en todo momento, poco a poco.', 'Un café caliente se enfría sin saltos hasta llegar a la temperatura ambiente.', 'Al principio baja rápido y luego cada vez más lento.'],
+        live: 'Leer la temperatura en vivo: arranca en 90 °C y termina cerca de 20 °C.',
+        ex: 'El nivel de agua de un tanque, la velocidad de un auto, la temperatura de un horno.' },
+      { n: 12, t: '19:30 – 21:00', h: 'Discreta vs. continua',
+        say: ['Escalones contra curva suave.', 'Esa diferencia define cómo avanza el reloj de la simulación.'],
+        ask: '“Un semáforo que cambia de color, ¿es discreto o continuo?” (Discreto: cambia a saltos.)' },
+    ],
+    pass: 'Ya tenemos las tres preguntas. Alejandro nos muestra cómo se juntan en un sistema real.',
+  },
+  {
+    name: 'Alejandro', theme: 'white', range: 'Diapositivas 13 – 19', time: '21:00 – 26:00',
+    idea: 'Los ejes se combinan: cada modelo recibe una etiqueta por eje.',
+    slides: [
+      { n: 13, t: '21:00 – 22:15', h: 'Los ejes se combinan',
+        say: ['Cola del banco: dinámica, estocástica y discreta.', 'Estimar π: estática y estocástica; sin tiempo no hay saltos ni curvas.', 'Café: dinámica, determinística y continua.'] },
+      { n: 14, t: '22:15 – 24:15', h: 'Ejercicio: ¿cómo clasificar?',
+        say: ['Las 3 preguntas en orden: tiempo, azar, saltos.', 'Clasificar junto al curso 2 o 3 sistemas nuevos.'],
+        ask: 'Semáforo con tiempos fijos → dinámica, determinística, discreta. Tanque que se llena con caudal fijo → dinámica, determinística, continua. Llegada de autos a un peaje → dinámica, estocástica, discreta.' },
+      { n: 15, t: '24:15 – 25:15', h: 'Clasificar antes de simular',
+        say: ['El tipo de modelo define cómo se construye y cómo se analiza.', 'Si hay azar, hay que repetir muchas veces y controlar la semilla.', 'Un sistema real lleva una etiqueta en cada eje.'] },
+      { n: 19, t: '25:15 – 26:00', h: 'Referencias y cierre (16 – 19)',
+        say: ['Pasar las 3 diapositivas de referencias sin leerlas: libros, artículos y diapositivas de clase.', 'En la 19, agradecer y abrir la ronda de preguntas.', 'Cada integrante responde las preguntas de su eje.'] },
+    ],
+    pass: 'Con estas tres preguntas pueden clasificar cualquier simulación. ¿Preguntas?',
+  },
+];
+
+const FAQ = [
+  { who: 'Víctor', q: '¿Cuál es la diferencia entre sistema y modelo?', a: 'El sistema es lo real (el banco); el modelo es su descripción simplificada con variables y reglas, que se ejecuta en la computadora.' },
+  { who: 'Víctor', q: '¿Por qué simular en vez de probar con el sistema real?', a: 'Porque probar en lo real puede ser caro, lento, peligroso o imposible; la simulación permite experimentar sin riesgo.' },
+  { who: 'Jimmy', q: '¿La simulación estática usa azar?', a: 'Puede usarlo. Monte Carlo es estático y estocástico a la vez: los ejes son independientes.' },
+  { who: 'Jimmy', q: '¿Por qué no usar siempre una simulación dinámica?', a: 'Porque si el tiempo no influye en el resultado, agregarlo solo complica el modelo sin aportar información.' },
+  { who: 'Cael', q: '¿Qué es la semilla?', a: 'El número inicial del generador de números aleatorios. Con la misma semilla se obtiene exactamente la misma corrida, así un experimento con azar se puede repetir.' },
+  { who: 'Cael', q: '¿Cuántas corridas necesita una simulación estocástica?', a: 'Las suficientes para que el promedio se estabilice. En el dado, a más tiradas, más cerca de 3.5.' },
+  { who: 'Francis', q: '¿Cómo hace la computadora una simulación continua si todo es digital?', a: 'Avanza en pasos de tiempo muy pequeños; si el paso es chico, la curva se ve suave.' },
+  { who: 'Francis', q: '¿Un sistema puede ser discreto y continuo a la vez?', a: 'Sí, se llaman modelos combinados o híbridos; por ejemplo, un tanque que se llena de forma continua y una válvula que se abre o cierra por eventos.' },
+  { who: 'Alejandro', q: '¿Por qué la cola del banco es estocástica?', a: 'Porque los clientes llegan en momentos al azar y cada uno tarda un tiempo distinto en ser atendido.' },
+  { who: 'Alejandro', q: '¿Cuál es el tipo más común en la práctica?', a: 'Muchos sistemas reales (colas, inventarios, producción) son dinámicos, estocásticos y discretos.' },
+];
+
+const esc = s => s;
+const doc = document.getElementById('doc');
+let html = '';
+for (const m of MEMBERS) {
+  html += `<section class="page-break">
+    <div class="member ${m.theme}"><div><p class="kicker">${m.range}</p><h2>${m.name}</h2><p class="idea">${m.idea}</p></div>
+    <div class="meta">Tiempo<b>${m.time}</b></div></div>`;
+  for (const s of m.slides) {
+    html += `<div class="card"><div class="thumb"><span class="num">${s.n}</span><img src="assets/thumbs/s-${String(s.n).padStart(2, '0')}.jpg"><span class="time">${s.t}</span></div>
+      <div><h4>${s.h}</h4><ul>${s.say.map(x => `<li>${x}</li>`).join('')}</ul>
+      ${s.live ? `<div class="tag live"><b>En vivo</b><span>${s.live}</span></div>` : ''}
+      ${s.ask ? `<div class="tag ask"><b>Al curso</b><span>${s.ask}</span></div>` : ''}
+      ${s.ex ? `<div class="tag ex"><b>Ejemplos</b><span>${s.ex}</span></div>` : ''}</div></div>`;
+  }
+  html += `<div class="handoff"><b>Pase</b><q>${m.pass}</q></div></section>`;
+}
+html += `<section class="page-break"><p class="kicker">26:00 – 30:00</p><h2 class="title">Preguntas <span>probables</span></h2>
+  ${FAQ.map(f => `<div class="faq"><span class="who">${f.who}</span><p class="q">${f.q}</p><p>${f.a}</p></div>`).join('')}
+</section>`;
+doc.insertAdjacentHTML('beforeend', html);
+</script>
+</body>
+</html>

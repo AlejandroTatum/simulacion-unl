@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tipos de simulación — Semana 2</title>
+<style>
+  @font-face { font-family: "Graduate"; src: url(assets/fonts/graduate-400.woff2) format("woff2"); font-weight: 400; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-500.woff2) format("woff2"); font-weight: 500; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-600.woff2) format("woff2"); font-weight: 600; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-700.woff2) format("woff2"); font-weight: 700; font-display: block; }
+  @font-face { font-family: "Barlow"; src: url(assets/fonts/barlow-800.woff2) format("woff2"); font-weight: 800; font-display: block; }
+
+  :root {
+    --ink: #17181C; --coal: #131316; --paper: #F4F4F7; --white: #FFFFFF;
+    --yellow: #FFD600; --gold: #D9A800; --blue: #3D6BFF; --blue-l: #7395FF; --muted: #6B6E7A;
+    --display: "Graduate", Georgia, serif; --text: "Barlow", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-family: var(--text); }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); }
+
+  /* Slides */
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 96px 120px 150px; opacity: 0;
+           pointer-events: none; transition: opacity .4s; background: var(--paper); color: var(--ink); overflow: hidden; }
+  .slide.active { opacity: 1; pointer-events: auto; }
+  .slide.dark { background: var(--coal); color: var(--white); }
+  .slide.blue { background: var(--blue); color: var(--white); }
+  .slide.yellow { background: var(--yellow); color: var(--ink); }
+  .slide.dark::after, .slide.blue::after { content: ''; position: absolute; right: 0; bottom: 0; width: 620px; height: 360px; pointer-events: none;
+    background-image: radial-gradient(rgba(255, 214, 0, .32) 2.5px, transparent 3px); background-size: 24px 24px;
+    -webkit-mask-image: linear-gradient(135deg, transparent 35%, #000); mask-image: linear-gradient(135deg, transparent 35%, #000); }
+  .slide > * { position: relative; z-index: 1; }
+  .notes { display: none; }
+
+  .kicker { display: flex; align-items: center; gap: 18px; margin: 0 0 26px; font: 800 26px/1 var(--text); letter-spacing: .2em;
+            text-transform: uppercase; color: var(--blue); }
+  .kicker::before { content: ''; width: 56px; height: 6px; background: currentColor; }
+  .dark .kicker { color: var(--yellow); }
+  .blue .kicker, .yellow .kicker { color: inherit; }
+  .title { font: 400 104px/1.02 var(--display); margin: 0; }
+  .title.xl { font-size: 128px; }
+  .title.sm { font-size: 86px; }
+  .a { color: var(--blue); }
+  .dark .a, .blue .a { color: var(--yellow); }
+
+  .foot { position: absolute; left: 120px; right: 120px; bottom: 46px; display: flex; justify-content: space-between; align-items: center;
+          font: 800 22px var(--text); letter-spacing: .16em; z-index: 3; }
+  .foot .brand { display: flex; align-items: center; gap: 14px; }
+  .foot .logo { width: 40px; height: 40px; border-radius: 50%; background: currentColor; display: grid; place-items: center; }
+  .foot .logo svg { width: 24px; height: 24px; color: var(--paper); }
+  .dark .foot .logo svg { color: var(--coal); } .blue .foot .logo svg { color: var(--blue); } .yellow .foot .logo svg { color: var(--yellow); }
+  .foot .page { border: 3px solid currentColor; border-radius: 999px; padding: 6px 20px; letter-spacing: .04em; }
+  .foot .bar { position: absolute; left: -120px; bottom: -46px; height: 10px; background: var(--yellow); }
+  .yellow .foot .bar { background: var(--ink); }
+
+  /* Layout helpers */
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 100px; align-items: center; flex: 1; min-height: 0; }
+  .two.wide-r { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+  .two.hero { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 80px; }
+  .col { display: flex; flex-direction: column; gap: 44px; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; margin-bottom: 52px; }
+  .stretch { align-self: stretch; height: 100%; }
+
+  /* Simulation monitor */
+  .monitor { --acc: var(--yellow); --sh: var(--yellow); background: var(--coal); border: 4px solid var(--ink); border-radius: 28px;
+             box-shadow: 16px 16px 0 var(--sh); display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+  .dark .monitor, .blue .monitor { border-color: var(--white); }
+  .acc-b { --acc: var(--blue-l); } .acc-y { --acc: var(--yellow); }
+  .sh-b { --sh: var(--blue); } .sh-y { --sh: var(--yellow); } .sh-k { --sh: var(--ink); }
+  .mbar { height: 68px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 26px; background: #1E1F25;
+          color: #C9CAD3; font: 600 24px var(--text); border-bottom: 2px solid #2B2C33; }
+  .mbar .d { width: 16px; height: 16px; border-radius: 50%; background: #FF5F56; }
+  .mbar .d:nth-child(2) { background: #FFBD2E; } .mbar .d:nth-child(3) { background: #27C93F; }
+  .mbar .name { margin-left: 14px; }
+  .mbar .live { margin-left: auto; color: var(--acc); font-weight: 800; font-size: 20px; letter-spacing: .14em; }
+  .mbar .live::before { content: '● '; animation: blink 1.2s infinite; }
+  .mbar .lg { font-size: 20px; color: #C9CAD3; margin-left: 18px; }
+  .mbar .lg i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin-right: 8px; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .monitor canvas { flex: 1; width: 100%; min-height: 0; display: block; }
+  button.rerun { margin-left: 18px; font: 800 20px var(--text); background: var(--acc); color: var(--ink); border: 3px solid var(--ink);
+                 border-radius: 999px; padding: 6px 18px; cursor: pointer; }
+
+  /* Chips, stats, tickets */
+  .chip { display: inline-flex; align-items: center; gap: 16px; align-self: flex-start; background: var(--yellow); color: var(--ink);
+          font: 800 34px/1 var(--text); padding: 20px 32px; border-radius: 999px; border: 4px solid var(--ink); box-shadow: 8px 8px 0 var(--blue); }
+  .chip.b { background: var(--blue); color: var(--white); box-shadow: 8px 8px 0 var(--yellow); }
+  .chip.w { background: var(--white); }
+  .chip svg { width: 38px; height: 38px; }
+  .stats { display: flex; gap: 64px; }
+  .stat .lbl { font: 800 24px var(--text); letter-spacing: .18em; text-transform: uppercase; opacity: .72; }
+  .stat .val { font: 400 128px/1.05 var(--display); white-space: nowrap; }
+  .stats .val { font-size: 76px; }
+  .stat .val.a { color: var(--blue); }
+  .dark .stat .val.a, .blue .stat .val.a { color: var(--yellow); }
+  .ticket { display: flex; align-items: center; gap: 26px; background: var(--white); color: var(--ink); border: 4px solid var(--ink);
+            border-radius: 22px; padding: 22px 30px; box-shadow: 8px 8px 0 var(--yellow); font: 700 32px var(--text); transition: opacity .3s; }
+  .ticket .ic { width: 76px; height: 76px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--blue); color: var(--white); }
+  .ticket .ic svg { width: 40px; height: 40px; }
+  .ticket > b { margin-left: auto; font: 400 40px var(--display); white-space: nowrap; }
+  .ticket.wait { opacity: .4; }
+  .ticket.done .ic { background: #137739; }
+
+  /* What is simulation: three steps */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); flex: 1; align-items: center; }
+  .stp { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; }
+  .stp .big { width: 220px; height: 220px; border-radius: 50%; background: var(--blue); color: var(--white); border: 5px solid var(--ink);
+              box-shadow: 12px 12px 0 var(--yellow); display: grid; place-items: center; position: relative; margin-bottom: 18px; }
+  .stp .big svg { width: 104px; height: 104px; }
+  .stp:not(:last-child) .big::after { content: ''; position: absolute; left: calc(100% + 40px); top: 50%; width: 260px; border-top: 6px dashed var(--ink); }
+  .stp .n { position: absolute; top: -8px; right: -8px; width: 66px; height: 66px; border-radius: 50%; background: var(--yellow);
+            border: 4px solid var(--ink); color: var(--ink); font: 800 32px var(--text); display: grid; place-items: center; }
+  .stp h3 { font: 400 56px/1 var(--display); margin: 0; }
+  .stp p { font: 600 32px var(--text); margin: 0; color: var(--muted); }
+
+  /* White cards */
+  .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; flex: 1; min-height: 0; margin-top: 60px; }
+  .wcard { background: var(--white); color: var(--ink); border: 4px solid var(--ink); border-radius: 26px; box-shadow: 14px 14px 0 var(--yellow);
+           padding: 40px; display: flex; flex-direction: column; gap: 24px; min-height: 0; }
+  .yellow .wcard { box-shadow: 14px 14px 0 var(--ink); }
+  .wcard .ic { width: 100px; height: 100px; border-radius: 50%; background: var(--ink); color: var(--yellow); display: grid; place-items: center; flex: none; }
+  .wcard .ic svg { width: 54px; height: 54px; }
+  .wcard h3 { font: 400 50px/1.05 var(--display); margin: 0; }
+  .wcard p { font: 600 32px/1.3 var(--text); margin: 0; color: var(--muted); }
+  .wcard svg.g { width: 100%; height: 150px; margin-top: auto; }
+  .pair { display: flex; justify-content: space-between; gap: 12px; }
+  .pill { font: 800 26px var(--text); padding: 10px 22px; border-radius: 999px; border: 3px solid var(--ink); background: var(--white); color: var(--ink); text-align: center; }
+  .pill.l { background: var(--blue); color: var(--white); }
+  .pill.r { background: var(--yellow); }
+  .pill.na { border-style: dashed; color: var(--muted); }
+  .wcard .stack { display: flex; flex-direction: column; gap: 14px; margin-top: auto; }
+  .wcard .stack .pill { font-size: 30px; padding: 14px 22px; }
+
+  /* Versus */
+  .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 110px; flex: 1; min-height: 0; position: relative; margin-top: 44px; }
+  .vcard { display: flex; flex-direction: column; gap: 30px; min-height: 0; }
+  .vcard .monitor { flex: 1; }
+  .vcard h3 { font: 400 62px/1 var(--display); margin: 0; align-self: flex-start; }
+  .vc-l h3 { color: var(--blue); } .dark .vc-l h3 { color: var(--blue-l); }
+  .vc-r h3 { box-shadow: inset 0 -24px 0 var(--yellow); } .dark .vc-r h3 { color: var(--yellow); box-shadow: none; }
+  .tags { display: flex; flex-wrap: wrap; gap: 16px; }
+  .tags .pill { font-size: 30px; padding: 12px 26px; }
+  .vs { position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%); width: 124px; height: 124px; border-radius: 50%;
+        background: var(--yellow); color: var(--ink); border: 4px solid var(--ink); display: grid; place-items: center;
+        font: 400 46px var(--display); box-shadow: 6px 6px 0 var(--ink); z-index: 2; }
+
+  /* Decision path */
+  .qs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 64px; flex: 1; align-content: center; position: relative; }
+  .qs::before { content: ''; position: absolute; left: 16%; right: 16%; top: calc(50% - 160px); height: 6px; background: var(--ink); }
+  .q { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px; position: relative; }
+  .q .num { width: 150px; height: 150px; border-radius: 50%; background: var(--yellow); border: 5px solid var(--ink); display: grid; place-items: center;
+            font: 400 72px var(--display); box-shadow: 8px 8px 0 var(--ink); }
+  .q p { font: 700 40px/1.2 var(--text); margin: 0; min-height: 2.4em; display: grid; place-items: center; }
+  .q .opts { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+  .opt { display: flex; justify-content: space-between; align-items: center; font: 700 30px var(--text); border: 4px solid var(--ink);
+         border-radius: 18px; padding: 16px 26px; background: var(--white); }
+  .opt b { font: 400 36px var(--display); }
+  .opt.l b { color: var(--blue); }
+  .opt.r { background: var(--yellow); }
+
+  /* References */
+  .refs { display: flex; flex-direction: column; gap: 34px; flex: 1; justify-content: center; }
+  .refs .ticket { font: 500 30px/1.35 var(--text); padding: 26px 34px; }
+  .refs .ticket .ic { width: 84px; height: 84px; }
+  .refs .ticket i { font-style: italic; font-weight: 700; }
+  .refs .ticket small { display: block; font: 600 22px var(--text); color: var(--muted); margin-top: 6px; }
+  .refs .ticket.p .ic { background: var(--ink); color: var(--yellow); }
+
+  #notes { position: absolute; left: 40px; right: 40px; bottom: 110px; z-index: 6; display: none; padding: 22px 28px; border-radius: 18px;
+           background: rgba(19, 19, 22, .95); color: #E6E6EC; border: 3px solid var(--yellow); font: 500 28px/1.4 var(--text); }
+  body.show-notes #notes { display: block; }
+
+  /* Print / PDF export: open with ?print */
+  @page { size: 1920px 1080px; margin: 0; }
+  body.print { overflow: visible; height: auto; background: var(--paper); }
+  body.print #stage { position: static; transform: none !important; height: auto; overflow: visible; }
+  body.print #notes, body.print button.rerun { display: none; }
+  body.print .slide { position: relative; opacity: 1; width: 1920px; height: 1080px; break-after: page; }
+  body.print .live::before { animation: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 01 · Cover -->
+  <section class="slide dark">
+    <div class="two hero">
+      <div class="col">
+        <div><p class="kicker">Simulación · Semana 2</p>
+        <h1 class="title xl">Tipos de<br><span class="a">simulación</span></h1></div>
+        <span class="chip"><i data-i="layers"></i>3 ejes · 6 paradigmas</span>
+      </div>
+      <div class="monitor sh-y stretch" style="height: 760px">
+        <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">tipos_de_simulacion.sim</span><span class="live">EN VIVO</span></div>
+        <canvas data-sim="hero" data-loop></canvas>
+      </div>
+    </div>
+    <aside class="notes">Hoy: tres preguntas para clasificar cualquier simulación. Cada respuesta es un paradigma.</aside>
+  </section>
+
+  <!-- 02 · What is simulation -->
+  <section class="slide">
+    <p class="kicker">Punto de partida</p>
+    <h2 class="title">Simular es <span class="a">experimentar</span><br>sin tocar la realidad</h2>
+    <div class="steps">
+      <div class="stp"><div class="big"><i data-i="building"></i><span class="n">1</span></div><h3>Sistema</h3><p>Un banco, un tanque</p></div>
+      <div class="stp"><div class="big"><i data-i="model"></i><span class="n">2</span></div><h3>Modelo</h3><p>Variables y reglas</p></div>
+      <div class="stp"><div class="big"><i data-i="play"></i><span class="n">3</span></div><h3>Corridas</h3><p>Probar sin riesgo</p></div>
+    </div>
+    <aside class="notes">La clasificación describe el MODELO, no el sistema. Un mismo sistema puede modelarse de varias formas.</aside>
+  </section>
+
+  <!-- 03 · Three questions -->
+  <section class="slide dark">
+    <p class="kicker">Mapa del tema</p>
+    <h2 class="title">Tres <span class="a">preguntas</span></h2>
+    <div class="cards3">
+      <div class="wcard"><span class="ic"><i data-i="clock"></i></span><h3>¿Importa el tiempo?</h3>
+        <svg class="g" viewBox="0 0 300 150" fill="none"><g fill="#3D6BFF"><circle cx="30" cy="40" r="7"/><circle cx="70" cy="95" r="7"/><circle cx="45" cy="120" r="7"/><circle cx="100" cy="45" r="7"/><circle cx="110" cy="115" r="7"/></g><path d="M160 135 C 200 130, 230 30, 290 22" stroke="#D9A800" stroke-width="9" stroke-linecap="round"/></svg>
+        <div class="pair"><span class="pill l">Estática</span><span class="pill r">Dinámica</span></div></div>
+      <div class="wcard"><span class="ic"><i data-i="dice"></i></span><h3>¿Hay azar?</h3>
+        <svg class="g" viewBox="0 0 300 150" fill="none"><path d="M10 130 Q 70 -10 130 130" stroke="#3D6BFF" stroke-width="9" stroke-linecap="round"/><g stroke="#D9A800" stroke-width="5" stroke-linejoin="round"><path d="M160 80 L185 60 L210 85 L235 40 L260 55 L290 25"/><path d="M160 80 L185 100 L210 90 L235 120 L260 105 L290 135"/><path d="M160 80 L185 78 L210 62 L235 80 L260 82 L290 72"/></g></svg>
+        <div class="pair"><span class="pill l">Determinística</span><span class="pill r">Estocástica</span></div></div>
+      <div class="wcard"><span class="ic"><i data-i="steps"></i></span><h3>¿Cambia a saltos?</h3>
+        <svg class="g" viewBox="0 0 300 150" fill="none"><path d="M10 135 H40 V100 H70 V60 H100 V95 H135" stroke="#3D6BFF" stroke-width="9" stroke-linejoin="round"/><path d="M165 20 C 200 100, 240 125, 292 132" stroke="#D9A800" stroke-width="9" stroke-linecap="round"/></svg>
+        <div class="pair"><span class="pill l">Discreta</span><span class="pill r">Continua</span></div></div>
+    </div>
+    <aside class="notes">Cada pregunta es un eje. Azul = primera opción, amarillo = segunda. Ese código de color se mantiene en toda la exposición.</aside>
+  </section>
+
+  <!-- 04 · Static -->
+  <section class="slide">
+    <div class="two">
+      <div class="col">
+        <div><p class="kicker">Eje 1 · Tiempo</p><h2 class="title">Estática:<br><span class="a">sin reloj</span></h2></div>
+        <div class="stat"><div class="lbl">Monte Carlo estima</div><div class="val a">π ≈ <span data-k="pi">0.0000</span></div>
+          <div class="lbl" style="margin-top: 10px">con <span data-k="n">0</span> puntos al azar</div></div>
+        <span class="chip"><i data-i="dice"></i>Muestras independientes</span>
+      </div>
+      <div class="monitor sh-b acc-b stretch">
+        <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">monte_carlo.sim</span><span class="live">EN VIVO</span><button class="rerun" data-random>↻ otra semilla</button></div>
+        <canvas data-sim="mc"></canvas>
+      </div>
+    </div>
+    <aside class="notes">Puntos al azar en un cuadrado: la fracción dentro del cuarto de círculo tiende a π/4. No hay tiempo, solo muestras; el orden no importa.</aside>
+  </section>
+
+  <!-- 05 · Dynamic -->
+  <section class="slide dark">
+    <div class="head">
+      <div><p class="kicker">Eje 1 · Tiempo</p><h2 class="title">Dinámica:<br><span class="a">el tiempo manda</span></h2></div>
+      <div class="stats"><div class="stat"><div class="lbl">Tiempo</div><div class="val">t = <span data-k="t">0</span></div></div>
+        <div class="stat"><div class="lbl">Población</div><div class="val a"><span data-k="p">0</span></div></div></div>
+    </div>
+    <div class="monitor sh-y acc-y" style="flex: 1">
+      <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">crecimiento_poblacion.sim</span><span class="live">EN VIVO</span><button class="rerun">↻ repetir</button></div>
+      <canvas data-sim="logistic"></canvas>
+    </div>
+    <aside class="notes">Lo que interesa es la trayectoria completa: cómo la población llega a su capacidad máxima, no solo el valor final.</aside>
+  </section>
+
+  <!-- 06 · Static vs dynamic -->
+  <section class="slide">
+    <p class="kicker">Eje 1 · Comparación</p>
+    <h2 class="title sm">Estática <span class="a">vs.</span> dinámica</h2>
+    <div class="versus">
+      <div class="vcard vc-l" data-scope><h3>Estática</h3>
+        <div class="monitor sh-b acc-b"><div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">una foto</span></div><canvas data-sim="mc"></canvas></div>
+        <div class="tags"><span class="pill l">Sin tiempo</span><span class="pill l">Un valor</span><span class="pill l">Monte Carlo</span></div></div>
+      <div class="vs">VS</div>
+      <div class="vcard vc-r" data-scope><h3>Dinámica</h3>
+        <div class="monitor sh-y acc-y"><div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">una película</span></div><canvas data-sim="logistic"></canvas></div>
+        <div class="tags"><span class="pill r">Cambia con t</span><span class="pill r">Trayectoria</span><span class="pill r">Población</span></div></div>
+    </div>
+    <aside class="notes">Una foto contra una película. ¿Necesito ver cómo cambia el sistema o solo un resultado?</aside>
+  </section>
+
+  <!-- 07 · Deterministic -->
+  <section class="slide">
+    <div class="two wide-r">
+      <div class="col">
+        <div><p class="kicker">Eje 2 · Azar</p><h2 class="title sm">Determinística:<br><span class="a">misma entrada,<br>misma salida</span></h2></div>
+        <div class="col" style="gap: 24px">
+          <div class="ticket wait" data-run="0"><span class="ic"><i data-i="check"></i></span>Corrida 1<b>—</b></div>
+          <div class="ticket wait" data-run="1"><span class="ic"><i data-i="check"></i></span>Corrida 2<b>—</b></div>
+          <div class="ticket wait" data-run="2"><span class="ic"><i data-i="check"></i></span>Corrida 3<b>—</b></div>
+        </div>
+      </div>
+      <div class="monitor sh-b acc-b stretch">
+        <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">tiro_parabolico.sim · v₀ = 20 m/s · 45°</span><span class="live">EN VIVO</span><button class="rerun">↻ repetir</button></div>
+        <canvas data-sim="projectile"></canvas>
+      </div>
+    </div>
+    <aside class="notes">Tres corridas con las mismas entradas: las curvas se superponen y el alcance es idéntico. Repetir no aporta nada nuevo.</aside>
+  </section>
+
+  <!-- 08 · Stochastic -->
+  <section class="slide blue">
+    <div class="two wide-r">
+      <div class="col">
+        <div><p class="kicker">Eje 2 · Azar</p><h2 class="title sm">Estocástica:<br><span class="a">cada corrida<br>es distinta</span></h2></div>
+        <div class="stat"><div class="lbl">Promedio de las tiradas</div><div class="val a"><span data-k="mean">0</span></div></div>
+        <span class="chip w"><i data-i="dice"></i>Semilla <span data-k="seed">42</span> · <span data-k="n">0</span> tiradas</span>
+      </div>
+      <div class="monitor sh-y acc-y stretch">
+        <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">lanzar_dado.sim</span><span class="live">EN VIVO</span><button class="rerun" data-random>↻ otra semilla</button></div>
+        <canvas data-sim="dice"></canvas>
+      </div>
+    </div>
+    <aside class="notes">Lanzar un dado: nunca sabemos qué número sale. Con otra semilla sale otra secuencia, pero con muchas tiradas el promedio se acerca a 3.5. Por eso se repite muchas veces.</aside>
+  </section>
+
+  <!-- 09 · Deterministic vs stochastic -->
+  <section class="slide">
+    <p class="kicker">Eje 2 · Comparación</p>
+    <h2 class="title sm">Determinística <span class="a">vs.</span> estocástica</h2>
+    <div class="versus">
+      <div class="vcard vc-l" data-scope><h3>Determinística</h3>
+        <div class="monitor sh-b acc-b"><div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">una respuesta</span></div><canvas data-sim="projectile"></canvas></div>
+        <div class="tags"><span class="pill l">Entradas fijas</span><span class="pill l">1 corrida basta</span></div></div>
+      <div class="vs">VS</div>
+      <div class="vcard vc-r" data-scope><h3>Estocástica</h3>
+        <div class="monitor sh-y acc-y"><div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">muchas respuestas</span></div><canvas data-sim="dice"></canvas></div>
+        <div class="tags"><span class="pill r">Resultado al azar</span><span class="pill r">Muchas corridas</span></div></div>
+    </div>
+    <aside class="notes">Determinística: una corrida es la respuesta. Estocástica: la respuesta es estadística, se necesitan muchas corridas.</aside>
+  </section>
+
+  <!-- 10 · Discrete -->
+  <section class="slide dark">
+    <div class="head">
+      <div><p class="kicker">Eje 3 · Cambio</p><h2 class="title">Discreta:<br><span class="a">a saltos</span></h2></div>
+      <div class="stats"><div class="stat"><div class="lbl">Eventos</div><div class="val a"><span data-k="ev">0</span></div></div>
+        <div class="stat"><div class="lbl">En la cola</div><div class="val"><span data-k="q">0</span></div></div></div>
+    </div>
+    <div class="monitor sh-y acc-b" style="flex: 1">
+      <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">cola_banco.sim</span>
+        <span class="lg"><i style="background: var(--blue-l)"></i>llegada</span><span class="lg"><i style="background: #fff"></i>salida</span>
+        <span class="live">EN VIVO</span><button class="rerun" data-random>↻ otra semilla</button></div>
+      <canvas data-sim="queue"></canvas>
+    </div>
+    <aside class="notes">El número de clientes solo cambia cuando alguien llega o se va. Entre eventos no pasa nada: el reloj salta al próximo evento.</aside>
+  </section>
+
+  <!-- 11 · Continuous -->
+  <section class="slide">
+    <div class="head">
+      <div><p class="kicker">Eje 3 · Cambio</p><h2 class="title">Continua:<br><span class="a">sin saltos</span></h2></div>
+      <div class="stat" style="text-align: right"><div class="lbl">Temperatura del café</div><div class="val a"><span data-k="T">90.0</span> °C</div></div>
+    </div>
+    <div class="monitor sh-b acc-y" style="flex: 1">
+      <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">cafe_enfriandose.sim</span><span class="live">EN VIVO</span><button class="rerun">↻ repetir</button></div>
+      <canvas data-sim="cooling"></canvas>
+    </div>
+    <aside class="notes">Un café que se enfría: la temperatura baja en todo momento, poco a poco, sin saltos, hasta llegar a la del ambiente.</aside>
+  </section>
+
+  <!-- 12 · Discrete vs continuous -->
+  <section class="slide dark">
+    <p class="kicker">Eje 3 · Comparación</p>
+    <h2 class="title sm">Discreta <span class="a">vs.</span> continua</h2>
+    <div class="versus">
+      <div class="vcard vc-l" data-scope><h3>Discreta</h3>
+        <div class="monitor sh-b acc-b"><div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">escalones</span></div><canvas data-sim="queue"></canvas></div>
+        <div class="tags"><span class="pill l">Eventos</span><span class="pill l">Reloj que salta</span></div></div>
+      <div class="vs">VS</div>
+      <div class="vcard vc-r" data-scope><h3>Continua</h3>
+        <div class="monitor sh-y acc-y"><div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">curva suave</span></div><canvas data-sim="cooling"></canvas></div>
+        <div class="tags"><span class="pill r">Cambia siempre</span><span class="pill r">Curva suave</span></div></div>
+    </div>
+    <aside class="notes">Escalones contra curva suave: eso define cómo avanza el reloj de la simulación.</aside>
+  </section>
+
+  <!-- 13 · Axes combine -->
+  <section class="slide yellow">
+    <p class="kicker">Integración</p>
+    <h2 class="title">Los ejes se <span class="a">combinan</span></h2>
+    <div class="cards3">
+      <div class="wcard"><span class="ic"><i data-i="bank"></i></span><h3>Cola de un banco</h3>
+        <div class="stack"><span class="pill r">Dinámica</span><span class="pill r">Estocástica</span><span class="pill l">Discreta</span></div></div>
+      <div class="wcard"><span class="ic"><i data-i="pi"></i></span><h3>Estimar π</h3>
+        <div class="stack"><span class="pill l">Estática</span><span class="pill r">Estocástica</span><span class="pill na">Sin tiempo</span></div></div>
+      <div class="wcard"><span class="ic"><i data-i="coffee"></i></span><h3>Café que se enfría</h3>
+        <div class="stack"><span class="pill r">Dinámica</span><span class="pill l">Determinística</span><span class="pill r">Continua</span></div></div>
+    </div>
+    <aside class="notes">Todo modelo recibe una etiqueta por eje. Si es estático, el eje discreta/continua no aplica porque no hay tiempo.</aside>
+  </section>
+
+  <!-- 14 · How to classify -->
+  <section class="slide">
+    <p class="kicker">Guía práctica</p>
+    <h2 class="title">¿Cómo <span class="a">clasificar</span>?</h2>
+    <div class="qs">
+      <div class="q"><span class="num">1</span><p>¿El tiempo importa?</p>
+        <div class="opts"><span class="opt l">No<b>Estática</b></span><span class="opt r">Sí<b>Dinámica</b></span></div></div>
+      <div class="q"><span class="num">2</span><p>¿Hay entradas al azar?</p>
+        <div class="opts"><span class="opt l">No<b>Determinística</b></span><span class="opt r">Sí<b>Estocástica</b></span></div></div>
+      <div class="q"><span class="num">3</span><p>¿Cambia a saltos?</p>
+        <div class="opts"><span class="opt l">Sí<b>Discreta</b></span><span class="opt r">No<b>Continua</b></span></div></div>
+    </div>
+    <aside class="notes">Tres preguntas en orden. La tercera solo tiene sentido si el modelo es dinámico.</aside>
+  </section>
+
+  <!-- 15 · Conclusions -->
+  <section class="slide dark">
+    <p class="kicker">Cierre</p>
+    <h2 class="title">Clasificar <span class="a">antes de simular</span></h2>
+    <div class="cards3">
+      <div class="wcard"><span class="ic"><i data-i="model"></i></span><h3>Define el método</h3><p>Cómo se construye y se analiza el modelo</p><svg class="g" viewBox="0 0 300 150" fill="none"><circle cx="40" cy="75" r="26" fill="#3D6BFF"/><circle cx="150" cy="75" r="26" fill="#FFD600" stroke="#17181C" stroke-width="4"/><circle cx="260" cy="75" r="26" fill="#17181C"/><path d="M72 75h44M182 75h44" stroke="#17181C" stroke-width="5" stroke-dasharray="8 6"/></svg></div>
+      <div class="wcard"><span class="ic"><i data-i="repeat"></i></span><h3>Azar = repetir</h3><p>Muchas corridas y semilla controlada</p><svg class="g" viewBox="0 0 300 150" fill="none" stroke="#D9A800" stroke-width="5" stroke-linejoin="round"><path d="M10 75 L60 55 L110 80 L160 35 L210 50 L290 15"/><path d="M10 75 L60 95 L110 85 L160 115 L210 100 L290 138"/><path d="M10 75 L60 72 L110 58 L160 76 L210 78 L290 70"/><path d="M10 75 L60 85 L110 104 L160 92 L210 118 L290 104" stroke="#3D6BFF"/></svg></div>
+      <div class="wcard"><span class="ic"><i data-i="layers"></i></span><h3>Se combinan</h3><p>Un sistema real lleva una etiqueta por eje</p><div class="stack"><span class="pill r">Tiempo</span><span class="pill l">Azar</span><span class="pill r">Cambio</span></div></div>
+    </div>
+    <aside class="notes">Cerrar volviendo a las tres preguntas: tiempo, azar y forma del cambio.</aside>
+  </section>
+
+  <!-- 16 · References: books -->
+  <section class="slide">
+    <p class="kicker">Referencias · 1 / 3</p>
+    <h2 class="title sm">Libros de <span class="a">simulación</span></h2>
+    <div class="refs">
+      <div class="ticket"><span class="ic"><i data-i="book"></i></span><div>Law, A. M. (2015). <i>Simulation modeling and analysis</i> (5.ª ed.). McGraw-Hill Education.</div></div>
+      <div class="ticket"><span class="ic"><i data-i="book"></i></span><div>Banks, J., Carson, J. S., Nelson, B. L. y Nicol, D. M. (2010). <i>Discrete-event system simulation</i> (5.ª ed.). Pearson.</div></div>
+      <div class="ticket"><span class="ic"><i data-i="book"></i></span><div>Ross, S. M. (2013). <i>Simulation</i> (5.ª ed.). Academic Press.</div></div>
+    </div>
+  </section>
+
+  <!-- 17 · References: theory and class material -->
+  <section class="slide">
+    <p class="kicker">Referencias · 2 / 3</p>
+    <h2 class="title sm">Teoría y <span class="a">material de clase</span></h2>
+    <div class="refs">
+      <div class="ticket"><span class="ic"><i data-i="book"></i></span><div>Zeigler, B. P., Praehofer, H. y Kim, T. G. (2000). <i>Theory of modeling and simulation</i> (2.ª ed.). Academic Press.</div></div>
+      <div class="ticket"><span class="ic"><i data-i="book"></i></span><div>Forrester, J. W. (1961). <i>Industrial dynamics</i>. MIT Press.</div></div>
+      <div class="ticket"><span class="ic"><i data-i="play"></i></span><div>Guamán, J. (2026). <i>Tipos de simulación — Semana 2</i> [Diapositivas de clase]. Universidad Nacional de Loja.</div></div>
+    </div>
+  </section>
+
+  <!-- 18 · References: papers -->
+  <section class="slide">
+    <p class="kicker">Referencias · 3 / 3</p>
+    <h2 class="title sm">Artículos <span class="a">científicos</span></h2>
+    <div class="refs">
+      <div class="ticket p"><span class="ic"><i data-i="paper"></i></span><div>Metropolis, N. y Ulam, S. (1949). The Monte Carlo method. <i>Journal of the American Statistical Association, 44</i>(247), 335–341.<small>doi.org/10.1080/01621459.1949.10483310</small></div></div>
+      <div class="ticket p"><span class="ic"><i data-i="paper"></i></span><div>Lorenz, E. N. (1963). Deterministic nonperiodic flow. <i>Journal of the Atmospheric Sciences, 20</i>(2), 130–141.<small>doi.org/10.1175/1520-0469(1963)020&lt;0130:DNF&gt;2.0.CO;2</small></div></div>
+      <div class="ticket p"><span class="ic"><i data-i="paper"></i></span><div>Gillespie, D. T. (1977). Exact stochastic simulation of coupled chemical reactions. <i>The Journal of Physical Chemistry, 81</i>(25), 2340–2361.<small>doi.org/10.1021/j100540a008</small></div></div>
+    </div>
+  </section>
+
+  <!-- 19 · Thanks -->
+  <section class="slide dark">
+    <div class="two hero">
+      <div class="col">
+        <h2 class="title xl" style="font-size: 104px">¡Gracias!<br><span class="a">¿Preguntas?</span></h2>
+        <span class="chip"><i data-i="help"></i>Tiempo · azar · cambio</span>
+      </div>
+      <div class="monitor sh-b stretch" style="height: 760px">
+        <div class="mbar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="name">fin_de_la_corrida.sim</span><span class="live">EN VIVO</span></div>
+        <canvas data-sim="hero" data-loop></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div id="notes"></div>
+</div>
+
+<script>
+'use strict';
+const PRINT = new URLSearchParams(location.search).has('print');
+const C = { grid: 'rgba(255,255,255,.07)', axis: '#8A8D99', label: '#A3A6B3', off: '#3A3D48', white: '#FFFFFF', blue: '#7395FF', yellow: '#FFD600' };
+const BASE_SEED = 42;
+let SCALE = 1;
+
+const ICONS = {
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  dice: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="16" cy="16" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="16" r="1.2" fill="currentColor"/>',
+  steps: '<path d="M3 20h5v-5h5v-5h5V5h3"/>',
+  building: '<path d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6"/>',
+  model: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8.5 6h7M7.2 8.2l3.6 7.6M16.8 8.2l-3.6 7.6"/>',
+  play: '<path d="M7 4l13 8-13 8z"/>',
+  bank: '<path d="M3 21h18M4 10h16M12 3l9 5H3zM6 10v8M10 10v8M14 10v8M18 10v8"/>',
+  coffee: '<path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h2a3 3 0 0 1 0 6h-2M8 2v3M12 2v3"/>',
+  pi: '<path d="M4 7h16M9 7v12M15 7v9a3 3 0 0 0 3 3"/>',
+  repeat: '<path d="M17 2l4 4-4 4"/><path d="M3 12V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 12v3a3 3 0 0 1-3 3H3"/>',
+  layers: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/>',
+  check: '<path d="M5 12l5 5L20 7"/>',
+  book: '<path d="M4 19V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h14"/>',
+  paper: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 1-1 1.7"/><circle cx="12" cy="17" r=".8" fill="currentColor"/>',
+  wave: '<path d="M3 17c4 0 5-10 9-10s5 10 9 10"/>',
+};
+const svgIcon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]}</svg>`;
+document.querySelectorAll('i[data-i]').forEach(el => { el.outerHTML = svgIcon(el.dataset.i); });
+
+// Seeded PRNG (mulberry32): the same seed always reproduces the same run.
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function gauss(r) { let u = 0; while (u === 0) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+
+function fit(cv) {
+  const dpr = PRINT ? 1.5 : (window.devicePixelRatio || 1) * SCALE;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = Math.max(1, Math.round(w * dpr)); cv.height = Math.max(1, Math.round(h * dpr));
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const accent = getComputedStyle(cv).getPropertyValue('--acc').trim() || C.yellow;
+  const fs = h < 420 ? 18 : 22;
+  ctx.font = `600 ${fs}px Barlow, sans-serif`;
+  return { ctx, w, h, accent, fs };
+}
+
+// Clears the canvas and draws a plot frame; returns value-to-pixel mappers.
+function frame(g, o, width) {
+  const { ctx, h, fs } = g, w = width || g.w;
+  const p = { l: 70, r: 28, t: 28, b: 52 };
+  if (!width) ctx.clearRect(0, 0, g.w, h);
+  ctx.lineWidth = 1; ctx.strokeStyle = C.grid;
+  for (let i = 0; i <= 4; i++) { const y = p.t + (h - p.t - p.b) * i / 4; ctx.beginPath(); ctx.moveTo(p.l, y); ctx.lineTo(w - p.r, y); ctx.stroke(); }
+  for (let i = 0; i <= 8; i++) { const x = p.l + (w - p.l - p.r) * i / 8; ctx.beginPath(); ctx.moveTo(x, p.t); ctx.lineTo(x, h - p.b); ctx.stroke(); }
+  ctx.lineWidth = 2; ctx.strokeStyle = C.axis; ctx.beginPath(); ctx.moveTo(p.l, p.t); ctx.lineTo(p.l, h - p.b); ctx.lineTo(w - p.r, h - p.b); ctx.stroke();
+  ctx.fillStyle = C.label; ctx.font = `600 ${fs}px Barlow, sans-serif`;
+  ctx.textAlign = 'right'; ctx.fillText(o.xl, w - p.r, h - 14); ctx.fillText(String(o.y1), p.l - 12, p.t + fs * .7); ctx.fillText(String(o.y0), p.l - 12, h - p.b);
+  ctx.textAlign = 'left'; ctx.fillText(o.yl, p.l + 14, p.t + fs); ctx.fillText(String(o.x0), p.l, h - 14);
+  return {
+    x: v => p.l + (v - o.x0) / (o.x1 - o.x0) * (w - p.l - p.r),
+    y: v => h - p.b - (v - o.y0) / (o.y1 - o.y0) * (h - p.t - p.b),
+  };
+}
+function dot(ctx, x, y, r, c) { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+function hline(g, m, y, x0, x1, label) {
+  const { ctx } = g;
+  ctx.setLineDash([8, 8]); ctx.lineWidth = 2; ctx.strokeStyle = C.axis;
+  ctx.beginPath(); ctx.moveTo(m.x(x0), m.y(y)); ctx.lineTo(m.x(x1), m.y(y)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = C.label; ctx.textAlign = 'right'; ctx.fillText(label, m.x(x1) - 8, m.y(y) - 12);
+}
+function glowLine(ctx, color, width) { ctx.strokeStyle = color; ctx.lineWidth = width; ctx.shadowColor = color; ctx.shadowBlur = 14; ctx.stroke(); ctx.shadowBlur = 0; }
+
+// Each simulation receives (canvas, ui, seed) and returns { step() }; step() returns false when the run ends.
+const SIMS = {
+  hero(cv, ui, seed) {
+    const g = fit(cv), r = mulberry32(seed), M = 34, S = 180;
+    const paths = Array.from({ length: M }, () => { const a = [50]; for (let i = 1; i <= S; i++) a.push(Math.max(2, Math.min(98, a[i - 1] + gauss(r) * 2.4))); return a; });
+    let k = 0;
+    return { step() {
+      k = Math.min(S, k + 1);
+      const { ctx, w, h } = g; ctx.clearRect(0, 0, w, h);
+      const X = i => 30 + i / S * (w - 60), Y = v => h - 30 - v / 100 * (h - 60);
+      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+      for (let i = 1; i < 6; i++) { ctx.beginPath(); ctx.moveTo(0, h * i / 6); ctx.lineTo(w, h * i / 6); ctx.stroke(); }
+      paths.forEach((a, j) => {
+        ctx.beginPath(); for (let i = 0; i <= k; i++) i ? ctx.lineTo(X(i), Y(a[i])) : ctx.moveTo(X(i), Y(a[i]));
+        ctx.globalAlpha = .55; ctx.strokeStyle = j % 2 ? C.yellow : C.blue; ctx.lineWidth = 2; ctx.stroke();
+        ctx.globalAlpha = 1; dot(ctx, X(k), Y(a[k]), 3.5, j % 2 ? C.yellow : C.blue);
+      });
+      return k < S;
+    } };
+  },
+
+  mc(cv, ui, seed) {
+    const g = fit(cv), { ctx, w, h } = g, r = mulberry32(seed);
+    const s = Math.min(w, h) - 48, ox = (w - s) / 2, oy = (h - s) / 2, N = 4000;
+    let n = 0, inside = 0;
+    ctx.clearRect(0, 0, w, h);
+    const outline = () => {
+      ctx.strokeStyle = C.axis; ctx.lineWidth = 2; ctx.strokeRect(ox, oy, s, s);
+      ctx.beginPath(); ctx.arc(ox, oy + s, s, -Math.PI / 2, 0); ctx.strokeStyle = C.white; ctx.stroke();
+    };
+    const size = Math.max(2.5, s / 160);
+    return { step() {
+      for (let i = 0; i < 40 && n < N; i++) {
+        const x = r(), y = r(), hit = x * x + y * y <= 1;
+        n++; if (hit) inside++;
+        ctx.fillStyle = hit ? g.accent : C.off; ctx.fillRect(ox + x * s - size / 2, oy + (1 - y) * s - size / 2, size, size);
+      }
+      outline();
+      ui('pi', (4 * inside / n).toFixed(4)); ui('n', n.toLocaleString('es'));
+      return n < N;
+    } };
+  },
+
+  logistic(cv, ui) {
+    const g = fit(cv), K = 100, P0 = 4, rate = .55, T = 20;
+    const P = t => K / (1 + (K - P0) / P0 * Math.exp(-rate * t));
+    let t = 0;
+    return { step() {
+      t = Math.min(T, t + .06);
+      const { ctx } = g, m = frame(g, { x0: 0, x1: T, y0: 0, y1: 110, xl: 'tiempo', yl: 'población' });
+      hline(g, m, K, 0, T, 'capacidad K = 100');
+      // Shaded area under the trajectory.
+      ctx.beginPath(); ctx.moveTo(m.x(0), m.y(0));
+      for (let u = 0; u <= t + 1e-9; u += .05) ctx.lineTo(m.x(u), m.y(P(u)));
+      ctx.lineTo(m.x(t), m.y(0)); ctx.closePath(); ctx.globalAlpha = .12; ctx.fillStyle = g.accent; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.beginPath();
+      for (let u = 0; u <= t + 1e-9; u += .05) { const X = m.x(u), Y = m.y(P(u)); u ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }
+      glowLine(ctx, g.accent, 5);
+      ctx.setLineDash([6, 8]); ctx.strokeStyle = C.axis; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(m.x(t), m.y(0)); ctx.lineTo(m.x(t), m.y(P(t))); ctx.stroke(); ctx.setLineDash([]);
+      dot(ctx, m.x(t), m.y(P(t)), 9, C.white);
+      ui('t', t.toFixed(1)); ui('p', P(t).toFixed(0));
+      return t < T;
+    } };
+  },
+
+  projectile(cv, ui, seed, scope) {
+    const g = fit(cv), v0 = 20, th = Math.PI / 4, G = 9.81, RUNS = 3;
+    const T = 2 * v0 * Math.sin(th) / G, R = v0 * v0 * Math.sin(2 * th) / G;
+    const pos = u => [v0 * Math.cos(th) * u, v0 * Math.sin(th) * u - G * u * u / 2];
+    const tickets = [...scope.querySelectorAll('[data-run]')];
+    let run = 0, t = 0;
+    return { step() {
+      if (run < RUNS) { t = Math.min(T, t + .03); if (t >= T) { run++; t = 0; } }
+      const { ctx } = g, m = frame(g, { x0: 0, x1: 45, y0: 0, y1: 12, xl: 'distancia (m)', yl: 'altura (m)' });
+      const path = until => {
+        ctx.beginPath();
+        for (let u = 0; u <= until + 1e-9; u += .02) { const [x, y] = pos(Math.min(u, until)); u ? ctx.lineTo(m.x(x), m.y(y)) : ctx.moveTo(m.x(x), m.y(y)); }
+      };
+      if (run > 0) { path(T); glowLine(ctx, g.accent, 5); }
+      if (run < RUNS) {
+        path(t); ctx.strokeStyle = C.white; ctx.lineWidth = 3; ctx.stroke();
+        const [x, y] = pos(t); dot(ctx, m.x(x), m.y(y), 11, C.white);
+      } else {
+        dot(ctx, m.x(R), m.y(0), 10, g.accent);
+        ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.font = `700 ${g.fs + 4}px Barlow, sans-serif`;
+        ctx.fillText('3 corridas = 1 sola curva', m.x(22.4), m.y(5));
+      }
+      tickets.forEach((el, i) => {
+        el.classList.toggle('wait', i > run);
+        el.classList.toggle('done', i < run);
+        el.querySelector('b').textContent = i < run ? `${R.toFixed(2)} m` : i === run ? 'en vuelo…' : '—';
+      });
+      return run < RUNS;
+    } };
+  },
+
+  walk(cv, ui, seed) {
+    const g = fit(cv), r = mulberry32(seed), M = 24, S = 100;
+    const paths = Array.from({ length: M }, () => {
+      const a = [50];
+      for (let i = 1; i <= S; i++) a.push(Math.max(0, Math.min(100, a[i - 1] + gauss(r) * 2.2)));
+      return a;
+    });
+    let k = 0;
+    return { step() {
+      k = Math.min(S, k + 1);
+      const { ctx, w, h } = g, hw = Math.round(Math.min(150, w * .16));
+      ctx.clearRect(0, 0, w, h);
+      const m = frame(g, { x0: 0, x1: S, y0: 0, y1: 100, xl: 'tiempo', yl: 'inventario' }, w - hw);
+      ctx.lineWidth = 2; ctx.strokeStyle = g.accent; ctx.globalAlpha = .5;
+      for (const a of paths) { ctx.beginPath(); for (let i = 0; i <= k; i++) i ? ctx.lineTo(m.x(i), m.y(a[i])) : ctx.moveTo(m.x(i), m.y(a[i])); ctx.stroke(); }
+      ctx.globalAlpha = 1;
+      const finals = paths.map(a => a[k]);
+      const mean = finals.reduce((s, v) => s + v, 0) / M;
+      const sd = Math.sqrt(finals.reduce((s, v) => s + (v - mean) ** 2, 0) / (M - 1));
+      // Histogram of current values: the output is a distribution, not a single number.
+      const bins = new Array(10).fill(0); finals.forEach(v => bins[Math.min(9, Math.floor(v / 10))]++);
+      const peak = Math.max(...bins), x0 = w - hw + 10;
+      bins.forEach((b, i) => {
+        const y1 = m.y((i + 1) * 10), y0 = m.y(i * 10);
+        ctx.fillStyle = g.accent; ctx.fillRect(x0, y1 + 2, (hw - 24) * b / peak, y0 - y1 - 4);
+      });
+      ctx.setLineDash([8, 8]); ctx.lineWidth = 2; ctx.strokeStyle = C.white;
+      ctx.beginPath(); ctx.moveTo(m.x(0), m.y(mean)); ctx.lineTo(w - 8, m.y(mean)); ctx.stroke(); ctx.setLineDash([]);
+      ui('mean', mean.toFixed(0)); ui('sd', sd.toFixed(0)); ui('seed', seed);
+      return k < S;
+    } };
+  },
+
+  dice(cv, ui, seed) {
+    const g = fit(cv), r = mulberry32(seed), N = 300;
+    const counts = [0, 0, 0, 0, 0, 0];
+    const PIPS = [[4], [0, 8], [0, 4, 8], [0, 2, 6, 8], [0, 2, 4, 6, 8], [0, 2, 3, 5, 6, 8]];
+    let n = 0, sum = 0, last = 1;
+    return { step() {
+      for (let i = 0; i < 2 && n < N; i++) { last = 1 + Math.floor(r() * 6); counts[last - 1]++; n++; sum += last; }
+      const { ctx, w, h, fs } = g; ctx.clearRect(0, 0, w, h);
+      // Die showing the latest roll.
+      const ds = Math.min(h * .42, w * .24), dx = w * .06, dy = (h - ds) / 2 - fs;
+      ctx.fillStyle = g.accent; ctx.beginPath(); ctx.roundRect(dx, dy, ds, ds, ds * .16); ctx.fill();
+      PIPS[last - 1].forEach(k => dot(ctx, dx + ds * (.25 + .25 * (k % 3)), dy + ds * (.25 + .25 * Math.floor(k / 3)), ds * .08, '#131316'));
+      ctx.fillStyle = C.label; ctx.textAlign = 'center'; ctx.fillText(`tirada ${n}`, dx + ds / 2, dy + ds + fs * 2);
+      // Bars: how many times each face came out.
+      const x0 = dx + ds + w * .08, x1 = w - 30, top = 40, base = h - 56, bw = (x1 - x0) / 6;
+      const max = Math.max(...counts, n / 6) * 1.2;
+      const y = v => base - v / max * (base - top);
+      ctx.strokeStyle = C.axis; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0, base); ctx.lineTo(x1, base); ctx.stroke();
+      counts.forEach((c, i) => {
+        const bx = x0 + i * bw + bw * .18;
+        ctx.fillStyle = i === last - 1 ? C.white : g.accent; ctx.fillRect(bx, y(c), bw * .64, base - y(c));
+        ctx.fillStyle = C.label; ctx.textAlign = 'center';
+        ctx.fillText(String(i + 1), bx + bw * .32, base + fs * 1.5); ctx.fillText(String(c), bx + bw * .32, y(c) - 10);
+      });
+      ctx.setLineDash([8, 8]); ctx.strokeStyle = C.white; ctx.beginPath(); ctx.moveTo(x0, y(n / 6)); ctx.lineTo(x1, y(n / 6)); ctx.stroke(); ctx.setLineDash([]);
+      ui('mean', (sum / n).toFixed(2)); ui('n', n); ui('seed', seed);
+      return n < N;
+    } };
+  },
+
+  queue(cv, ui, seed) {
+    const g = fit(cv), r = mulberry32(seed), lam = .9, mu = 1, T = 40;
+    const ex = rate => -Math.log(1 - r()) / rate;
+    const ev = [];
+    let t = 0, n = 0, nextA = ex(lam), nextD = Infinity;
+    for (;;) {
+      if (nextA < nextD) { t = nextA; if (t > T) break; n++; ev.push({ t, n, a: true }); nextA = t + ex(lam); if (n === 1) nextD = t + ex(mu); }
+      else { t = nextD; if (t > T) break; n--; ev.push({ t, n, a: false }); nextD = n > 0 ? t + ex(mu) : Infinity; }
+    }
+    const ymax = Math.max(4, ...ev.map(e => e.n)) + 1;
+    let tc = 0;
+    return { step() {
+      tc = Math.min(T, tc + .12);
+      const { ctx } = g, m = frame(g, { x0: 0, x1: T, y0: 0, y1: ymax, xl: 'tiempo (min)', yl: 'clientes' });
+      ctx.beginPath(); ctx.moveTo(m.x(0), m.y(0));
+      let cur = 0, count = 0;
+      for (const e of ev) { if (e.t > tc) break; ctx.lineTo(m.x(e.t), m.y(cur)); ctx.lineTo(m.x(e.t), m.y(e.n)); cur = e.n; count++; }
+      ctx.lineTo(m.x(tc), m.y(cur));
+      ctx.lineJoin = 'miter'; glowLine(ctx, g.accent, 4);
+      for (let i = 0; i < count; i++) dot(ctx, m.x(ev[i].t), m.y(ev[i].n), 6, ev[i].a ? g.accent : C.white);
+      ui('ev', count); ui('q', cur);
+      return tc < T;
+    } };
+  },
+
+  cooling(cv, ui) {
+    const g = fit(cv), k = .08, Ta = 20, dt = .1, STEPS = 600;
+    const pts = [[0, 90]];
+    return { step() {
+      for (let i = 0; i < 3 && pts.length <= STEPS; i++) {
+        const [t, T] = pts[pts.length - 1];
+        pts.push([t + dt, T - k * (T - Ta) * dt]);
+      }
+      const { ctx } = g, m = frame(g, { x0: 0, x1: 60, y0: 0, y1: 100, xl: 'tiempo (min)', yl: 'temperatura (°C)' });
+      hline(g, m, Ta, 0, 60, 'ambiente Tₐ = 20 °C');
+      ctx.beginPath(); pts.forEach(([t, T], i) => i ? ctx.lineTo(m.x(t), m.y(T)) : ctx.moveTo(m.x(t), m.y(T)));
+      glowLine(ctx, g.accent, 5);
+      const [t, T] = pts[pts.length - 1];
+      dot(ctx, m.x(t), m.y(T), 9, C.white);
+      ui('T', T.toFixed(1));
+      return pts.length <= STEPS;
+    } };
+  },
+};
+
+const slides = [...document.querySelectorAll('.slide')];
+const running = new Map();
+let current = 0;
+
+// Footer with brand, page number and progress bar on every slide.
+slides.forEach((s, i) => {
+  const f = document.createElement('div');
+  f.className = 'foot';
+  f.innerHTML = `<span class="brand"><span class="logo">${svgIcon('wave')}</span>SIMULACIÓN · SEMANA 2</span>
+    <span class="page">${i + 1} / ${slides.length}</span><span class="bar" style="width:${(i + 1) / slides.length * 1920}px"></span>`;
+  s.appendChild(f);
+});
+
+function makeUi(scope) {
+  return (key, value) => scope.querySelectorAll(`[data-k="${key}"]`).forEach(el => { el.textContent = value; });
+}
+function launch(cv) {
+  const scope = cv.closest('[data-scope]') || cv.closest('.slide');
+  const seed = Number(cv.dataset.seed || BASE_SEED);
+  running.set(cv, { inst: SIMS[cv.dataset.sim](cv, makeUi(scope), seed, scope), done: false, wait: 0 });
+}
+
+function show(i) {
+  current = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, k) => s.classList.toggle('active', k === current));
+  running.clear();
+  slides[current].querySelectorAll('canvas[data-sim]').forEach(launch);
+  const notes = slides[current].querySelector('.notes');
+  document.getElementById('notes').textContent = notes ? notes.textContent : '';
+  history.replaceState(null, '', `#${current + 1}`);
+}
+
+function tick() {
+  for (const [cv, run] of running) {
+    if (!run.done) run.done = !run.inst.step();
+    else if ('loop' in cv.dataset && ++run.wait > 90) { cv.dataset.seed = Number(cv.dataset.seed || BASE_SEED) + 1; launch(cv); }
+  }
+  requestAnimationFrame(tick);
+}
+
+function resize() {
+  SCALE = Math.min(innerWidth / 1920, innerHeight / 1080);
+  document.getElementById('stage').style.transform = `translate(-50%, -50%) scale(${SCALE})`;
+  show(current);
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button.rerun');
+  if (!btn) return;
+  const cv = btn.closest('.monitor').querySelector('canvas');
+  // Stochastic models get a new seed; deterministic ones repeat the exact same run.
+  if (btn.hasAttribute('data-random')) cv.dataset.seed = Number(cv.dataset.seed || BASE_SEED) + 1;
+  launch(cv);
+});
+
+document.addEventListener('keydown', e => {
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); show(current + 1); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(current - 1); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(slides.length - 1);
+  else if (e.key === 'f' || e.key === 'F') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  else if (e.key === 'n' || e.key === 'N') document.body.classList.toggle('show-notes');
+});
+
+if (PRINT) {
+  document.body.classList.add('print');
+  document.fonts.ready.then(() => {
+    document.querySelectorAll('canvas[data-sim]').forEach(cv => {
+      const scope = cv.closest('[data-scope]') || cv.closest('.slide');
+      const sim = SIMS[cv.dataset.sim](cv, makeUi(scope), BASE_SEED, scope);
+      for (let i = 0; i < 5000 && sim.step(); i++);
+    });
+  });
+} else {
+  current = Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1);
+  addEventListener('resize', resize);
+  document.fonts.ready.then(() => { resize(); requestAnimationFrame(tick); });
+}
+</script>
+</body>
+</html>
