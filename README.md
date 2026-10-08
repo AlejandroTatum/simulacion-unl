@@ -13,6 +13,7 @@ Repositorio con las prácticas (APE) de la asignatura, organizadas por unidad.
 | Unidad | APE | Tema | Carpeta |
 | --- | --- | --- | --- |
 | 1 | 1 | Construcción y simulación computacional de un modelo matemático (índice de lluvia) | [unidad-1/ape-1-indice-lluvia](unidad-1/ape-1-indice-lluvia) |
+| 1 | 2 | Comparación de modelos determinísticos, estocásticos, discretos y continuos (crecimiento poblacional) | [unidad-1/ape-2-comparacion-modelos](unidad-1/ape-2-comparacion-modelos) |
 
 ## Contenido de cada APE
 
