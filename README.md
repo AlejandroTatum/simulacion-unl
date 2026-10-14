@@ -15,6 +15,14 @@ Repositorio con las prácticas (APE) de la asignatura, organizadas por unidad.
 | 1 | 1 | Construcción y simulación computacional de un modelo matemático (índice de lluvia) | [unidad-1/ape-1-indice-lluvia](unidad-1/ape-1-indice-lluvia) |
 | 1 | 2 | Comparación de modelos determinísticos, estocásticos, discretos y continuos (crecimiento poblacional) | [unidad-1/ape-2-comparacion-modelos](unidad-1/ape-2-comparacion-modelos) |
 
+## Proyecto
+
+| Entrega | Tema | Carpeta |
+| --- | --- | --- |
+| Avance (grupal) | Identificación del cuello de botella en una línea de fabricación de sillas de madera mediante simulación de eventos discretos | [proyecto-linea-produccion/avance](proyecto-linea-produccion/avance) |
+
+El avance contiene el documento (PDF y editable) en `documento/` y su bibliografía en `referencias.bib`. El código del proyecto se desarrolla en el repositorio del grupo: <https://github.com/AlejandroTatum/simulacion-linea-produccion>.
+
 ## Contenido de cada APE
 
 Cada práctica está en `unidad-<n>/ape-<m>-<tema>/` y contiene:
