@@ -69,6 +69,30 @@ def plot_wait_histogram(results: list[ScenarioResult], path: Path) -> Path:
     return _save(fig, path)
 
 
+def plot_wait_scatter(results: list[ScenarioResult], path: Path) -> Path:
+    """Diagrama de dispersión: espera de cada cliente según su orden de llegada, un panel por escenario.
+
+    Cada punto es un cliente que ya pasó a la caja; se grafican todos (sin submuestreo) con puntos pequeños y
+    transparentes. Cada panel tiene su propia escala vertical porque las esperas del escenario 3 son mucho
+    mayores que las de los otros dos. La línea punteada marca el Wq teórico.
+    """
+    fig, axes = plt.subplots(len(results), 1, figsize=(11, 2.8 * len(results)), squeeze=False)
+    for index, (ax, result) in enumerate(zip(axes[:, 0], results)):
+        waits = wait_times(result.customers)
+        ax.scatter(np.arange(1, len(waits) + 1), waits, s=2, alpha=0.3, color=_color(index),
+                   linewidths=0, rasterized=True)
+        ax.axhline(result.theory.mean_wait, color="black", linestyle="--", linewidth=1.2,
+                   label=f"Wq teórico = {result.theory.mean_wait:.2f} min")
+        ax.set_title(f"{result.scenario.label} (ρ = {result.theory.utilization:.3f})", loc="left", fontsize=10)
+        ax.set_ylabel("Espera en cola (min)")
+        ax.set_ylim(bottom=0)
+        ax.legend(loc="upper right", fontsize=8)
+        ax.grid(alpha=0.3)
+    axes[-1, 0].set_xlabel("Cliente (orden de llegada)")
+    fig.suptitle("Espera en cola de cada cliente según su orden de llegada")
+    return _save(fig, path)
+
+
 def plot_comparison(results: list[ScenarioResult], path: Path) -> Path:
     """Una gráfica de barras por métrica: teórico frente a simulado en cada escenario."""
     fig, axes = plt.subplots(1, len(METRIC_ROWS), figsize=(16, 4))
@@ -87,12 +111,13 @@ def plot_comparison(results: list[ScenarioResult], path: Path) -> Path:
 
 
 def save_charts(results: list[ScenarioResult], output_dir: Path) -> list[Path]:
-    """Genera las cuatro gráficas en `output_dir` y devuelve sus rutas."""
+    """Genera las cinco gráficas en `output_dir` y devuelve sus rutas."""
     output_dir.mkdir(parents=True, exist_ok=True)
     return [
         plot_queue_over_time(results, output_dir / "cola_en_el_tiempo.png"),
         plot_running_wait(results, output_dir / "convergencia_espera.png"),
         plot_wait_histogram(results, output_dir / "histograma_espera.png"),
+        plot_wait_scatter(results, output_dir / "dispersion_espera.png"),
         plot_comparison(results, output_dir / "comparacion_teorico_simulado.png"),
     ]
 

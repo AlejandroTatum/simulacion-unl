@@ -20,7 +20,7 @@ def test_entry_point_runs_when_executed_by_file_path(tmp_path):
     assert "Escenario 3: Cerca de saturación" in result.stdout
     assert sorted(path.name for path in tmp_path.iterdir()) == [
         "cola_en_el_tiempo.png", "comparacion_teorico_simulado.png",
-        "convergencia_espera.png", "histograma_espera.png",
+        "convergencia_espera.png", "dispersion_espera.png", "histograma_espera.png",
     ]
 
 

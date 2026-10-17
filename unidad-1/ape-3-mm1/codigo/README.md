@@ -77,6 +77,7 @@ mientras corre la ventana.
 | `cola_en_el_tiempo.png` | Tamaño de la cola durante una jornada de 8 horas, con Lq teórico |
 | `convergencia_espera.png` | Espera promedio acumulada cliente a cliente frente a Wq teórico |
 | `histograma_espera.png` | Distribución de los tiempos de espera por escenario |
+| `dispersion_espera.png` | Espera de cada cliente según su orden de llegada (un punto por cliente), con Wq teórico |
 | `comparacion_teorico_simulado.png` | ρ, L, Lq, W y Wq teóricos frente a simulados |
 
 ## Arquitectura (MVC)
