@@ -49,7 +49,8 @@ def plot_running_wait(results: list[ScenarioResult], path: Path) -> Path:
     ax.set_xlabel("Clientes atendidos (escala logarítmica)")
     ax.set_ylabel("Espera promedio acumulada (min)")
     ax.set_title("Convergencia del tiempo promedio de espera en cola hacia Wq")
-    ax.legend(fontsize=8, ncol=2)
+    # Una columna por escenario: Matplotlib llena la leyenda por columnas, así cada simulado queda sobre su Wq.
+    ax.legend(fontsize=8, ncol=len(results))
     ax.grid(alpha=0.3, which="both")
     return _save(fig, path)
 
