@@ -1,4 +1,7 @@
-"""Tablero oscuro: reloj, estado de la caja, contadores y tabla teórico vs. simulado."""
+"""Vista en vivo: tablero oscuro con reloj, estado de la caja, contadores y la tabla teórico vs. simulado.
+
+Solo muestra los valores que recibe del modelo (`LiveRun`, `SystemState`); no calcula métricas.
+"""
 
 import math
 
@@ -7,7 +10,7 @@ from matplotlib.patches import Rectangle
 from ...model.live import LiveRun
 from ...model.state import SystemState
 from ...model.theory import QueueMetrics
-from .theme import BOARD_CELL, BOARD_CELL_LIVE, BOARD_LABEL, BOARD_RULE, EXIT, INK, SIGNAL
+from .theme import BOARD_CELL, BOARD_CELL_LIVE, BOARD_LABEL, BOARD_RULE, EXIT, INK, SIGNAL, hide_frame
 
 # (campo de QueueMetrics, símbolo, nombre)
 METRICS = (
@@ -18,8 +21,12 @@ METRICS = (
     ("mean_wait", "Wq", "Minutos de espera en cola"),
 )
 COUNTERS = ("En cola", "En el sistema", "Atendidos", "Llegaron")
+# Coordenadas del tablero: el eje va de 0 a 1 en x y en y, con y creciendo hacia abajo.
+LEFT, RIGHT = 0.04, 0.96  # márgenes de las líneas separadoras
+COUNTER_STEP = 0.235  # separación horizontal entre contadores
 COLUMNS = (0.62, 0.80, 0.98)  # borde derecho de las columnas: teórico, simulado ahora, corrida larga
 ROW_Y = [0.62 + 0.085 * i for i in range(len(METRICS))]
+LIVE_COLUMN = 1  # índice de la columna "Simulado ahora", la única que cambia durante la reproducción
 
 
 def fmt(value: float | None, digits: int = 3) -> str:
@@ -28,45 +35,47 @@ def fmt(value: float | None, digits: int = 3) -> str:
 
 
 class Board:
+    """Tablero dibujado con textos de Matplotlib; guarda cada texto para cambiarlo sin recrearlo."""
+
     def __init__(self, ax) -> None:
         self.ax = ax
         ax.set_xlim(0, 1)
         ax.set_ylim(1, 0)  # y crece hacia abajo
         ax.set_facecolor(INK)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        for side in ax.spines.values():
-            side.set_visible(False)
+        hide_frame(ax)
 
-        self.clock = self._text(0.04, 0.12, "0.0", 34, "white", "bold")
+        # Franja superior: reloj, minutos totales y lámpara de la caja.
+        self.clock = self._text(LEFT, 0.12, "0.0", 34, "white", "bold")
         self.clock_total = self._text(0.31, 0.12, "", 13, BOARD_LABEL, "bold")
         self.lamp = ax.plot([0.625], [0.085], "o", ms=10, color=EXIT)[0]
         self.lamp_text = self._text(0.66, 0.105, "CAJA LIBRE", 11, "white", "bold")
 
-        ax.plot([0.04, 0.96], [0.2, 0.2], color=BOARD_RULE, lw=1.5)
+        ax.plot([LEFT, RIGHT], [0.2, 0.2], color=BOARD_RULE, lw=1.5)
         self.counters = []
         for i, label in enumerate(COUNTERS):
-            x = 0.04 + 0.235 * i
+            x = LEFT + COUNTER_STEP * i
             self._text(x, 0.26, label, 9.5, BOARD_LABEL)
             self.counters.append(self._text(x, 0.375, "0", 28, SIGNAL if i == 0 else "white", "bold"))
-        ax.plot([0.04, 0.96], [0.43, 0.43], color=BOARD_RULE, lw=1.5)
+        ax.plot([LEFT, RIGHT], [0.43, 0.43], color=BOARD_RULE, lw=1.5)
 
-        self._text(0.04, 0.515, "Métrica", 9, BOARD_LABEL, "bold")
+        # Tabla: una fila por métrica y tres columnas (teórico, simulado ahora, corrida larga).
+        self._text(LEFT, 0.515, "Métrica", 9, BOARD_LABEL, "bold")
         headers = [self._text(x, 0.515, name, 8.5, color, "bold", "right", linespacing=1.1)
                    for x, name, color in zip(COLUMNS, ("Teórico", "Simulado\nahora", ""), (BOARD_LABEL, SIGNAL, BOARD_LABEL))]
-        self.long_run_header = headers[2]
+        self.long_run_header = headers[2]  # su texto ("20 000 min") depende de la corrida
         self.cells: dict[str, list] = {}  # campo -> textos de las tres columnas
         for y, (field, symbol, name) in zip(ROW_Y, METRICS):
-            self._text(0.04, y, symbol, 17, SIGNAL, "bold", style="italic")
+            self._text(LEFT, y, symbol, 17, SIGNAL, "bold", style="italic")
             self._text(0.13, y, name, 8.5, "#d8dce0")
             row = []
             for i, x in enumerate(COLUMNS):
-                ax.add_patch(Rectangle((x - 0.13, y - 0.062), 0.135, 0.078, color=BOARD_CELL_LIVE if i == 1 else BOARD_CELL))
-                row.append(self._text(x - 0.01, y, "—", 14, SIGNAL if i == 1 else "white", "bold", "right"))
+                live = i == LIVE_COLUMN
+                ax.add_patch(Rectangle((x - 0.13, y - 0.062), 0.135, 0.078, color=BOARD_CELL_LIVE if live else BOARD_CELL))
+                row.append(self._text(x - 0.01, y, "—", 14, SIGNAL if live else "white", "bold", "right"))
             self.cells[field] = row
-        # Se dibujan cada cuadro (fast) o cada cierto tiempo (slow); el resto queda en el fondo de la ventana.
+        # Capas del blitting (ver window.py): `fast` se pinta en cada cuadro, `slow` cada cierto tiempo.
         self.fast = [self.clock, self.lamp, self.lamp_text, *self.counters]
-        self.slow = [cells[1] for cells in self.cells.values()]
+        self.slow = [cells[LIVE_COLUMN] for cells in self.cells.values()]
 
     def _text(self, x, y, content, size, color, weight="normal", ha="left", **kwargs):
         return self.ax.text(x, y, content, fontsize=size, color=color, fontweight=weight, ha=ha, va="baseline", **kwargs)
@@ -86,11 +95,11 @@ class Board:
         busy = state.in_service is not None
         self.lamp.set_color(SIGNAL if busy else EXIT)
         self.lamp_text.set_text("ATENDIENDO" if busy else "CAJA LIBRE")
-        in_system = len(state.waiting) + busy
+        in_system = len(state.waiting) + busy  # quien está en la caja también está en el sistema
         for text, value in zip(self.counters, (len(state.waiting), in_system, state.served, state.arrived)):
             text.set_text(str(value))
 
     def update_live(self, live: QueueMetrics | None) -> None:
-        """Columna "Simulado ahora": cambia poco de un cuadro a otro."""
+        """Columna "Simulado ahora": métricas calculadas solo con lo ocurrido hasta el minuto actual."""
         for field, cells in self.cells.items():
-            cells[1].set_text(fmt(getattr(live, field) if live else None))
+            cells[LIVE_COLUMN].set_text(fmt(getattr(live, field) if live else None))

@@ -1,4 +1,4 @@
-"""Parámetros de la simulación, separados de la lógica que los usa.
+"""Modelo: parámetros de la simulación (escenarios, tiempo, semilla), separados de la lógica que los usa.
 
 Unidad de tiempo: minutos. Las tasas λ y μ están en clientes por minuto.
 """
@@ -11,6 +11,7 @@ SYSTEM_NAME = "Caja rápida de supermercado"
 
 @dataclass(frozen=True)
 class Scenario:
+    """Un par (λ, μ) con nombre; `number` 0 marca un escenario personalizado."""
     number: int
     arrival_rate: float  # λ: clientes que llegan por minuto
     service_rate: float  # μ: clientes que la caja atiende por minuto
@@ -23,6 +24,7 @@ class Scenario:
 
     @property
     def label(self) -> str:
+        """Título del escenario para tablas y gráficas."""
         return f"Escenario {self.number}: {self.condition}"
 
 
@@ -36,12 +38,13 @@ SCENARIOS = (
 
 @dataclass(frozen=True)
 class SimulationConfig:
+    """Datos de una corrida; la misma semilla da siempre los mismos números aleatorios."""
     sim_time: float = 20_000.0  # minutos simulados para estimar las métricas
     seed: int = 42
-    scenarios: tuple[Scenario, ...] = SCENARIOS
 
 
 @dataclass(frozen=True)
 class AnimationConfig:
+    """Datos de la ventana en vivo."""
     duration: float = 60.0  # minutos del sistema que se reproducen en la pantalla en vivo
     minutes_per_second: float = 1.0  # velocidad inicial: minutos simulados por segundo real

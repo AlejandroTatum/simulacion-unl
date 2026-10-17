@@ -1,4 +1,4 @@
-"""Métricas simuladas a partir de los registros de clientes.
+"""Modelo: métricas simuladas a partir de los registros de clientes.
 
 Hay dos tipos de promedio:
 - L, Lq y ρ son promedios **en el tiempo**: cada valor se pondera por cuánto tiempo duró (área bajo la curva
@@ -25,6 +25,8 @@ class OccupancyTrace:
 
 def occupancy_trace(customers: list[CustomerRecord], end_time: float) -> OccupancyTrace:
     """Cuenta clientes en el sistema y en la cola después de cada evento hasta `end_time`."""
+    # Cada evento cambia los conteos: llegar suma 1 al sistema y a la cola; pasar a la caja saca 1 de la cola;
+    # irse saca 1 del sistema. Acumulando los cambios en orden de tiempo se obtiene la función escalonada.
     events = []  # (tiempo, cambio en el sistema, cambio en la cola)
     for record in customers:
         if record.arrival <= end_time:
@@ -41,7 +43,7 @@ def occupancy_trace(customers: list[CustomerRecord], end_time: float) -> Occupan
 
 
 def time_average(times: np.ndarray, values: np.ndarray, end_time: float) -> float:
-    """Promedio ponderado por tiempo de una función escalonada en [0, end_time]."""
+    """Promedio ponderado por tiempo de una función escalonada en [0, end_time]: área bajo la curva / tiempo."""
     durations = np.diff(np.append(times, end_time))
     return float(np.sum(values * durations) / end_time)
 
@@ -71,7 +73,13 @@ def service_times(customers: list[CustomerRecord], time: float) -> list[float]:
             if record.departure is not None and record.departure <= time]
 
 
+def wait_times(customers: list[CustomerRecord]) -> list[float]:
+    """Tiempo en cola de cada cliente que ya pasó a la caja."""
+    return [record.wait for record in customers if record.wait is not None]
+
+
 def _mean(values: list[float]) -> float:
+    """Media de la lista, o NaN si todavía no hay datos."""
     return float(np.mean(values)) if values else float("nan")
 
 
@@ -84,18 +92,18 @@ def simulated_metrics(customers: list[CustomerRecord], end_time: float) -> Queue
         for record in customers
         if record.service_start is not None
     )
-    waits = [record.wait for record in customers if record.wait is not None]
+    # W y Wq: promedio por cliente, solo con los que ya pasaron a la caja (Wq) o ya se fueron (W).
     times_in_system = [record.time_in_system for record in customers if record.time_in_system is not None]
     return QueueMetrics(
         utilization=busy_time / end_time,
         mean_in_system=time_average(trace.times, trace.in_system, end_time),
         mean_in_queue=time_average(trace.times, trace.in_queue, end_time),
         mean_time_in_system=_mean(times_in_system),
-        mean_wait=_mean(waits),
+        mean_wait=_mean(wait_times(customers)),
     )
 
 
 def running_mean_wait(customers: list[CustomerRecord]) -> np.ndarray:
     """Espera promedio acumulada cliente a cliente (muestra cómo converge hacia Wq)."""
-    waits = np.array([record.wait for record in customers if record.wait is not None])
+    waits = np.array(wait_times(customers))
     return np.cumsum(waits) / np.arange(1, len(waits) + 1)

@@ -1,4 +1,4 @@
-"""Modelo M/M/1 en SimPy: llegadas de Poisson, servicio exponencial y un único servidor FIFO.
+"""Modelo: el sistema M/M/1 en SimPy: llegadas de Poisson, servicio exponencial y un único servidor FIFO.
 
 Conceptos de SimPy que usa este archivo:
 - `Environment`: el reloj y la agenda de eventos de la simulación (`env.now` es el minuto actual).

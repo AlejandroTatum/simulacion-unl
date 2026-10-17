@@ -1,3 +1,5 @@
+"""Pruebas de la ventana en vivo sin abrir pantalla (backend Agg): lo que muestra coincide con el modelo."""
+
 from functools import lru_cache
 
 import matplotlib.pyplot as plt
@@ -69,7 +71,7 @@ def test_unstable_rates_show_message_and_hide_theory(window):
     assert set(theory_cells(window).values()) == {"—"}
     assert window.board.cells["mean_wait"][2].get_text() == "—"
     assert window.board.long_run_header.get_text() == ""
-    assert not window.charts.occupancy.theory_system.get_visible()
+    assert not window.occupancy.theory_system.get_visible()
     window.advance(30.0)  # sigue animando: la cola crece
     assert window.board.cells["mean_in_queue"][1].get_text() != "—"
     assert len(window.run.state_at(30.0, EXIT_WINDOW).waiting) > 0

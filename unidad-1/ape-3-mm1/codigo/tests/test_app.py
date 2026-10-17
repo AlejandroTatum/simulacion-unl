@@ -1,3 +1,5 @@
+"""Pruebas de la aplicación completa: punto de entrada, tabla de consola y mensajes."""
+
 import os
 import subprocess
 import sys

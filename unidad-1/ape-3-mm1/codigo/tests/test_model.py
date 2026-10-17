@@ -1,6 +1,8 @@
-import pytest
+"""Pruebas del modelo: fórmulas teóricas, simulación SimPy, métricas y estado del sistema."""
 
 import math
+
+import pytest
 
 from simulacion_ape.model.analysis import (
     interarrival_times,
@@ -89,5 +91,4 @@ def test_state_at_shows_queue_service_and_exit():
     assert (state.waiting, state.in_service, state.served, state.arrived) == ((2, 3), 1, 0, 3)
     state = state_at(customers, 3.2, exit_window=0.5)
     assert (state.waiting, state.in_service, state.leaving) == ((3,), 2, (1,))
-    assert state.mean_wait == pytest.approx(0.5)
     assert state_at(customers, 0.5).arrived == 0

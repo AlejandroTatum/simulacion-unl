@@ -1,4 +1,4 @@
-"""Datos de la pantalla en vivo: una corrida (λ, μ) lista para consultarla minuto a minuto.
+"""Modelo: datos de la pantalla en vivo, una corrida (λ, μ) lista para consultarla minuto a minuto.
 
 La pantalla no calcula nada: le pide a `LiveRun` el estado y las métricas en el minuto que muestra.
 """
@@ -15,6 +15,7 @@ from .theory import QueueMetrics, is_stable
 
 @dataclass(frozen=True)
 class LiveRun:
+    """Una corrida completa con todas sus consultas; la ventana la recibe ya armada por el controlador."""
     arrival_rate: float
     service_rate: float
     duration: float  # minutos que se reproducen
@@ -26,9 +27,11 @@ class LiveRun:
 
     @property
     def stable(self) -> bool:
+        """Hay teoría solo si λ < μ."""
         return self.theory is not None
 
     def state_at(self, time: float, exit_window: float) -> SystemState:
+        """Quién espera, quién está en la caja y quién sale en el minuto `time`."""
         return state_at(self.customers, time, exit_window)
 
     def metrics_at(self, time: float) -> QueueMetrics | None:
@@ -38,9 +41,11 @@ class LiveRun:
         return simulated_metrics(records_until(self.customers, time), time)
 
     def interarrival_times(self, time: float) -> list[float]:
+        """Tiempos entre llegadas vistos hasta `time`."""
         return interarrival_times(self.customers, time)
 
     def service_times(self, time: float) -> list[float]:
+        """Duraciones de atención terminadas hasta `time`."""
         return service_times(self.customers, time)
 
 
@@ -51,7 +56,10 @@ def run_live(arrival_rate: float, service_rate: float, config: SimulationConfig,
         customers, theory, long_run, minutes = result.customers, result.theory, result.simulated, result.sim_time
     else:
         # Con λ ≥ μ no hay teoría ni corrida larga: solo se simula lo que se va a mostrar.
-        customers, theory, long_run, minutes = simulate_mm1(arrival_rate, service_rate, duration, config.seed), None, None, 0.0
+        customers = simulate_mm1(arrival_rate, service_rate, duration, config.seed)
+        theory = long_run = None
+        minutes = 0.0
+    # La corrida larga y la reproducción comparten semilla: los primeros minutos son los mismos clientes.
     shown = [record for record in customers if record.arrival <= duration]
     return LiveRun(arrival_rate, service_rate, duration, shown, theory, long_run, minutes,
                    occupancy_trace(shown, duration))

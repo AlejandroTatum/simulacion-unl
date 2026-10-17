@@ -1,4 +1,7 @@
-"""Animación del local: fila serpentina, caja y salida. Solo dibuja lo que le entrega `LiveRun`."""
+"""Vista en vivo: animación del local (fila serpentina, caja y salida).
+
+Solo dibuja lo que le entrega `LiveRun`; no decide quién espera ni cuándo termina cada cobro.
+"""
 
 import math
 from functools import lru_cache
@@ -20,9 +23,15 @@ WIDTH, HEIGHT = 1900, 1000
 ROWS_Y = (850, 670, 490, 310)
 QUEUE_LEFT, QUEUE_RIGHT = 230, 1190
 PER_ROW = 10
+CAPACITY = PER_ROW * len(ROWS_Y)  # clientes que caben dibujados en la fila; el resto se cuenta en el letrero
 SERVICE = (1520, 850)  # donde se para el cliente que atiende la caja
 EXIT_POINT = (1860, 850)
 EXIT_WINDOW = 0.8  # minutos que se ve a un cliente caminar hacia la salida
+ARRIVAL_WINDOW = 1.0  # minutos tras llegar en los que un cliente nuevo entra caminando por la izquierda
+ENTRY_X = -90.0  # fuera del plano, a la izquierda: de ahí entra quien acaba de llegar
+FADE_FRACTION = 0.35  # al salir, el último 35 % del camino se desvanece
+EASE_RATE = 7  # qué tan rápido alcanza cada persona su lugar (más alto = más rápido)
+ARRIVED_DISTANCE = 3  # a menos de esta distancia la persona ya está parada, no caminando
 PT = 0.3  # puntos de tipografía por unidad de dibujo
 
 # Pictograma: cada pose son 5 trazos (tronco, 2 brazos, 2 piernas) como (x1, y1, x2, y2) con el origen en los pies.
@@ -30,11 +39,19 @@ STAND = ((0, -98, 0, -56), (-12, -95, -20, -56), (12, -95, 20, -56), (-7, -50, -
 WALK_A = ((1, -98, 1, -56), (-10, -94, -24, -62), (12, -94, 24, -60), (-4, -50, -21, -6), (5, -50, 19, -7))
 WALK_B = ((1, -98, 1, -56), (-10, -94, -17, -56), (12, -94, 17, -56), (-3, -50, -9, -5), (4, -50, 6, -5))
 STROKE_UNITS = (30, 10, 10, 13, 13)  # grosor de cada trazo, en unidades de dibujo
+STROKE_WIDTHS = [width * PT for width in STROKE_UNITS]  # lo mismo en puntos
 HEAD_AREA = (32 * PT) ** 2  # área del círculo de la cabeza, en puntos²
-CAPACITY = PER_ROW * len(ROWS_Y)  # clientes que caben dibujados en la fila; el resto se cuenta en el letrero
-ARRIVAL_WINDOW = 1.0  # minutos tras llegar en los que un cliente nuevo entra caminando por la izquierda
+HEAD_RISE, LABEL_RISE = 124, 68  # altura de la cabeza y del número sobre los pies
+
+# Barra de progreso del cobro, bajo el letrero de la caja.
+BAR_X, BAR_Y, BAR_WIDTH, BAR_HEIGHT = 1332, 234, 546, 18
+
+# Aviso rojo cuando la cola crece cerca de la saturación.
+ALERT_QUEUE, ALERT_UTILIZATION = 12, 0.9
+
 INK_RGBA, EXIT_RGBA = to_rgba(INK), to_rgba(EXIT)
 LABEL_FONT = FontProperties(weight="bold")
+LABEL_SIZE = 19 * PT
 
 
 def queue_spot(position: int) -> tuple[float, float]:
@@ -50,10 +67,10 @@ def label_path(customer_id: int):
     """Número del cliente como trazo vectorial (en puntos), centrado en x y con la línea base en y = 0.
 
     Dibujar 40 números como `Text` costaba ~1 ms cada uno por cuadro; como trazos van en una sola colección.
+    La memoria (`lru_cache`) hace que cada número se convierta en trazo una sola vez.
     """
-    path = TextPath((0, 0), str(customer_id), size=19 * PT, prop=LABEL_FONT)
-    box = path.get_extents()
-    return TextPath((-(box.x0 + box.x1) / 2, 0), str(customer_id), size=19 * PT, prop=LABEL_FONT)
+    box = TextPath((0, 0), str(customer_id), size=LABEL_SIZE, prop=LABEL_FONT).get_extents()  # para centrarlo
+    return TextPath((-(box.x0 + box.x1) / 2, 0), str(customer_id), size=LABEL_SIZE, prop=LABEL_FONT)
 
 
 def _text(ax, x, y, content, size, color, weight="normal", ha="left", **kwargs):
@@ -80,8 +97,8 @@ def _draw_cart(ax) -> None:
         ax.add_patch(Circle((1365 + 2 * wheel_x, 95 + 66), 5.2, color=INK))
 
 
-def _draw_store(ax) -> None:
-    """Parte fija del local: piso, cintas separadoras, letreros y mostrador."""
+def _draw_queue_area(ax) -> None:
+    """Piso y cintas separadoras de la fila serpentina, con sus carteles."""
     ax.add_patch(Rectangle((0, 900), WIDTH, 100, color=FLOOR))
     # Cintas separadoras: poste, cinta y poste; el paso libre alterna de lado en cada fila.
     left, right = QUEUE_LEFT - 70, QUEUE_RIGHT + 70
@@ -94,7 +111,9 @@ def _draw_store(ax) -> None:
     ax.add_patch(Rectangle((SERVICE[0] - 70, 902), 140, 16, color=SIGNAL))
     _text(ax, SERVICE[0], 962, "PASE", 28, INK, "bold", "center")
 
-    # Letrero colgante de la caja.
+
+def _draw_register(ax) -> None:
+    """Letrero colgante de la caja, mostrador y cajera."""
     for x in (1395, 1815):
         _line(ax, [x, x], [0, 60], 4, INK)
     ax.add_patch(Rectangle((1330, 60), 550, 150, color=INK))
@@ -103,8 +122,8 @@ def _draw_store(ax) -> None:
     _text(ax, 1482, 140, "Caja rápida", 52, "white", "bold")
     _text(ax, 1484, 184, "Hasta 10 artículos", 30, "#c5cad0")
 
-    # Mostrador con la cajera detrás; el cliente atendido se para delante.
-    for (a, b, c, d), width in zip(STAND, STROKE_UNITS):  # cajera
+    # La cajera va detrás del mostrador; el cliente atendido se para delante.
+    for (a, b, c, d), width in zip(STAND, STROKE_UNITS):
         _line(ax, [1560 + a, 1560 + c], [770 + b, 770 + d], width, INK)
     ax.add_patch(Circle((1560, 646), 16, color=INK))
     ax.add_patch(Rectangle((1400, 690), 280, 110, fc="#cdd3d9", ec=INK, lw=6 * PT, zorder=3))
@@ -112,38 +131,40 @@ def _draw_store(ax) -> None:
     ax.add_patch(Rectangle((1610, 628), 58, 44, color=INK, zorder=3))
     _line(ax, [1420, 1420], [520, 690], 8, INK)  # poste de la lámpara de carril
 
-    _sign(ax, 22, 30, 250, 74, INK, "Entrada")
-    _sign(ax, 1660, 420, 220, 70, EXIT, "Salida")
-
 
 class Scene:
+    """El local dibujado: lo fijo se crea una vez y los elementos móviles se actualizan en cada cuadro."""
+
     def __init__(self, ax) -> None:
-        self.ax = ax
         ax.set_xlim(0, WIDTH)
         ax.set_ylim(HEIGHT, 0)
         ax.set_aspect("equal")
         ax.axis("off")
         ax.add_patch(Rectangle((0, 0), WIDTH, HEIGHT, color=PAPER, zorder=-2))
-        _draw_store(ax)
+        _draw_queue_area(ax)
+        _draw_register(ax)
+        _sign(ax, 22, 30, 250, 74, INK, "Entrada")
+        _sign(ax, 1660, 420, 220, 70, EXIT, "Salida")
 
         # Elementos que cambian. Se crean una sola vez y se reutilizan: nada se crea ni se quita por cuadro.
         self.params = _text(ax, 300, 76, "", 28, INK, "bold")  # cambia solo al cargar otra corrida
         self.lamp = ax.add_patch(Circle((1420, 500), 30, fc=EXIT, ec=INK, lw=7 * PT))
-        ax.add_patch(Rectangle((1330, 232), 550, 22, fc="white", ec=INK, lw=4 * PT))
-        self.progress = ax.add_patch(Rectangle((1332, 234), 0, 18, color=SIGNAL))
+        ax.add_patch(Rectangle((BAR_X - 2, BAR_Y - 2), BAR_WIDTH + 4, BAR_HEIGHT + 4, fc="white", ec=INK, lw=4 * PT))
+        self.progress = ax.add_patch(Rectangle((BAR_X, BAR_Y), 0, BAR_HEIGHT, color=SIGNAL))
         self.progress_label = _text(ax, 1330, 296, "", 30, INK, "bold")
         self.overflow = _text(ax, 40, 962, "", 30, SIGNAL, "bold", bbox=dict(fc=INK, ec="none", pad=12), visible=False)
         self.alert = _text(ax, 300, 148, "", 30, "white", "bold", bbox=dict(fc=ALERT, ec="none", pad=8), visible=False)
+        # Todas las personas son 3 colecciones (cuerpos, cabezas, números): una por tipo, no un artista por persona.
         self.bodies = ax.add_collection(LineCollection([], capstyle="round", zorder=5))
         self.heads = ax.scatter([], [], s=HEAD_AREA, linewidths=0, zorder=6)
         self.labels = ax.add_collection(PathCollection([], sizes=[1.0], facecolors="white", edgecolors="none",
                                                        offset_transform=ax.transData, zorder=7))
         self.labels.set_transform(IdentityTransform())  # los trazos están en puntos; solo el desplazamiento usa `transData`
-        # Se dibujan cada cuadro (fast) o cada cierto tiempo (slow); el resto queda en el fondo de la ventana.
+        # Capas del blitting (ver window.py): `fast` se pinta en cada cuadro, `slow` cada cierto tiempo.
         self.fast = [self.lamp, self.progress, self.progress_label, self.bodies, self.heads, self.labels]
         self.slow = [self.overflow, self.alert]
-        self.positions: dict[int, list[float]] = {}
-        self.frame = 0
+        self.positions: dict[int, list[float]] = {}  # id de cliente -> [x, y] actual (se acerca a su destino)
+        self.frame = 0  # contador de cuadros: alterna las dos poses de caminar
 
     def set_run(self, run: LiveRun) -> None:
         """Texto fijo de la corrida (λ, μ y ρ)."""
@@ -162,51 +183,61 @@ class Scene:
         self._update_people(run, state, speed, dt)
         self._update_register(run, state)
 
-    def _update_people(self, run: LiveRun, state: SystemState, speed: float, dt: float) -> None:
+    def _targets(self, run: LiveRun, state: SystemState) -> dict[int, tuple[float, float]]:
+        """Hacia dónde camina cada persona visible: su lugar en la fila, la caja o la salida."""
         # Solo caben CAPACITY personas en la serpentina: las demás se cuentan en el letrero de `update_notices`.
         targets = {cid: queue_spot(place) for place, cid in enumerate(state.waiting[:CAPACITY])}
         if state.in_service is not None:
             targets[state.in_service] = SERVICE
         for cid in state.leaving:
-            progress = min((state.time - run.customers[cid - 1].departure) / EXIT_WINDOW, 1)
+            progress = min((state.time - run.customers[cid - 1].departure) / EXIT_WINDOW, 1)  # el id k es el registro k - 1
             targets[cid] = (SERVICE[0] + (EXIT_POINT[0] - SERVICE[0]) * progress, SERVICE[1])
+        return targets
+
+    def _step(self, run: LiveRun, state: SystemState, cid: int, target: tuple[float, float], ease: float) -> list[float]:
+        """Acerca la posición de la persona a su destino (`ease` = fracción del camino por cuadro)."""
+        pos = self.positions.get(cid)
+        if pos is None:
+            # Quien acaba de llegar entra por la izquierda; quien estaba fuera de la fila aparece en su lugar.
+            fresh = state.time - run.customers[cid - 1].arrival < ARRIVAL_WINDOW
+            pos = self.positions[cid] = [ENTRY_X, target[1]] if fresh else list(target)
+        if cid in state.leaving:  # el destino ya avanza con el tiempo del modelo: se sigue sin suavizar
+            pos[:] = target
+        else:
+            pos[0] += (target[0] - pos[0]) * ease
+            pos[1] += (target[1] - pos[1]) * ease
+        return pos
+
+    def _update_people(self, run: LiveRun, state: SystemState, speed: float, dt: float) -> None:
+        targets = self._targets(run, state)
         for cid in [cid for cid in self.positions if cid not in targets]:  # ya salieron (o volvieron al exterior)
             del self.positions[cid]
 
-        ease = 1 - math.exp(-dt * 7 * max(1, speed))  # cada persona recorre una fracción del camino por cuadro
+        # Suavizado exponencial: independiente de los cuadros por segundo y más rápido con más velocidad.
+        ease = 1 - math.exp(-dt * EASE_RATE * max(1, speed))
         walking = (WALK_A, WALK_B)[self.frame // 2 % 2]
         segments, colors, head_xy, head_colors, label_ids, label_xy = [], [], [], [], [], []
-        for cid, (tx, ty) in targets.items():
+        for cid, target in targets.items():
             leaving = cid in state.leaving
-            pos = self.positions.get(cid)
-            if pos is None:
-                # Quien acaba de llegar entra por la izquierda; quien estaba fuera de la fila aparece en su lugar.
-                fresh = state.time - run.customers[cid - 1].arrival < ARRIVAL_WINDOW
-                pos = self.positions[cid] = [-90.0, ty] if fresh else [tx, ty]
-            if leaving:
-                pos[:] = [tx, ty]
-            else:
-                pos[0] += (tx - pos[0]) * ease
-                pos[1] += (ty - pos[1]) * ease
-            moving = leaving or math.hypot(tx - pos[0], ty - pos[1]) > 3
+            x, y = self._step(run, state, cid, target, ease)
+            moving = leaving or math.hypot(target[0] - x, target[1] - y) > ARRIVED_DISTANCE
             pose = walking if moving else STAND
-            if leaving:  # se desvanece al llegar a la salida
-                alpha = max(0.0, min(1.0, (1 - (pos[0] - SERVICE[0]) / (EXIT_POINT[0] - SERVICE[0])) / 0.35))
-                color = EXIT_RGBA[:3] + (alpha,)
+            if leaving:  # verde y se desvanece al llegar a la salida
+                fade = (EXIT_POINT[0] - x) / (EXIT_POINT[0] - SERVICE[0]) / FADE_FRACTION
+                color = EXIT_RGBA[:3] + (max(0.0, min(1.0, fade)),)
             else:
                 color = INK_RGBA
-            x, y = pos
             segments += [((x + a, y + b), (x + c, y + d)) for a, b, c, d in pose]
             colors += [color] * len(pose)
-            head_xy.append((x, y - 124))
+            head_xy.append((x, y - HEAD_RISE))
             head_colors.append(color)
             if not leaving:
                 label_ids.append(cid)
-                label_xy.append((x + 1, y - 68))
+                label_xy.append((x + 1, y - LABEL_RISE))
 
         self.bodies.set_segments(segments)
         self.bodies.set_color(colors)
-        self.bodies.set_linewidth([w * PT for w in STROKE_UNITS] * len(targets))
+        self.bodies.set_linewidth(STROKE_WIDTHS * len(targets))
         self.heads.set_offsets(np.array(head_xy).reshape(-1, 2))
         self.heads.set_facecolor(head_colors)
         self.labels.set_paths([label_path(cid) for cid in label_ids])
@@ -217,13 +248,13 @@ class Scene:
         self.lamp.set_facecolor(SIGNAL if busy else EXIT)
         if busy:
             record = run.customers[state.in_service - 1]
-            end = run.duration if record.departure is None else record.departure
+            end = run.duration if record.departure is None else record.departure  # cobro que sigue al cerrar la reproducción
             fraction = min((state.time - record.service_start) / (end - record.service_start), 1) if end > record.service_start else 1
             self.progress_label.set_text(f"Cobrando al cliente {state.in_service}")
         else:
             fraction = 0
             self.progress_label.set_text("Esperando cliente")
-        self.progress.set_width(546 * fraction)
+        self.progress.set_width(BAR_WIDTH * fraction)
 
     def update_notices(self, run: LiveRun, state: SystemState) -> None:
         """Letreros que cambian poco: clientes fuera de la fila y aviso rojo de saturación."""
@@ -233,7 +264,7 @@ class Scene:
         # Aviso rojo: sistema inestable, o cola larga con ρ alto.
         if not run.stable:
             message = "Sistema inestable: λ ≥ μ, la teoría no aplica"
-        elif len(state.waiting) >= 12 and run.theory.utilization >= 0.9:
+        elif len(state.waiting) >= ALERT_QUEUE and run.theory.utilization >= ALERT_UTILIZATION:
             message = f"ρ = {run.theory.utilization:.3f}: la cola crece"
         else:
             message = ""

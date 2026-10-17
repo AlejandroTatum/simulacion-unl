@@ -1,4 +1,4 @@
-"""Paleta de la pantalla en vivo. Cada color de señal tiene un solo significado."""
+"""Vista en vivo: paleta compartida por la animación, el tablero y las gráficas. Cada color de señal tiene un solo significado."""
 
 INK = "#16171a"  # letreros, pictogramas, tablero y serie L(t)
 WALL = "#e4e7ea"  # fondo de la ventana
@@ -13,3 +13,11 @@ BOARD_CELL = "#24262b"  # celda del tablero
 BOARD_CELL_LIVE = "#2e2b1c"  # celda de la columna "Simulado ahora"
 BOARD_LABEL = "#a3a9b0"  # etiquetas del tablero
 BOARD_RULE = "#3a3c42"  # líneas del tablero
+
+
+def hide_frame(ax) -> None:
+    """Quita marcas y bordes del eje: sirve de lienzo para dibujar texto y figuras a mano."""
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for side in ax.spines.values():
+        side.set_visible(False)

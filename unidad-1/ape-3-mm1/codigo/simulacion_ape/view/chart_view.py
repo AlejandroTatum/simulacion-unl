@@ -1,16 +1,17 @@
-"""Gráficas estáticas del comportamiento de la cola y de los tiempos de espera."""
+"""Vista (MVC): gráficas estáticas (PNG) de la cola y de los tiempos de espera, para el informe."""
 
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ..model.analysis import occupancy_trace, running_mean_wait
+from ..model.analysis import occupancy_trace, running_mean_wait, wait_times
 from ..model.simulation import ScenarioResult
 from .console_view import METRIC_ROWS
 
 COLORS = ("#2e9e5b", "#e8a33d", "#d64545", "#5b6cd6")
 QUEUE_WINDOW = 480.0  # minutos que se grafican de la cola: una jornada de 8 horas
+BAR_WIDTH = 0.4  # ancho de cada barra de la gráfica comparativa (teórico a la izquierda, simulado a la derecha)
 
 
 def _color(index: int) -> str:
@@ -18,6 +19,7 @@ def _color(index: int) -> str:
 
 
 def plot_queue_over_time(results: list[ScenarioResult], path: Path) -> Path:
+    """Clientes en cola durante una jornada de 8 horas, un panel por escenario, con Lq teórico."""
     fig, axes = plt.subplots(len(results), 1, figsize=(11, 2.8 * len(results)), sharex=True, squeeze=False)
     for index, (ax, result) in enumerate(zip(axes[:, 0], results)):
         window = min(QUEUE_WINDOW, result.sim_time)
@@ -35,6 +37,7 @@ def plot_queue_over_time(results: list[ScenarioResult], path: Path) -> Path:
 
 
 def plot_running_wait(results: list[ScenarioResult], path: Path) -> Path:
+    """Espera promedio acumulada cliente a cliente: por la ley de los grandes números tiende a Wq."""
     fig, ax = plt.subplots(figsize=(11, 5))
     for index, result in enumerate(results):
         running = running_mean_wait(result.customers)
@@ -52,10 +55,10 @@ def plot_running_wait(results: list[ScenarioResult], path: Path) -> Path:
 
 
 def plot_wait_histogram(results: list[ScenarioResult], path: Path) -> Path:
+    """Histograma de los tiempos de espera de cada escenario con Wq teórico."""
     fig, axes = plt.subplots(1, len(results), figsize=(4.2 * len(results), 4), squeeze=False)
     for index, (ax, result) in enumerate(zip(axes[0], results)):
-        waits = np.array([record.wait for record in result.customers if record.wait is not None])
-        ax.hist(waits, bins=40, color=_color(index), alpha=0.85)
+        ax.hist(wait_times(result.customers), bins=40, color=_color(index), alpha=0.85)
         ax.axvline(result.theory.mean_wait, color="black", linestyle="--", label=f"Wq = {result.theory.mean_wait:.2f}")
         ax.set_title(result.scenario.label, fontsize=10)
         ax.set_xlabel("Espera en cola (min)")
@@ -67,15 +70,16 @@ def plot_wait_histogram(results: list[ScenarioResult], path: Path) -> Path:
 
 
 def plot_comparison(results: list[ScenarioResult], path: Path) -> Path:
+    """Una gráfica de barras por métrica: teórico frente a simulado en cada escenario."""
     fig, axes = plt.subplots(1, len(METRIC_ROWS), figsize=(16, 4))
     positions = np.arange(len(results))
     for ax, (label, field) in zip(axes, METRIC_ROWS):
         theory = [getattr(result.theory, field) for result in results]
         simulated = [getattr(result.simulated, field) for result in results]
-        ax.bar(positions - 0.2, theory, width=0.4, color="#9aa5b1", label="Teórico")
-        ax.bar(positions + 0.2, simulated, width=0.4, color="#1f6feb", label="Simulado")
+        ax.bar(positions - BAR_WIDTH / 2, theory, width=BAR_WIDTH, color="#9aa5b1", label="Teórico")
+        ax.bar(positions + BAR_WIDTH / 2, simulated, width=BAR_WIDTH, color="#1f6feb", label="Simulado")
         ax.set_xticks(positions, [f"E{result.scenario.number}" for result in results])
-        ax.set_title(label.split("  ")[0].strip(), fontsize=12)
+        ax.set_title(label.split()[0], fontsize=12)  # solo el símbolo: ρ, L, Lq, W o Wq
         ax.grid(alpha=0.3, axis="y")
     axes[0].legend(fontsize=8)
     fig.suptitle("Comparación teórico vs. simulado por escenario")
@@ -83,6 +87,7 @@ def plot_comparison(results: list[ScenarioResult], path: Path) -> Path:
 
 
 def save_charts(results: list[ScenarioResult], output_dir: Path) -> list[Path]:
+    """Genera las cuatro gráficas en `output_dir` y devuelve sus rutas."""
     output_dir.mkdir(parents=True, exist_ok=True)
     return [
         plot_queue_over_time(results, output_dir / "cola_en_el_tiempo.png"),

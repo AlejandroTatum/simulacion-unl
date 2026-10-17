@@ -1,4 +1,4 @@
-"""Métricas teóricas del modelo M/M/1 (estado estable, válidas solo si λ < μ).
+"""Modelo: métricas teóricas del M/M/1 (estado estable, válidas solo si λ < μ).
 
 λ: clientes que llegan por minuto, μ: clientes que la caja atiende por minuto.
 """
@@ -12,6 +12,7 @@ class UnstableSystemError(ValueError):
 
 @dataclass(frozen=True)
 class QueueMetrics:
+    """Las cinco métricas del sistema; sirve igual para los valores teóricos y los simulados."""
     utilization: float  # ρ
     mean_in_system: float  # L
     mean_in_queue: float  # Lq
@@ -20,10 +21,12 @@ class QueueMetrics:
 
 
 def is_stable(arrival_rate: float, service_rate: float) -> bool:
+    """El sistema tiene estado estable solo si la caja atiende más rápido de lo que llegan (ρ < 1)."""
     return arrival_rate < service_rate
 
 
 def theoretical_metrics(arrival_rate: float, service_rate: float) -> QueueMetrics:
+    """Fórmulas cerradas del M/M/1; lanza `UnstableSystemError` si λ ≥ μ."""
     lam, mu = arrival_rate, service_rate
     if not is_stable(lam, mu):
         raise UnstableSystemError(f"El sistema no es estable: λ = {lam} ≥ μ = {mu}")

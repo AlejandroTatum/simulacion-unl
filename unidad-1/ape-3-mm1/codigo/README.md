@@ -100,7 +100,7 @@ simulacion_ape/
 │       ├── scene.py             # Animación del local: fila, caja, salida
 │       ├── board.py             # Tablero: reloj, contadores y tabla teórico vs. simulado
 │       ├── charts.py            # L(t), Lq(t) y los dos histogramas
-│       └── theme.py             # Paleta de colores
+│       └── theme.py             # Paleta de colores y `hide_frame`
 └── controller/
     └── simulation_controller.py # Opciones de línea de comandos y orquestación
 ```
