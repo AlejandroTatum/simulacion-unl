@@ -9,7 +9,7 @@ El programa:
 1. Simula con SimPy los tres escenarios de la guía (λ = 2.0, 2.5 y 2.9; μ = 3.0) durante 20 000 minutos.
 2. Calcula las métricas teóricas (ρ, L, Lq, W, Wq) y las simuladas, y las compara en una tabla con el error %.
 3. Guarda las gráficas estáticas en `resultados/` (para el informe).
-4. Abre la **pantalla en vivo**, una sola ventana de Matplotlib (`FuncAnimation` y `matplotlib.widgets`)
+4. Abre la **pantalla en vivo**, una sola ventana de Matplotlib (temporizador del canvas con blitting manual y `matplotlib.widgets`)
    donde todo avanza al mismo tiempo:
    - **Animación del local**: cada cliente entra, camina a su lugar en la fila serpentina, pasa a la caja
      (con barra de progreso del cobro) y sale. Una lámpara indica si la caja está libre o atendiendo, y un
