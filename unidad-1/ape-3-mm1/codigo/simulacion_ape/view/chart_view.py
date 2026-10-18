@@ -96,7 +96,9 @@ def plot_wait_scatter(results: list[ScenarioResult], path: Path) -> Path:
 
 def plot_comparison(results: list[ScenarioResult], path: Path) -> Path:
     """Una gráfica de barras por métrica: teórico frente a simulado en cada escenario."""
-    fig, axes = plt.subplots(1, len(METRIC_ROWS), figsize=(16, 4))
+    # Dos filas de tres paneles: en una sola tira los ejes quedan ilegibles al ancho de la página.
+    fig, grid = plt.subplots(2, 3, figsize=(11, 6.5))
+    axes = grid.flatten()
     positions = np.arange(len(results))
     for ax, (label, field) in zip(axes, METRIC_ROWS):
         theory = [getattr(result.theory, field) for result in results]
@@ -104,10 +106,14 @@ def plot_comparison(results: list[ScenarioResult], path: Path) -> Path:
         ax.bar(positions - BAR_WIDTH / 2, theory, width=BAR_WIDTH, color="#9aa5b1", label="Teórico")
         ax.bar(positions + BAR_WIDTH / 2, simulated, width=BAR_WIDTH, color="#1f6feb", label="Simulado")
         ax.set_xticks(positions, [f"E{result.scenario.number}" for result in results])
-        ax.set_title(label.split()[0], fontsize=12)  # solo el símbolo: ρ, L, Lq, W o Wq
+        ax.set_title(label.split()[0], fontsize=13)  # solo el símbolo: ρ, L, Lq, W o Wq
+        ax.tick_params(labelsize=11)
         ax.grid(alpha=0.3, axis="y")
-    axes[0].legend(fontsize=8)
-    fig.suptitle("Comparación teórico vs. simulado por escenario")
+    # El sexto panel sobra: se oculta y su lugar lo ocupa la leyenda.
+    spare = axes[len(METRIC_ROWS)]
+    spare.axis("off")
+    spare.legend(*axes[0].get_legend_handles_labels(), loc="center", fontsize=13)
+    fig.suptitle("Comparación teórico vs. simulado por escenario", fontsize=14)
     return _save(fig, path)
 
 
