@@ -28,3 +28,19 @@ def test_running_wait_legend_groups_each_scenario_in_its_own_column(tmp_path, mo
     for column, result in enumerate(results):
         assert labels[2 * column] == f"Escenario {result.scenario.number} simulado"
         assert labels[2 * column + 1] == f"Wq teórico = {result.theory.mean_wait:.2f} min"
+
+
+def test_comparison_chart_uses_two_rows_so_it_stays_readable_in_the_report(tmp_path, monkeypatch):
+    """La comparación ocupa dos filas de paneles (no una tira) para que sus ejes se lean en el informe."""
+    from simulacion_ape.view import chart_view
+
+    figures = []
+    monkeypatch.setattr(chart_view, "_save", lambda fig, path: figures.append(fig) or path)
+    results = [run_scenario(scenario, SimulationConfig(sim_time=300.0)) for scenario in SCENARIOS]
+    chart_view.plot_comparison(results, tmp_path / "comparacion_teorico_simulado.png")
+
+    plotted = [ax for ax in figures[0].axes if ax.axison]
+    assert [ax.get_title() for ax in plotted] == ["ρ", "L", "Lq", "W", "Wq"]
+    assert {ax.get_subplotspec().rowspan.start for ax in plotted} == {0, 1}
+    width, height = figures[0].get_size_inches()
+    assert width / height < 2
