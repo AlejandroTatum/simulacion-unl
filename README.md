@@ -15,6 +15,7 @@ Repositorio con las prácticas (APE) de la asignatura, organizadas por unidad.
 | 1 | 1 | Construcción y simulación computacional de un modelo matemático (índice de lluvia) | [unidad-1/ape-1-indice-lluvia](unidad-1/ape-1-indice-lluvia) |
 | 1 | 2 | Comparación de modelos determinísticos, estocásticos, discretos y continuos (crecimiento poblacional) | [unidad-1/ape-2-comparacion-modelos](unidad-1/ape-2-comparacion-modelos) |
 | 1 | 3 (grupal) | Simulación de un sistema de líneas de espera M/M/1 mediante SimPy (caja rápida de supermercado) | [unidad-1/ape-3-mm1](unidad-1/ape-3-mm1) |
+| 1 | 4 | Análisis comparativo de herramientas de simulación mediante un modelo común (SIR en Python/SimPy y NetLogo) | [unidad-1/ape-4-sir-herramientas](unidad-1/ape-4-sir-herramientas) |
 
 Las APE grupales se desarrollan en el repositorio del grupo y se copian aquí con la misma estructura (`README.md`, `documento/`, `referencias.bib` y `codigo/`).
 
