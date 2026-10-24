@@ -1,0 +1,50 @@
+TEMA ASIGNADO
+18 | Simulación determinística vs. estocástica: impacto en la interpretación de resultados e incertidumbre | Keywords: deterministic vs stochastic simulation, uncertainty quantification
+Actividad: AA investigativo. Búsqueda en Scopus · IEEE Xplore · ACM Digital Library.
+
+ENSAYO ACADÉMICO — FORMATO IEEE
+Simulación de Sistemas · Mínimo 5 papers · Rúbrica sobre 10 puntos
+
+① Especificaciones del formato IEEE
+A4 · Dos columnas · Times New Roman · Título 24 pt · Cuerpo 10 pt · 4–6 páginas · Mín. 5 referencias
+
+② Estructura del ensayo (plantilla)
+Título del ensayo: conciso, máximo 12 palabras
+Nombre Apellido¹
+¹Facultad de Ingeniería, Universidad XXX, Ciudad, País
+correo@universidad.edu
+
+Resumen— (150–250 palabras, un solo párrafo, sin citas). Sintetiza: objetivo, problema, metodología de búsqueda documental (Scopus, IEEE Xplore, ACM), hallazgos principales y conclusión.
+
+Palabras clave— simulación; eventos discretos; teoría de colas; M/M/1 (4–6 términos, orden alfabético).
+
+I. Introducción
+(1–2 párrafos) Contextualiza el tema, plantea el problema y el objetivo. Cierra con: "Este ensayo se estructura de la siguiente manera…". Primeras citas [1], [2].
+
+II. Marco teórico y metodología
+(2–3 párrafos) Conceptos clave con apoyo de la literatura. Describe la estrategia de búsqueda: base de datos, keywords, filtros y criterios de selección de los papers.
+
+III. Desarrollo / Análisis
+(3–4 párrafos) Núcleo del ensayo: compara los papers, discute coincidencias y contradicciones, aplica los conceptos a un ejemplo propio (ej. sistema M/M/1).
+
+IV. Conclusiones
+(1–2 párrafos) Responde al objetivo sin información nueva. Sugiere trabajo futuro.
+
+Referencias
+[1] A. M. Law, Simulation Modeling and Analysis, 5th ed. New York, NY, USA: McGraw-Hill Education, 2015.
+[2] J. Banks, J. S. Carson, B. L. Nelson, and D. M. Nicol, Discrete-Event System Simulation, 5th ed. Upper Saddle River, NJ, USA: Pearson, 2010.
+[3] R. G. Sargent, "Verification and validation of simulation models," J. Simul., vol. 7, no. 1, pp. 12–24, Feb. 2013, doi: 10.1057/jos.2012.20.
+[4] S. Robinson, Simulation: The Practice of Model Development and Use, 2nd ed. London, U.K.: Palgrave Macmillan, 2014.
+[5] C. G. Cassandras and S. Lafortune, Introduction to Discrete Event Systems, 2nd ed. New York, NY, USA: Springer, 2008.
+Citas en el texto con corchetes [1], [2]–[4] antes del punto final. Plantilla oficial IEEE: ieee.org/conferences/publishing/templates.html
+
+③ Rúbrica de calificación — Total: 10 puntos
+1. Formato IEEE y estructura (1.5): Excelente = cumple todas las especificaciones (columnas, tipografías, secciones I–V).
+2. Resumen y palabras clave (1.0): completo (objetivo, método, hallazgos, conclusión) + 4–6 keywords.
+3. Introducción y contextualización (1.5): problema, antecedentes con citas y objetivo bien delimitado.
+4. Desarrollo y análisis crítico (2.5): compara, contrasta y evalúa los papers; aporta análisis propio y ejemplo aplicado.
+5. Citas en el texto estilo IEEE (1.0): todas las ideas ajenas citadas [n] y alineadas con la lista final.
+6. Referencias, mín. 5 papers (1.5): ≥5 papers de Scopus/IEEE/ACM, formato IEEE perfecto y citados en texto.
+7. Redacción, ortografía y cohesión (1.0): redacción académica fluida y cohesiva; sin errores.
+Escala: 9–10 Excelente · 7.5–8.9 Bueno · 6–7.4 Suficiente · <6 Insuficiente.
+Entrega: PDF a 2 columnas con plantilla IEEE · Verificación antiplagio activada.
