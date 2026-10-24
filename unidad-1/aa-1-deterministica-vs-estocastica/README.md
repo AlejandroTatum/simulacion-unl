@@ -8,7 +8,7 @@
 | **Actividad** | AA 1 — Ensayo investigativo, tema 18 |
 | **Modalidad** | Individual |
 | **Autor** | Alejandro Padilla |
-| **Informe** | [documento/](documento/) |
+| **Informe** | [documento/](documento/) (versión vigente: v002) |
 | **Bibliografía** | [referencias.bib](referencias.bib) |
 | **Guía** | [guia/guia-aa.txt](guia/guia-aa.txt) |
 
@@ -36,6 +36,12 @@ La IA ejecutó; la elección del ejemplo, la extensión y el contenido final los
 4. Primer borrador; verificación independiente de cada requisito de la guía contra el texto.
 5. Ampliación a 4 páginas de contenido: escenarios de carga (Tabla 3), réplicas necesarias para una precisión dada (Tabla 4, Figura 3) y limitaciones del ejemplo.
 6. Maquetado IEEE a dos columnas, auditoría visual del PDF, revisión final y entrega.
+7. Autoevaluación contra la rúbrica y correcciones menores (v002): cifras de la fórmula con punto decimal, frase sin cita reemplazada por la aclaración de que ningún artículo proviene de ACM, y referencias con revistas abreviadas en estilo IEEE y mes de publicación.
+
+| Versión | Cambios |
+| --- | --- |
+| v001 | Primera entrega. |
+| v002 | Correcciones del paso 7; mismo contenido y mismas 4 páginas. |
 
 ## 4. Código
 
