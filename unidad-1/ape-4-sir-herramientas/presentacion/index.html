@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="deck">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APE 4 · Modelo SIR: Python/SimPy vs NetLogo</title>
+<link rel="stylesheet" href="themes/deck-base.css">
+<link rel="stylesheet" href="themes/pizarra.css">
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<style>
+  :where(.formula-hero) { display: flex; flex-direction: column; align-items: center; gap: 64px; }
+  :where(.formula-hero .tex) { font-size: 150px; line-height: 1; }
+  :where(.formula-hero .tex .katex-display) { margin: 0; }
+  :where(.formula-hero .parts) { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 56px; }
+  :where(.formula-hero .parts li) { display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 40px; text-align: center; }
+  :where(.formula-hero .parts b) { font: italic 400 96px/1 KaTeX_Math, serif; }
+  :where(.formula-hero .p1) { color: var(--a1); }
+  :where(.formula-hero .p2) { color: var(--a2); }
+  :where(.formula-hero .p3) { color: var(--a3); }
+</style>
+<style>
+  :where(.flow-steps) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 96px; }
+  :where(.flow-steps li) { position: relative; display: flex; flex-direction: column; align-items: center; gap: 28px; font-size: 46px; font-weight: 600; text-align: center; }
+  :where(.flow-steps .dot) { width: 170px; height: 170px; border-radius: 50%; display: grid; place-items: center; background: var(--a1);
+    color: var(--dot-fg, var(--bg)); font-family: var(--display); font-weight: var(--dw); font-size: 80px; }
+  :where(.flow-steps li:nth-child(3n+2) .dot) { background: var(--a2); }
+  :where(.flow-steps li:nth-child(3n) .dot) { background: var(--a3); }
+  :where(.flow-steps .desc) { margin: -12px 0 0; max-width: 460px; font-size: 34px; font-weight: 400; line-height: 1.25; color: inherit; opacity: .78; }
+  :where(.flow-steps li:not(:last-child))::after { content: "→"; position: absolute; right: -48px; top: 38px; transform: translateX(50%);
+    font-size: 80px; line-height: 1; color: var(--muted); }
+</style>
+<style>
+  :where(.recap) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 40px; }
+  :where(.recap li) { display: flex; align-items: center; gap: 40px; font-size: 52px; font-weight: 600; }
+  :where(.recap .dot) { flex: none; width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; background: var(--a1);
+    color: var(--dot-fg, var(--bg)); font-family: var(--display); font-weight: var(--dw); font-size: 56px; }
+  :where(.recap li:nth-child(3n+2) .dot) { background: var(--a2); }
+  :where(.recap li:nth-child(3n) .dot) { background: var(--a3); }
+</style>
+<style>
+  :where(.figure-full) { justify-content: center; gap: 28px; }
+  :where(.figure-full figure) { margin: 0; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 24px; }
+  :where(.figure-full figure > img, .figure-full figure > svg) { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
+  :where(.figure-full figcaption) { font-size: 34px; color: var(--muted); }
+</style>
+<style>
+  :where(.figure-split) { justify-content: center; gap: 28px; }
+  :where(.figure-split .split) { flex: 1; min-height: 0; display: grid; grid-template-columns: auto 1fr; gap: 96px; align-items: center; }
+  :where(.figure-split .split > img) { height: 100%; min-height: 0; width: auto; max-width: 100%; object-fit: contain; }
+  :where(.figure-split .stats) { display: flex; flex-direction: column; gap: 40px; }
+  :where(.figure-split .num) { display: block; font-family: var(--display); font-weight: var(--dw); font-size: 200px; line-height: .9; }
+  :where(.figure-split .stat p) { font-size: 48px; }
+  :where(.figure-split .py .num) { color: var(--a3); }
+  :where(.figure-split .nl .num) { color: var(--a2); }
+  :where(.figure-split .src) { color: var(--muted); font-size: 34px; }
+</style>
+<style>
+  :where(.term-pane) { margin: 0; padding: 40px 56px; border-radius: 18px; background: var(--alt-bg); color: var(--fg);
+    border: 4px solid var(--a3); font: 400 44px/1.5 var(--mono); white-space: pre; overflow: hidden; }
+  :where(.term-pane .p) { color: var(--a1); }
+  :where(.term-pane .hl) { color: var(--a3); }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <section class="slide alt cover active" id="portada">
+    <p class="kicker">APE 4 · Simulación</p>
+    <h1 class="title">Modelo SIR:<br><span class="a">Python/SimPy</span> vs NetLogo</h1>
+    <p class="lead">Alejandro Padilla · Carrera de Computación</p>
+    <p class="lead">Universidad Nacional de Loja · 2026</p>
+    <p class="lead">Docente: Ing. José O. Guamán Q.</p>
+    <aside class="notes">Hola, soy Alejandro Padilla, de la carrera de Computación de la Universidad Nacional de Loja. En este video presento la APE 4 de Simulación: el mismo modelo SIR construido en dos herramientas, Python con SimPy y NetLogo, y la comparación de sus resultados.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">01</span></div>
+  </section>
+
+  <section class="slide" id="modelo">
+    <p class="kicker">02 · Modelo SIR</p>
+    <p class="lead">S susceptibles → I infectados → R recuperados</p>
+    <div class="formula-hero">
+      <div class="tex" data-tex="\htmlClass{p3}{R_0} = \htmlClass{p1}{\beta}\,/\,\htmlClass{p2}{\gamma} = 3"></div>
+      <ul class="parts">
+        <li><b class="p1">β</b>contagio 0.30</li>
+        <li><b class="p2">γ</b>recuperación 0.10</li>
+        <li><b class="p3">R₀</b>propagación 3</li>
+      </ul>
+    </div>
+    <aside class="notes">El modelo SIR divide a la población en tres estados: susceptibles, infectados y recuperados. Una persona susceptible se infecta al tener contacto con un infectado y, más adelante, se recupera. Dos parámetros gobiernan el proceso. Beta, igual a 0.30, es la probabilidad de contagio por contacto y por paso. Gamma, igual a 0.10, es la probabilidad de recuperación por paso, lo que da una duración media de 10 pasos. De ahí sale R cero, que es beta entre gamma: 3. En cada paso, cada persona toma un contacto al azar entre las otras 99, y la actualización es síncrona. Simulo 100 personas, con 5 infectados al inicio, durante 100 pasos y con la semilla 42.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">02</span></div>
+  </section>
+
+  <section class="slide" id="arquitectura">
+    <p class="kicker">03 · Arquitectura</p>
+    <h1 class="title sm">Python genera, NetLogo muestra</h1>
+    <ol class="flow-steps">
+      <li><span class="dot">1</span>SimPy<p class="desc">Python con MVC calcula</p></li>
+      <li><span class="dot">2</span>CSV<p class="desc">El contrato entre ambos</p></li>
+      <li><span class="dot">3</span>NetLogo<p class="desc">Importa y grafica</p></li>
+    </ol>
+    <aside class="notes">La arquitectura es simple. El código de Python con SimPy está organizado en MVC: modelo, vista y controlador. Ahí se calcula la simulación y se exporta un archivo CSV con las columnas tiempo, susceptibles, infectados y recuperados, con una fila por cada paso. NetLogo importa ese CSV y lo grafica. Es decir, el CSV funciona como contrato entre las dos herramientas: Python genera los datos y NetLogo los muestra.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">03</span></div>
+  </section>
+
+  <section class="slide" id="demo-python">
+    <p class="kicker">04 · Demo en vivo</p>
+    <h1 class="title sm">Demo Python: correr y probar</h1>
+    <pre class="term-pane"><span class="p">$</span> cd codigo
+<span class="p">$</span> python -m simulacion_ape
+<span class="hl">→ netlogo/resultados_python.csv + figuras</span>
+<span class="p">$</span> python -m pytest
+<span class="hl">9 passed</span></pre>
+    <aside class="notes">Empiezo con la demo de Python. Desde la carpeta codigo ejecuto python -m simulacion_ape. Este comando corre la simulación con la semilla 42 y genera el archivo resultados_python.csv dentro de la carpeta netlogo, además de las figuras. Abro el CSV: tiene las columnas tiempo, susceptibles, infectados y recuperados, y 101 filas, una por cada paso más el estado inicial. En la figura de Python se ve el pico de 36 infectados en el tiempo 21, y al final quedan 6 susceptibles y 93 recuperados. Como referencia, las ecuaciones resueltas con el método de Euler dan un pico de 33.0 en el tiempo 19 y 95.0 recuperados. Después ejecuto python -m pytest, y el resultado es 9 passed: las nueve pruebas pasan.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">04</span></div>
+  </section>
+
+  <section class="slide figure-full" id="demo-netlogo">
+    <p class="kicker">05 · Demo NetLogo: personas que contagian</p>
+    <figure>
+      <img src="figuras/netlogo_vista.png" alt="Mundo de NetLogo en los ticks 0, 17 y 100, con personas azules, rojas y grises y líneas rojas de contagio">
+      <figcaption>Pico de 31 infectados en el tick 17 · semilla 42</figcaption>
+    </figure>
+    <aside class="notes">Ahora la demo de NetLogo, versión 7.0.4. Abro el modelo y veo tres botones: SETUP, GO y CARGAR PYTHON. Presiono SETUP para crear a las personas, que caminan por una plaza. Los colores indican el estado: azul es susceptible, rojo es infectado y gris es recuperado. Presiono GO y la simulación avanza. Cada vez que alguien contagia, aparece una línea roja que parte de quien lo contagió, así se ve quién infectó a quién. Con la semilla 42, el pico en NetLogo es de 31 infectados en el tick 17, que es el momento central de esta captura; al final quedan 7 susceptibles y 93 recuperados. La animación no cambia los resultados: el CSV es idéntico con o sin animación. Por último, presiono CARGAR PYTHON, que importa el CSV generado por Python para verlo dentro de NetLogo.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">05</span></div>
+  </section>
+
+  <section class="slide figure-split" id="comparacion">
+    <p class="kicker">06 · Misma semilla, resultados distintos</p>
+    <div class="split">
+      <img src="figuras/comparacion_herramientas.png" alt="Figura 5: susceptibles, infectados y recuperados en Python y NetLogo con la semilla 42">
+      <div class="stats">
+        <div class="stat py"><span class="num">36</span><p>Python · pico en t = 21</p></div>
+        <div class="stat nl"><span class="num">31</span><p>NetLogo · pico en t = 17</p></div>
+        <p class="src">Figura 5 · semilla 42</p>
+      </div>
+    </div>
+    <aside class="notes">Esta es la Figura 5, con las dos herramientas usando la misma semilla, 42. Aun así los resultados no coinciden: Python tiene su pico de 36 infectados en el tiempo 21, y NetLogo, de 31 en el tick 17. La razón es que cada herramienta tiene su propio generador de números aleatorios: NumPy usa PCG64 y NetLogo usa Mersenne Twister. Por eso repetí el experimento 30 veces. El pico medio es de 36.13, más menos 6.99, en Python, y de 35.33, más menos 6.93, en NetLogo: casi iguales. El t de Welch del pico es de 0.45. Además, ambos están cerca de las ecuaciones, cuyo pico es de 33.0.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">06</span></div>
+  </section>
+
+  <section class="slide" id="cierre">
+    <p class="kicker">07 · Conclusiones del informe</p>
+    <h1 class="title sm">Lo que aprendí</h1>
+    <ol class="recap">
+      <li><span class="dot">1</span>Comparar por el conjunto, no por una corrida</li>
+      <li><span class="dot">2</span>Python genera y prueba; NetLogo muestra</li>
+      <li><span class="dot">3</span>Elegir según mostrar o analizar</li>
+    </ol>
+    <aside class="notes">Termino con tres conclusiones. Primera: las gráficas se comparan por el conjunto de réplicas y no por una sola corrida, porque con la misma semilla cada herramienta da una corrida distinta. Segunda: conviene usar cada herramienta para lo que mejor hace. Python genera y prueba, y NetLogo muestra el modelo a partir del CSV. Tercera: la herramienta se elige según el objetivo, mostrar el modelo o analizar resultados. En mi caso, Python fue unas 8 veces más rápido por corrida, mientras que NetLogo fue más rápido de construir y de explorar visualmente. Gracias por su atención.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">07</span></div>
+  </section>
+
+  <div id="notes"></div>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script>
+document.querySelectorAll("[data-tex]").forEach((el) => katex.render(el.dataset.tex, el, {
+  displayMode: true, throwOnError: false, trust: (ctx) => ctx.command === "\\htmlClass",
+}));
+</script>
+<script>
+"use strict";
+const PRINT = new URLSearchParams(location.search).has("print");
+const slides = [...document.querySelectorAll(".slide")];
+let current = 0;
+function show(i) {
+  current = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((slide, index) => slide.classList.toggle("active", index === current));
+  const notes = slides[current].querySelector(".notes");
+  document.getElementById("notes").textContent = notes ? notes.textContent : "";
+  history.replaceState(null, "", "#" + (current + 1));
+}
+function resize() {
+  const scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+  document.getElementById("stage").style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+}
+document.addEventListener("keydown", (event) => {
+  if (["ArrowRight", "PageDown", " ", "Enter"].includes(event.key)) { event.preventDefault(); show(current + 1); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) { event.preventDefault(); show(current - 1); }
+  else if (event.key === "Home") show(0);
+  else if (event.key === "End") show(slides.length - 1);
+  else if (event.key === "f" || event.key === "F") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  else if (event.key === "n" || event.key === "N") document.body.classList.toggle("show-notes");
+});
+if (PRINT) document.body.classList.add("print");
+else { addEventListener("resize", resize); resize(); show(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1)); }
+</script>
+</body>
+</html>

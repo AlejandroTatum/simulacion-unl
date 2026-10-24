@@ -1,0 +1,9 @@
+# APE 4 — Modelo SIR en Python/SimPy y NetLogo
+# duration: 6 min
+cover | Modelo SIR: Python/SimPy vs NetLogo | portada con nombre y APE 4 | Me presento y digo qué voy a mostrar: el mismo modelo SIR en dos herramientas y su comparación. | | 0:20
+formula-hero | S → I → R con β y γ | fórmula R0 = β/γ = 3 | Explico los tres estados, β = 0.30 contagio, γ = 0.10 recuperación, 100 personas, 5 infectados, semilla 42. | | 0:50
+flow-steps | Python genera, NetLogo muestra | 3 pasos: SimPy → CSV → NetLogo | Cuento la arquitectura: Python con MVC calcula y exporta el CSV; NetLogo lo importa y grafica; el CSV es el contrato. | | 0:40
+live-demo | Demo Python: correr y probar | terminal con python -m simulacion_ape y pytest | Corro el programa, muestro el CSV y las figuras, y corro las 9 pruebas. | | 1:10
+live-demo | Demo NetLogo: personas que contagian | captura del mundo NetLogo | Abro el modelo, SETUP y GO, muestro colores, líneas rojas y el pico de 31; luego CARGAR PYTHON. | | 1:20
+vs-pair | Misma semilla, resultados distintos | Figura 5: pico 36 vs 31 | Explico que cada herramienta tiene su generador; con 30 réplicas los promedios casi coinciden (36.13 y 35.33) y están cerca de la EDO (33.0). | | 0:50
+recap | Lo que aprendí | 3 conclusiones del informe | Comparar por el conjunto, usar cada herramienta para lo suyo, y elegir según mostrar o analizar. | | 0:50
