@@ -44,7 +44,10 @@ aleatorias; solo se queda en el flujo principal el sorteo heredado `random 360` 
 mueve a nadie y se conserva para que la semilla 42 dé el mismo `resultados_netlogo.csv` que antes. Comprobado con
 `cmp`: el CSV es idéntico byte a byte en `.nlogox` y `.nlogo`, con `animacion?` apagado y encendido.
 
-## Ejecución sin interfaz (BehaviorSpace)
+## Ejecución sin interfaz (BehaviorSpace, opcional)
+
+No hace falta para usar el modelo. Las rutas del ejemplo corresponden a una instalación en Linux en `/opt/netlogo`;
+en otro sistema hay que cambiarlas por la carpeta donde esté instalado NetLogo.
 
 El modelo incluye el experimento `ejecucion-completa` (SETUP, GO hasta el tick 100 y exportación del CSV):
 

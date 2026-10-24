@@ -12,6 +12,25 @@
 | **Informe** | [documento/](documento/) |
 | **Bibliografía** | [referencias.bib](referencias.bib) |
 
+## Inicio rápido
+
+Requisitos: Python 3 (probado con Python 3.14) y NetLogo 7.0.4.
+
+1. Generar los datos en Python:
+
+   ```bash
+   cd codigo
+   python -m venv .venv
+   source .venv/bin/activate        # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   python -m simulacion_ape         # escribe netlogo/resultados_python.csv y las figuras
+   pytest                           # 9 pruebas
+   ```
+
+2. Abrir `netlogo/modelo_sir_netlogo.nlogox` con NetLogo 7.0.4.
+3. Pulsar **SETUP** y luego **GO**: corre la simulación por agentes con la semilla 42.
+4. Pulsar **CARGAR PYTHON**: importa `resultados_python.csv` y dibuja las curvas de Python junto a las de NetLogo.
+
 ## 1. Enunciado y objetivo
 
 Comparar Python con SimPy y NetLogo como herramientas de simulación mediante un mismo modelo epidemiológico SIR: población 100, 5 infectados iniciales, β = 0.30, γ = 0.10 y 100 pasos de tiempo (R₀ = β/γ = 3). Python genera los datos, NetLogo ejecuta su propia simulación por agentes e importa el CSV de Python para graficarlo y compararlo.
@@ -26,7 +45,7 @@ Alcance: la guía también menciona Java; por decisión del grupo y del alcance 
 
 | Herramienta | Uso |
 | --- | --- |
-| Agente de programación el Gentleman (Pi) con modelo Claude | Lectura de la guía, modelo SimPy con MVC y pruebas, modelo NetLogo, réplicas y tiempos, figuras e informe. |
+| Agente de programación «el Gentleman» (Pi), basado en el modelo Claude de Anthropic | Lectura de la guía, modelo SimPy con MVC y pruebas, modelo NetLogo, réplicas y tiempos, figuras e informe. |
 
 La IA ejecutó; las decisiones de alcance (sin Java), regla de contacto, semilla y contenido las tomé yo.
 
