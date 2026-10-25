@@ -118,7 +118,7 @@ Semilla 42 y 30 réplicas (semillas 0 a 29); media ± desviación estándar entr
 - Con la misma semilla las herramientas dan corridas distintas (generadores PCG64 y Mersenne Twister, y distinto orden de consumo); con 30 réplicas los promedios coinciden (t de Welch menor que 1.1 en las cuatro métricas).
 - Tiempo por corrida: Python 4.5 ms (mediana de 30 corridas; 18 a 30 ms la primera) y NetLogo 34 ms con `animacion?` apagado (250 a 270 ms la primera); proceso completo 0.3 s frente a 2 a 3 s por el arranque de la JVM.
 - La parte visual de NetLogo (personas que caminan en una plaza, contagios como líneas rojas) corre dentro de `with-local-randomness`: el CSV de la semilla 42 es idéntico byte a byte con o sin animación y al de la versión anterior.
-- Las 30 réplicas de NetLogo y los tiempos se obtuvieron con un experimento de BehaviorSpace adicional ejecutado sin interfaz; el modelo entregado incluye solo el experimento `ejecucion-completa` (semilla 42).
+- Las 30 réplicas de NetLogo se obtuvieron con un experimento de BehaviorSpace ejecutado sin interfaz; el modelo entregado incluye solo el experimento `ejecucion-completa` (semilla 42). El experimento de réplicas, sus resultados y el script de la figura de la diapositiva 6 están en [presentacion/replicas/](presentacion/replicas/) (`python ../presentacion/replicas/graficar_replicas.py` desde `codigo/`).
 - `figuras/netlogo_vista.png` se compuso con la vista del mundo (personas en una plaza, con líneas rojas de contagio) exportada por NetLogo (`export-view` en los ticks 0, 17 y 100); `export-interface` no funciona sin interfaz, por lo que falta una captura de la ventana completa con los gráficos.
 
 El análisis completo, la tabla comparativa y las preguntas de control están en el informe de `documento/`.

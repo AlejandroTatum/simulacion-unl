@@ -1,0 +1,23 @@
+<experiments>
+  <experiment name="replicas" repetitions="1" sequentialRunOrder="true" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metrics>
+      <metric>peak-value net-i</metric>
+      <metric>peak-tick net-t net-i</metric>
+      <metric>last net-s</metric>
+      <metric>last net-r</metric>
+    </metrics>
+    <constants>
+      <enumeratedValueSet variable="population"><value value="100"></value></enumeratedValueSet>
+      <enumeratedValueSet variable="initial-infected"><value value="5"></value></enumeratedValueSet>
+      <enumeratedValueSet variable="beta"><value value="0.3"></value></enumeratedValueSet>
+      <enumeratedValueSet variable="gamma"><value value="0.1"></value></enumeratedValueSet>
+      <enumeratedValueSet variable="max-ticks"><value value="100"></value></enumeratedValueSet>
+      <steppedValueSet variable="seed" first="0" step="1" last="29"></steppedValueSet>
+      <enumeratedValueSet variable="wander?"><value value="true"></value></enumeratedValueSet>
+      <enumeratedValueSet variable="animacion?"><value value="false"></value></enumeratedValueSet>
+      <enumeratedValueSet variable="velocidad-animacion"><value value="8"></value></enumeratedValueSet>
+    </constants>
+  </experiment>
+</experiments>

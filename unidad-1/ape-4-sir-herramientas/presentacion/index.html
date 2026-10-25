@@ -124,16 +124,16 @@
   </section>
 
   <section class="slide figure-split" id="comparacion">
-    <p class="kicker">06 · Misma semilla, resultados distintos</p>
+    <p class="kicker">06 · Una corrida no alcanza: 30 por herramienta</p>
     <div class="split">
-      <img src="figuras/comparacion_herramientas.png" alt="Figura 5: susceptibles, infectados y recuperados en Python y NetLogo con la semilla 42">
+      <img src="figuras/comparacion_replicas.png" alt="Pico de infectados e instante del pico en 30 corridas de Python y de NetLogo, con semillas 0 a 29, sus medias y la referencia de las ecuaciones">
       <div class="stats">
-        <div class="stat py"><span class="num">36</span><p>Python · pico en t = 21</p></div>
-        <div class="stat nl"><span class="num">31</span><p>NetLogo · pico en t = 17</p></div>
-        <p class="src">Figura 5 · semilla 42</p>
+        <div class="stat py"><span class="num">36.1</span><p>Python · pico medio</p></div>
+        <div class="stat nl"><span class="num">35.3</span><p>NetLogo · pico medio</p></div>
+        <p class="src">Semilla 42: 36 vs 31</p>
       </div>
     </div>
-    <aside class="notes">Esta es la Figura 5, con las dos herramientas usando la misma semilla, 42. Aun así los resultados no coinciden: Python tiene su pico de 36 infectados en el tiempo 21, y NetLogo, de 31 en el tick 17. La razón es que cada herramienta tiene su propio generador de números aleatorios: NumPy usa PCG64 y NetLogo usa Mersenne Twister. Por eso repetí el experimento 30 veces. El pico medio es de 36.13, más menos 6.99, en Python, y de 35.33, más menos 6.93, en NetLogo: casi iguales. El t de Welch del pico es de 0.45. Además, ambos están cerca de las ecuaciones, cuyo pico es de 33.0.</aside>
+    <aside class="notes">Con la misma semilla, 42, las herramientas no coinciden: Python tiene un pico de 36 infectados y NetLogo, de 31. No es un error. Cada herramienta tiene su propio generador de números aleatorios, así que la misma semilla produce otra secuencia. Por eso corrí 30 simulaciones en cada herramienta, con las semillas de 0 a 29. Cada punto del gráfico es una corrida, y se ve lo dispersas que salen: en Python el pico va de 24 a 52 infectados. Pero el promedio de Python es 36.1 y el de NetLogo, 35.3, y el pico llega casi en el mismo momento, cerca del paso 19. Además, ambos están cerca de las ecuaciones, la línea punteada, que dan 33. Las dos herramientas simulan el mismo modelo: la diferencia con una sola semilla es solo azar.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">06</span></div>
   </section>
 
