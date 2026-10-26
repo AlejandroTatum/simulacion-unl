@@ -10,7 +10,7 @@
 | **Autor** | Alejandro Padilla |
 | **Repositorio del grupo** | [AlejandroTatum/simulacion-ape-4-sir](https://github.com/AlejandroTatum/simulacion-ape-4-sir) |
 | **Informe** | [documento/](documento/) |
-| **Video** | [Diapositivas](presentacion/diapositivas-ape4.pdf) y [guion](presentacion/guion-video-ape4.pdf) |
+| **Video** | [Video de demostración](https://drive.google.com/file/d/18VHhPuVMW9BmSG0HTGGzGLD1AiPp2kto/view) · [diapositivas](presentacion/diapositivas-ape4.pdf) y [guion](presentacion/guion-video-ape4.pdf) |
 | **Bibliografía** | [referencias.bib](referencias.bib) |
 
 ## Inicio rápido

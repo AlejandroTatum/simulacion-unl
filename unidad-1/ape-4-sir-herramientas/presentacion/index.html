@@ -70,7 +70,7 @@
     <p class="lead">Alejandro Padilla · Carrera de Computación</p>
     <p class="lead">Universidad Nacional de Loja · 2026</p>
     <p class="lead">Docente: Ing. José O. Guamán Q.</p>
-    <aside class="notes">Hola, soy Alejandro Padilla, de la carrera de Computación de la Universidad Nacional de Loja. En este video presento la APE 4 de Simulación: el mismo modelo SIR construido en dos herramientas, Python con SimPy y NetLogo, y la comparación de sus resultados.</aside>
+    <aside class="notes">Hola, soy Alejandro Padilla. En esta APE 4 de Simulación implementé el mismo modelo epidemiológico SIR en dos herramientas, Python con SimPy y NetLogo, y comparé sus resultados para ver en qué se parecen, en qué se diferencian y por qué.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">01</span></div>
   </section>
 
@@ -85,7 +85,7 @@
         <li><b class="p3">R₀</b>propagación 3</li>
       </ul>
     </div>
-    <aside class="notes">El modelo SIR divide a la población en tres estados: susceptibles, infectados y recuperados. Una persona susceptible se infecta al tener contacto con un infectado y, más adelante, se recupera. Dos parámetros gobiernan el proceso. Beta, igual a 0.30, es la probabilidad de contagio por contacto y por paso. Gamma, igual a 0.10, es la probabilidad de recuperación por paso, lo que da una duración media de 10 pasos. De ahí sale R cero, que es beta entre gamma: 3. En cada paso, cada persona toma un contacto al azar entre las otras 99, y la actualización es síncrona. Simulo 100 personas, con 5 infectados al inicio, durante 100 pasos y con la semilla 42.</aside>
+    <aside class="notes">El modelo SIR divide a la población en tres estados: susceptibles, infectados y recuperados. Trabajo con 100 personas, 5 infectados al inicio, durante 100 pasos. En cada paso, cada infectado usa tres números aleatorios: uno elige a quién contacta, al azar entre las otras 99 personas; otro decide si lo contagia, si sale menor que beta, 0.30; y otro decide si se recupera, si sale menor que gamma, 0.10. La razón entre beta y gamma da R0 igual a 3: en promedio, cada infectado contagia a tres personas. En las dos herramientas uso la semilla 42, que fija la secuencia de números aleatorios para que la corrida se pueda repetir.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">02</span></div>
   </section>
 
@@ -97,7 +97,7 @@
       <li><span class="dot">2</span>CSV<p class="desc">El contrato entre ambos</p></li>
       <li><span class="dot">3</span>NetLogo<p class="desc">Importa y grafica</p></li>
     </ol>
-    <aside class="notes">La arquitectura es simple. El código de Python con SimPy está organizado en MVC: modelo, vista y controlador. Ahí se calcula la simulación y se exporta un archivo CSV con las columnas tiempo, susceptibles, infectados y recuperados, con una fila por cada paso. NetLogo importa ese CSV y lo grafica. Es decir, el CSV funciona como contrato entre las dos herramientas: Python genera los datos y NetLogo los muestra.</aside>
+    <aside class="notes">Python calcula la simulación y guarda un CSV con cuatro columnas: tiempo, susceptibles, infectados y recuperados. NetLogo corre su propia simulación con la misma regla y además importa ese CSV para graficarlo. El CSV es el contrato entre las dos: NetLogo no conoce el código de Python, solo el formato del archivo. En Python organicé el código con MVC: el modelo calcula, la vista dibuja y el controlador une las dos partes.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">03</span></div>
   </section>
 
@@ -109,7 +109,7 @@
 <span class="hl">→ netlogo/resultados_python.csv + figuras</span>
 <span class="p">$</span> python -m pytest
 <span class="hl">9 passed</span></pre>
-    <aside class="notes">Empiezo con la demo de Python. Desde la carpeta codigo ejecuto python -m simulacion_ape. Este comando corre la simulación con la semilla 42 y genera el archivo resultados_python.csv dentro de la carpeta netlogo, además de las figuras. Abro el CSV: tiene las columnas tiempo, susceptibles, infectados y recuperados, y 101 filas, una por cada paso más el estado inicial. En la figura de Python se ve el pico de 36 infectados en el tiempo 21, y al final quedan 6 susceptibles y 93 recuperados. Como referencia, las ecuaciones resueltas con el método de Euler dan un pico de 33.0 en el tiempo 19 y 95.0 recuperados. Después ejecuto python -m pytest, y el resultado es 9 passed: las nueve pruebas pasan.</aside>
+    <aside class="notes">Muestro la función step de sir_model.py: para cada infectado, elige el contacto al azar, prueba el contagio con beta y la recuperación con gamma. La actualización es síncrona: leo el estado actual y escribo los cambios en una copia. Ejecuto python -m simulacion_ape: con la semilla 42, el pico es de 36 infectados en el paso 21 y al final hay 93 recuperados; también corre 30 réplicas con otras semillas. Abro el CSV, con 101 filas del tiempo 0 al 100, y la curva: los susceptibles bajan, los infectados suben hasta el pico y caen, y los recuperados crecen. Por último, pytest: las 9 pruebas pasan sin dibujar nada, gracias a la separación MVC.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">04</span></div>
   </section>
 
@@ -119,7 +119,7 @@
       <img src="figuras/netlogo_vista.png" alt="Mundo de NetLogo en los ticks 0, 17 y 100, con personas azules, rojas y grises y líneas rojas de contagio">
       <figcaption>Pico de 31 infectados en el tick 17 · semilla 42</figcaption>
     </figure>
-    <aside class="notes">Ahora la demo de NetLogo, versión 7.0.4. Abro el modelo y veo tres botones: SETUP, GO y CARGAR PYTHON. Presiono SETUP para crear a las personas, que caminan por una plaza. Los colores indican el estado: azul es susceptible, rojo es infectado y gris es recuperado. Presiono GO y la simulación avanza. Cada vez que alguien contagia, aparece una línea roja que parte de quien lo contagió, así se ve quién infectó a quién. Con la semilla 42, el pico en NetLogo es de 31 infectados en el tick 17, que es el momento central de esta captura; al final quedan 7 susceptibles y 93 recuperados. La animación no cambia los resultados: el CSV es idéntico con o sin animación. Por último, presiono CARGAR PYTHON, que importa el CSV generado por Python para verlo dentro de NetLogo.</aside>
+    <aside class="notes">Abro NetLogo. Presiono SETUP: cada persona es un agente; azul es susceptible, rojo infectado y gris recuperado. Presiono GO: las personas caminan por la plaza y cada línea roja es un contagio, de quien contagia a quien se infecta. Las líneas son largas porque el modelo usa mezcla homogénea: cualquiera puede contactar a cualquiera, sin importar dónde esté. Cerca del pico la pantalla se llena de líneas; después quedan pocos susceptibles y todo se vuelve gris. La animación es solo visual: el resultado es idéntico con o sin ella. Con la semilla 42, el pico en NetLogo es de 31 infectados en el paso 17. Por último, CARGAR PYTHON importa el CSV de Python y muestra sus curvas junto a las de NetLogo.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">05</span></div>
   </section>
 
@@ -133,7 +133,7 @@
         <p class="src">Semilla 42: 36 vs 31</p>
       </div>
     </div>
-    <aside class="notes">Con la misma semilla, 42, las herramientas no coinciden: Python tiene un pico de 36 infectados y NetLogo, de 31. No es un error. Cada herramienta tiene su propio generador de números aleatorios, así que la misma semilla produce otra secuencia. Por eso corrí 30 simulaciones en cada herramienta, con las semillas de 0 a 29. Cada punto del gráfico es una corrida, y se ve lo dispersas que salen: en Python el pico va de 24 a 52 infectados. Pero el promedio de Python es 36.1 y el de NetLogo, 35.3, y el pico llega casi en el mismo momento, cerca del paso 19. Además, ambos están cerca de las ecuaciones, la línea punteada, que dan 33. Las dos herramientas simulan el mismo modelo: la diferencia con una sola semilla es solo azar.</aside>
+    <aside class="notes">Con la misma semilla, Python da 36 y NetLogo, 31. Cada herramienta tiene su propio generador de números aleatorios, PCG64 en Python y Mersenne Twister en NetLogo, y además consumen los números en otro orden; así cambia quién contagia a quién y la epidemia sigue otro camino. Por eso corrí 30 simulaciones en cada herramienta. Cada punto es una corrida, y el pico va de 24 a 52 infectados. Pero el promedio de Python es 36.1 y el de NetLogo, 35.3, con el pico cerca del paso 19, y ambos están cerca de las ecuaciones, que dan 33. Las dos herramientas simulan el mismo modelo: la diferencia con una sola semilla es solo azar.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">06</span></div>
   </section>
 
@@ -145,7 +145,7 @@
       <li><span class="dot">2</span>Python genera y prueba; NetLogo muestra</li>
       <li><span class="dot">3</span>Elegir según mostrar o analizar</li>
     </ol>
-    <aside class="notes">Termino con tres conclusiones. Primera: las gráficas se comparan por el conjunto de réplicas y no por una sola corrida, porque con la misma semilla cada herramienta da una corrida distinta. Segunda: conviene usar cada herramienta para lo que mejor hace. Python genera y prueba, y NetLogo muestra el modelo a partir del CSV. Tercera: la herramienta se elige según el objetivo, mostrar el modelo o analizar resultados. En mi caso, Python fue unas 8 veces más rápido por corrida, mientras que NetLogo fue más rápido de construir y de explorar visualmente. Gracias por su atención.</aside>
+    <aside class="notes">Me llevo tres cosas. Primero, que una simulación aleatoria no se compara con una sola corrida, sino con muchas réplicas. Segundo, que cada herramienta tiene su fuerte: Python para calcular, probar y analizar datos, y NetLogo para ver el comportamiento de los agentes. Y tercero, que elegir depende del objetivo: para analizar, Python; para mostrar o explicar, NetLogo. Gracias.</aside>
     <div class="foot"><span>SIMULACIÓN · APE 4</span><span class="page">07</span></div>
   </section>
 
