@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="guide">
+<head>
+<meta charset="utf-8">
+<title>Guía del código · Simulador de la línea de muebles</title>
+<link rel="stylesheet" href="themes/metro.css">
+<style>
+  .cg-cover h1 { font-family: var(--head); font-weight: 700; font-size: 38pt; line-height: .95; letter-spacing: -0.03em; margin: 6mm 0 3mm; }
+  .cg-cover .lead { font-size: 12pt; color: var(--muted); }
+  .cg-rule { margin-top: 8mm; padding: 4mm 5mm; background: #FBF9F4; border: 0.3mm solid var(--rule); border-left: 1.6mm solid currentColor; border-radius: 1.6mm; }
+  .cg-rule h3 { font-family: var(--head); font-size: 14pt; color: var(--ink); margin-bottom: 1.5mm; }
+  .cg-rule p { font-size: 11.5pt; color: var(--ink); }
+  .cg-rows { display: flex; flex-direction: column; gap: 1.2mm; }
+  .cg-row { display: grid; grid-template-columns: 52mm 1fr 62mm; gap: 4mm; align-items: baseline; padding: 1.2mm 3mm; background: #FBF9F4;
+    border: 0.3mm solid var(--rule); border-left: 1.4mm solid currentColor; border-radius: 1.4mm; }
+  .cg-row.two { grid-template-columns: 62mm 1fr; }
+  .cg-row.head { background: none; border: none; padding-top: 0; padding-bottom: 0; }
+  .cg-row.head span { font-family: var(--mono); font-size: 8pt; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .cg-k { font-family: var(--head); font-weight: 700; font-size: 11pt; color: var(--ink); }
+  .cg-p { font-size: 10.5pt; color: var(--ink); line-height: 1.3; }
+  code, .cg-c { font-family: var(--mono); font-size: 9.5pt; color: var(--ink); }
+  .cg-c { display: block; }
+  .cg-note { margin-top: 3mm; font-size: 10.5pt; color: var(--muted); }
+  .cg-cmd { display: flex; flex-direction: column; gap: 1.8mm; }
+  .cg-cmd div { display: grid; grid-template-columns: 52mm 1fr; gap: 4mm; align-items: baseline; padding: 1.8mm 3mm; background: #FBF9F4;
+    border: 0.3mm solid var(--rule); border-left: 1.4mm solid currentColor; border-radius: 1.4mm; }
+</style>
+</head>
+<body>
+<section class="page cg-cover" id="portada">
+  <div class="stripe"><span class=bg-a></span><span class=bg-b></span><span class=bg-c></span><span class=bg-d></span></div>
+  <div class="kicker">Guía del código</div>
+  <h1>Simulador de la línea de muebles</h1>
+  <p class="lead">Qué hace cada archivo, dónde se cambia cada dato y cómo se corre · carpeta <code>03-simulacion/</code></p>
+  <div class="cg-rule fg-a">
+    <h3>Regla de oro: ningún dato de la línea está escrito en el código Python</h3>
+    <p>Las llegadas, los tiempos, las réplicas y la semilla viven en los archivos <code>escenarios/*.json</code>. En la demo se cambian en vivo desde el panel (<code>python panel.py</code>), sin tocar ni un archivo.</p>
+  </div>
+  <div class="foot"><span>Guía del código</span><nav><a href="#mapa">Mapa</a> · <a href="#variables">Variables</a> · <a href="#correr">Correr</a> · <a href="#calculos">Cálculos</a> · <a href="#errores">Errores</a></nav></div>
+</section>
+
+<section class="page" id="mapa">
+  <div class="top"><div><div class="kicker">1 · Mapa de archivos</div><h2>Qué hace cada archivo (patrón MVC)</h2></div></div>
+  <div class="cg-rows">
+    <div class="cg-row head"><span>Archivo</span><span>Qué hace</span><span>Capa</span></div>
+    <div class="cg-row fg-a"><span class="cg-k">main.py</span><span class="cg-p">Punto de entrada: lee <code>--config</code> y <code>--salida</code> y llama al controlador</span><span class="cg-p">Entrada</span></div>
+    <div class="cg-row fg-a"><span class="cg-k">panel.py · animacion.py</span><span class="cg-p">Atajos de 5 líneas que abren la ventana del panel o la animación</span><span class="cg-p">Entrada</span></div>
+    <div class="cg-row fg-b"><span class="cg-k">controlador/controlador.py</span><span class="cg-p">Valida todos los JSON, corre la simulación y guarda CSV y gráficos</span><span class="cg-p">Controlador</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">modelo/configuracion.py</span><span class="cg-p">Carga y valida un escenario: rechaza datos faltantes, negativos o vacíos</span><span class="cg-p">Modelo</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">modelo/simulacion.py</span><span class="cg-p">La línea en SimPy: llegadas, estaciones, réplicas, errores, Little y cuello</span><span class="cg-p">Modelo</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">modelo/teoria.py</span><span class="cg-p">Fórmulas M/M/1 (ρ, Lq, Wq) y capacidad de la línea</span><span class="cg-p">Modelo</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">vista/panel.py</span><span class="cg-p">Pantalla única: formulario, taller animado y resultados</span><span class="cg-p">Vista</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">vista/animacion.py</span><span class="cg-p">Dibuja el taller: operarios, colas y la estación cuello en rojo</span><span class="cg-p">Vista</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">vista/tablas.py · graficas.py</span><span class="cg-p">Tablas en la terminal y gráficos PNG</span><span class="cg-p">Vista</span></div>
+    <div class="cg-row fg-b"><span class="cg-k">escenarios/*.json</span><span class="cg-p"><code>base.json</code> (E1), <code>e2.json</code>, <code>e3.json</code>; el panel guarda en <code>personalizado.json</code></span><span class="cg-p">Datos</span></div>
+    <div class="cg-row fg-b"><span class="cg-k">tests/ · salidas/</span><span class="cg-p">Pruebas con pytest · resultados generados (CSV y PNG)</span><span class="cg-p">Pruebas / salida</span></div>
+  </div>
+  <div class="foot"><span>2</span><nav><a href="#portada">Inicio</a></nav></div>
+</section>
+
+<section class="page" id="variables">
+  <div class="top"><div><div class="kicker">2 · Dónde cambiar cada dato</div><h2>En el JSON o en el panel</h2></div></div>
+  <div class="cg-rows">
+    <div class="cg-row head"><span>Dato</span><span>En el JSON (escenarios/base.json)</span><span>En el panel</span></div>
+    <div class="cg-row fg-a"><span class="cg-k">Llegadas por hora (λ)</span><span class="cg-p"><code>"tasa_llegadas_h": 3</code> · línea 3</span><span class="cg-p">Casilla “Llegadas por hora (λ)”</span></div>
+    <div class="cg-row fg-a"><span class="cg-k">Tiempo de cada estación</span><span class="cg-p"><code>"tiempo_min"</code> de cada estación · líneas 5–8 (8, 10, 15, 12)</span><span class="cg-p">Columna “t (min)” junto a cada estación</span></div>
+    <div class="cg-row fg-b"><span class="cg-k">Operarios por estación</span><span class="cg-p"><code>"recursos": 1</code> · líneas 5–8. Con más de 1 la teoría M/M/1 sale “—”</span><span class="cg-p">No se cambia: el panel fija 1 (M/M/1)</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">Réplicas</span><span class="cg-p"><code>"replicas": 30</code> · línea 10</span><span class="cg-p">Casilla “Réplicas”</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">Duración de cada réplica</span><span class="cg-p"><code>"duracion_h": 1000</code> · línea 11</span><span class="cg-p">Casilla “Duración de cada réplica (h)”</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">Calentamiento</span><span class="cg-p"><code>"calentamiento_h": 100</code> · línea 12</span><span class="cg-p">Casilla “Calentamiento (h)”</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">Semilla</span><span class="cg-p"><code>"semilla": 2026</code> · línea 13</span><span class="cg-p">Casilla “Semilla”</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">Orden de las estaciones</span><span class="cg-p">El orden de la lista <code>"estaciones"</code> es el recorrido del mueble</span><span class="cg-p">—</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">Escenarios E2 y E3</span><span class="cg-p">Iguales a la base; solo cambia Ensamblaje en la línea 7: 12 y 10 min</span><span class="cg-p"><code>--config escenarios/e2.json</code></span></div>
+    <div class="cg-row fg-d"><span class="cg-k">Horas a animar · paso</span><span class="cg-p"><code>--horas</code> (8 por defecto) y <code>--paso</code> (5 min) en <code>animacion.py</code></span><span class="cg-p">Casilla “Horas a animar”</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">Colores de la animación</span><span class="cg-p">Constantes en <code>vista/animacion.py</code>, p. ej. <code>TRABAJANDO</code> (l. 52) y <code>CUELLO</code> (l. 56)</span><span class="cg-p">—</span></div>
+  </div>
+  <div class="foot"><span>3</span><nav><a href="#portada">Inicio</a></nav></div>
+</section>
+
+<section class="page" id="correr">
+  <div class="top"><div><div class="kicker">3 · Cómo se corre</div><h2>Comandos, desde 03-simulacion/ con el entorno activo</h2></div></div>
+  <div class="cg-cmd">
+    <div class="fg-a"><span class="cg-k">Instalar (una vez)</span><span class="cg-c">python -m pip install -r requirements.txt</span></div>
+    <div class="fg-a"><span class="cg-k">Panel de la demo</span><span class="cg-c">python panel.py</span></div>
+    <div class="fg-a"><span class="cg-k">Panel con otro escenario</span><span class="cg-c">python panel.py --config escenarios/e2.json</span></div>
+    <div class="fg-b"><span class="cg-k">Simulación base (E1)</span><span class="cg-c">python main.py</span></div>
+    <div class="fg-b"><span class="cg-k">Los tres escenarios</span><span class="cg-c">python main.py --config escenarios/base.json escenarios/e2.json escenarios/e3.json</span></div>
+    <div class="fg-b"><span class="cg-k">Guardar en otra carpeta</span><span class="cg-c">python main.py --config escenarios/e2.json --salida ../04-experimentos</span></div>
+    <div class="fg-c"><span class="cg-k">Solo la animación</span><span class="cg-c">python animacion.py --config escenarios/e2.json --horas 24</span></div>
+    <div class="fg-c"><span class="cg-k">Animación como GIF</span><span class="cg-c">python animacion.py --guardar salidas/graficos/base.gif</span></div>
+    <div class="fg-d"><span class="cg-k">Pruebas</span><span class="cg-c">python -m pytest</span></div>
+  </div>
+  <p class="cg-note">Los resultados quedan en <code>salidas/</code> (o en la carpeta de <code>--salida</code>), con el nombre del JSON: <code>resumen-e2.csv</code>, <code>linea-e2.csv</code>, gráficos PNG.</p>
+  <div class="foot"><span>4</span><nav><a href="#portada">Inicio</a></nav></div>
+</section>
+
+<section class="page" id="calculos">
+  <div class="top"><div><div class="kicker">4 · Dónde están las cuentas</div><h2>Si preguntan “¿dónde se calcula…?”</h2></div></div>
+  <div class="cg-rows">
+    <div class="cg-row head"><span>Cálculo</span><span>Qué hace</span><span>Dónde</span></div>
+    <div class="cg-row fg-a"><span class="cg-k">Utilización ρ</span><span class="cg-p">ρ = λ / μ: lo que llega ÷ capacidad</span><span class="cg-p"><code>modelo/teoria.py</code> · <code>mm1</code> (l. 4)</span></div>
+    <div class="cg-row fg-a"><span class="cg-k">Cola Lq y espera Wq</span><span class="cg-p">Lq = ρ² / (1 − ρ) · Wq = Lq / λ</span><span class="cg-p"><code>modelo/teoria.py</code> · <code>mm1</code></span></div>
+    <div class="cg-row fg-b"><span class="cg-k">Capacidad de la línea</span><span class="cg-p">La menor capacidad entre las estaciones</span><span class="cg-p"><code>teoria.py</code> · <code>capacidad_linea</code> (l. 55)</span></div>
+    <div class="cg-row fg-b"><span class="cg-k">Cuello de botella</span><span class="cg-p">Simulado: la estación con mayor utilización · teórico: la de menor capacidad</span><span class="cg-p"><code>simulacion.py</code> l. 235 · <code>teoria.py</code> l. 60</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">Ley de Little</span><span class="cg-p">Lq = producción × Wq, para comprobar la simulación</span><span class="cg-p"><code>simulacion.py</code> · <code>lq_little</code> (l. 207)</span></div>
+    <div class="cg-row fg-c"><span class="cg-k">Error porcentual</span><span class="cg-p">|simulado − teórico| / teórico × 100</span><span class="cg-p"><code>simulacion.py</code> · <code>_error_pct</code> (l. 214)</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">La simulación</span><span class="cg-p">Llegadas y tiempos al azar (exponenciales); una semilla por réplica</span><span class="cg-p"><code>simulacion.py</code> · <code>SimulacionLinea</code> (l. 79)</span></div>
+    <div class="cg-row fg-d"><span class="cg-k">Validación de datos</span><span class="cg-p">Revisa cada campo del escenario antes de simular</span><span class="cg-p"><code>configuracion.py</code> · <code>validar_escenario</code> (l. 44)</span></div>
+  </div>
+  <div class="foot"><span>5</span><nav><a href="#portada">Inicio</a></nav></div>
+</section>
+
+<section class="page" id="errores">
+  <div class="top"><div><div class="kicker">5 · Errores y preguntas típicas</div><h2>Qué responder si algo sale raro</h2></div></div>
+  <div class="cg-rows">
+    <div class="cg-row two fg-a"><span class="cg-k">Escriben letras o un número negativo</span><span class="cg-p">El panel muestra “Error: …” y no simula. Todo valor debe ser positivo; réplicas y semilla, enteros.</span></div>
+    <div class="cg-row two fg-a"><span class="cg-k">El calentamiento es mayor que la duración</span><span class="cg-p">Se rechaza: el calentamiento debe ser menor que la duración de cada réplica.</span></div>
+    <div class="cg-row two fg-b"><span class="cg-k">Llegan más muebles de los que una estación atiende (ρ ≥ 1)</span><span class="cg-p">Simula igual, pero la teoría M/M/1 no existe: sale “—” y aparece un aviso rojo. La cola crece sin límite.</span></div>
+    <div class="cg-row two fg-b"><span class="cg-k">“¿Y con dos operarios?”</span><span class="cg-p">El motor lo soporta con <code>"recursos": 2</code> en el JSON, pero ya no es M/M/1: la teoría sale “—”. Por eso el panel fija 1 operario.</span></div>
+    <div class="cg-row two fg-c"><span class="cg-k">“¿Por qué los números no son exactos?”</span><span class="cg-p">Es una simulación con azar: 30 réplicas promediadas quedan a menos de 5 % de la teoría.</span></div>
+    <div class="cg-row two fg-c"><span class="cg-k">“¿Por qué descartan las primeras horas?”</span><span class="cg-p">La línea arranca vacía; el calentamiento evita que ese inicio distorsione los promedios.</span></div>
+    <div class="cg-row two fg-d"><span class="cg-k">La simulación tarda</span><span class="cg-p">Para la demo, bajar réplicas o duración en el panel (p. ej. 5 réplicas de 200 h).</span></div>
+  </div>
+  <div class="foot"><span>6</span><nav><a href="#portada">Inicio</a></nav></div>
+</section>
+</body>
+</html>

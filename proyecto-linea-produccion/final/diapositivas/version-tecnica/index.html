@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="deck">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuellos de botella en una línea de muebles · Grupo 10</title>
+<link rel="stylesheet" href="themes/deck-base.css">
+<link rel="stylesheet" href="themes/taller.css">
+<style>
+  :where(.flow-steps) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 96px; }
+  :where(.flow-steps li) { position: relative; display: flex; flex-direction: column; align-items: center; gap: 28px; font-size: 46px; font-weight: 600; text-align: center; }
+  :where(.flow-steps .dot) { width: 170px; height: 170px; border-radius: 50%; display: grid; place-items: center; background: var(--a1);
+    color: var(--dot-fg, var(--bg)); font-family: var(--display); font-weight: var(--dw); font-size: 80px; }
+  :where(.flow-steps li:nth-child(3n+2) .dot) { background: var(--a2); }
+  :where(.flow-steps li:nth-child(3n) .dot) { background: var(--a3); }
+  :where(.flow-steps .desc) { margin: -12px 0 0; max-width: 460px; font-size: 34px; font-weight: 400; line-height: 1.25; color: inherit; opacity: .78; }
+  :where(.flow-steps li:not(:last-child))::after { content: "→"; position: absolute; right: -48px; top: 38px; transform: translateX(50%);
+    font-size: 80px; line-height: 1; color: var(--muted); }
+</style>
+<style>
+  :where(.icon-row) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 64px; }
+  :where(.icon-row li) { display: flex; flex-direction: column; align-items: center; gap: 36px; font-size: 46px; font-weight: 600; text-align: center; }
+  :where(.icon-row .icon) { box-sizing: content-box; width: 136px; height: 136px; padding: 48px; border-radius: 48px;
+    background: color-mix(in srgb, currentColor 14%, transparent); fill: none; stroke: currentColor; stroke-width: 1.75;
+    stroke-linecap: round; stroke-linejoin: round; color: var(--a1); }
+  :where(.icon-row li:nth-child(3n+2) .icon) { color: var(--a2); }
+  :where(.icon-row li:nth-child(3n) .icon) { color: var(--a3); }
+  :where(.icon-row .desc) { margin: -14px 0 0; max-width: 500px; font-size: 34px; font-weight: 400; line-height: 1.25; color: inherit; opacity: .78; }
+</style>
+<style>
+  :where(.bar-rows) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 26px; }
+  :where(.bar-rows li) { display: grid; grid-template-columns: 330px 1fr 180px; align-items: center; gap: 36px; font-size: 44px; font-weight: 600; }
+  :where(.bar-rows .track) { height: 58px; border-radius: 12px; background: color-mix(in srgb, var(--fg) 10%, transparent); overflow: hidden; }
+  :where(.bar-rows .fill) { display: block; height: 100%; width: calc(var(--v) * 1%); border-radius: 12px; background: color-mix(in srgb, var(--fg) 55%, transparent); transition: width .8s ease .15s; }
+  :where(.bar-rows li[data-step]:not(.on) .fill) { width: 0; }
+  :where(.bar-rows .val) { font-family: var(--display); font-weight: var(--dw); font-size: 54px; text-align: right; }
+  :where(.bar-rows li.key) { color: var(--a1); }
+  :where(.bar-rows li.key .fill) { background: var(--a1); }
+  body.print .bar-rows .fill { width: calc(var(--v) * 1%) !important; }
+</style>
+<style>
+  :where(.stat-cards) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 48px; }
+  :where(.stat-cards li) { display: flex; flex-direction: column; gap: 14px; padding: 44px 48px 48px; border-radius: 28px;
+    background: color-mix(in srgb, var(--fg) 6%, transparent); border-top: 12px solid color-mix(in srgb, var(--fg) 35%, transparent); }
+  :where(.stat-cards .big) { font-family: var(--display); font-weight: var(--dw); font-size: 112px; line-height: 1; letter-spacing: var(--ls); }
+  :where(.stat-cards .lbl) { font-size: 44px; font-weight: 600; }
+  :where(.stat-cards .desc) { font-size: 32px; line-height: 1.3; opacity: .8; }
+  :where(.stat-cards .k1) { border-top-color: var(--a1); } :where(.stat-cards .k1 .big) { color: var(--a1); }
+  :where(.stat-cards .k2) { border-top-color: var(--a2); } :where(.stat-cards .k2 .big) { color: var(--a2); }
+  :where(.stat-cards .k3) { border-top-color: var(--a3); } :where(.stat-cards .k3 .big) { color: var(--a3); }
+</style>
+<style>
+  :where(.slide [data-step]) { opacity: 0; transform: translateY(28px); transition: opacity .45s ease, transform .45s ease; }
+  :where(.slide [data-step].on) { opacity: 1; transform: none; }
+  body.print .slide [data-step] { opacity: 1; transform: none; }
+  @media print { .slide [data-step] { opacity: 1; transform: none; } }
+</style>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<script src="assets/katex/katex.min.js"></script>
+<style>
+  :where(.calc-rows) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  :where(.calc-rows li) { display: grid; grid-template-columns: 620px 1fr 300px; align-items: center; gap: 40px;
+    padding: 10px 36px; border-radius: 18px; background: color-mix(in srgb, var(--fg) 6%, transparent); }
+  :where(.calc-rows .f) { font-size: 50px; }
+  :where(.calc-rows .s) { font-size: 44px; color: var(--muted); }
+  /* katex.min.css centers display math with a 1em margin; a row needs it flush left. */
+  .calc-rows .katex-display { margin: 0; text-align: left; }
+  .calc-rows .katex-display > .katex { text-align: left; }
+  :where(.calc-rows .res) { font-family: var(--display); font-weight: var(--dw); font-size: 60px; text-align: right; }
+  :where(.calc-rows li.key .res) { color: var(--a1); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
+  <symbol id="i-sliders-horizontal" viewBox="0 0 24 24"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></symbol>
+  <symbol id="i-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+</svg>
+
+<div id="stage">
+  <section class="slide alt cover active" id="portada">
+    <p class="kicker">Simulación · Grupo 10 · UNL</p>
+    <h1 class="title xl">Cuellos de botella en una línea de <span class="a">muebles</span></h1>
+    <p class="lead">Simulación de eventos discretos en Python con SimPy</p>
+    <p class="lead authors" data-step>Victor Roa · Francis Valdiviezo · Cael Soto · Jimmy Ontaneda · Alejandro Padilla</p>
+    <aside class="notes">Somos el grupo 10. Simulamos en Python una línea que fabrica muebles de madera, para encontrar la estación que limita la producción y probar mejoras sin parar una fábrica real.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">01</span></div>
+  </section>
+
+  <section class="slide" id="linea" data-dense>
+    <p class="kicker">01 · La línea</p>
+    <h1 class="title sm">Cuatro estaciones en serie</h1>
+    <ol class="flow-steps">
+      <li data-step><span class="dot">1</span>Corte<p class="desc">8 min · 7,5 muebles/h</p></li>
+      <li data-step><span class="dot">2</span>Lijado<p class="desc">10 min · 6 muebles/h</p></li>
+      <li data-step class="key"><span class="dot">3</span>Ensamblaje<p class="desc">15 min · 4 muebles/h</p></li>
+      <li data-step><span class="dot">4</span>Acabado<p class="desc">12 min · 5 muebles/h</p></li>
+    </ol>
+    <p class="lead strip" data-step>Llegan <b>3 muebles/h</b> al azar · tiempos exponenciales · 1 operario y cola FIFO por estación</p>
+    <aside class="notes">Cada estación tiene un operario y atiende por orden de llegada. Debajo de cada una está su tiempo medio y cuántos muebles puede atender por hora. Los muebles llegan como un proceso de Poisson, 3 por hora, y los tiempos de servicio son exponenciales, así que cada estación se comporta como una cola M/M/1.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">02</span></div>
+  </section>
+
+  <section class="slide" id="modelo" data-dense>
+    <p class="kicker">02 · El modelo</p>
+    <h1 class="title sm">Por qué cada estación es una M/M/1</h1>
+    <ul class="stat-cards">
+      <li data-step class="k3"><span class="big">M</span><span class="lbl">Llegadas al azar</span><p class="desc">Proceso de Poisson, λ = 3/h</p></li>
+      <li data-step class="k3"><span class="big">M</span><span class="lbl">Servicio variable</span><p class="desc">Tiempos exponenciales</p></li>
+      <li data-step class="k3"><span class="big">1</span><span class="lbl">Un operario</span><p class="desc">Por estación, cola FIFO</p></li>
+    </ul>
+    <p class="lead callout" data-step>Tiene fórmulas exactas: sirve para <b class="t3">validar la simulación</b></p>
+    <aside class="notes">Elegimos el modelo M/M/1 porque describe exactamente nuestra línea. La primera M dice que los muebles llegan al azar, como un proceso de Poisson. La segunda M, que el tiempo de servicio varía de forma exponencial. Y el 1, que hay un solo operario por estación. La ventaja es que este modelo tiene fórmulas exactas, así que nos da valores de referencia para comprobar si la simulación está bien hecha.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">03</span></div>
+  </section>
+
+  <section class="slide" id="calculo" data-dense>
+    <p class="kicker">03 · El cálculo · ejemplo con ensamblaje</p>
+    <h1 class="title sm">Cómo se calcula</h1>
+    <ul class="calc-rows">
+      <li data-step><span class="f" data-tex="\mu = 60 / t"></span><span class="s" data-tex="60 / 15"></span><span class="res">4 /h</span></li>
+      <li data-step><span class="f" data-tex="\rho = \lambda / \mu"></span><span class="s" data-tex="3 / 4"></span><span class="res">75 %</span></li>
+      <li data-step><span class="f" data-tex="L_q = \rho^2 / (1-\rho)"></span><span class="s" data-tex="0{,}75^2 / 0{,}25"></span><span class="res">2,25</span></li>
+      <li data-step class="key"><span class="f" data-tex="W_q = L_q / \lambda"></span><span class="s" data-tex="2{,}25 / 3 \text{ h}"></span><span class="res">45 min</span></li>
+    </ul>
+    <aside class="notes">Lo mostramos con ensamblaje. Primero la tasa de servicio: si tarda 15 minutos, atiende 60 entre 15, o sea 4 muebles por hora. La utilización es lo que llega sobre lo que atiende: 3 sobre 4, un 75 por ciento. Con eso, la cola media es rho al cuadrado sobre uno menos rho: 2,25 muebles. Y la espera, por la Ley de Little, es la cola sobre las llegadas: 2,25 entre 3 da 0,75 horas, o sea 45 minutos. Esto solo vale si rho es menor que 1.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">04</span></div>
+  </section>
+
+  <section class="slide" id="teoria" data-dense>
+    <p class="kicker">04 · Todas las estaciones · <span class="math">ρ = λ / μ</span></p>
+    <h1 class="title sm">Ensamblaje, la estación más cargada</h1>
+    <ul class="bar-rows">
+      <li data-step style="--v: 40">Corte<span class="track"><span class="fill"></span></span><span class="val">40 %</span></li>
+      <li data-step style="--v: 50">Lijado<span class="track"><span class="fill"></span></span><span class="val">50 %</span></li>
+      <li data-step class="key" style="--v: 75">Ensamblaje<span class="track"><span class="fill"></span></span><span class="val">75 %</span></li>
+      <li data-step style="--v: 60">Acabado<span class="track"><span class="fill"></span></span><span class="val">60 %</span></li>
+    </ul>
+    <p class="lead callout" data-step>La línea no supera a su estación más lenta: <b>4 muebles/h</b></p>
+    <aside class="notes">Si hacemos la misma cuenta en las cuatro estaciones, ensamblaje queda con la utilización más alta, 75 por ciento; le siguen acabado con 60, lijado con 50 y corte con 40. Por eso la teoría la señala como cuello de botella. Además, la línea no puede producir más que su estación más lenta: 4 muebles por hora.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">05</span></div>
+  </section>
+
+  <section class="slide" id="metodo" data-dense>
+    <p class="kicker">05 · Método</p>
+    <h1 class="title sm">Cómo lo simulamos</h1>
+    <ul class="stat-cards">
+      <li data-step><span class="big">30</span><span class="lbl">Réplicas</span><p class="desc">Cada una con su semilla</p></li>
+      <li data-step><span class="big">1 000 h</span><span class="lbl">Por réplica</span><p class="desc">Cada mueble, un proceso SimPy</p></li>
+      <li data-step><span class="big">100 h</span><span class="lbl">Calentamiento</span><p class="desc">Se descartan del cálculo</p></li>
+    </ul>
+    <p class="lead" data-step>Se valida contra <b class="t3">M/M/1</b> y la <b class="t3">Ley de Little</b></p>
+    <aside class="notes">Hicimos 30 réplicas independientes de 1 000 horas, cada una con una semilla distinta derivada de 2026. Las primeras 100 horas se descartan porque la línea arranca vacía. Los resultados se comparan con la teoría M/M/1 y con la Ley de Little mediante el error porcentual.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">06</span></div>
+  </section>
+
+  <section class="slide" id="escenarios" data-dense>
+    <p class="kicker">06 · Experimentos</p>
+    <h1 class="title sm">Tres escenarios de mejora</h1>
+    <ul class="stat-cards">
+      <li data-step class="k1"><span class="big">15 min</span><span class="lbl">E1 · Base</span><p class="desc">Línea: 4 muebles/h</p></li>
+      <li data-step class="k2"><span class="big">12 min</span><span class="lbl">E2 · Mejora</span><p class="desc">Línea: 5 muebles/h</p></li>
+      <li data-step class="k2"><span class="big">10 min</span><span class="lbl">E3 · Mejora</span><p class="desc">Línea: 5 muebles/h</p></li>
+    </ul>
+    <p class="lead" data-step>Solo cambia ensamblaje · siguen llegando 3 muebles/h</p>
+    <aside class="notes">Probamos tres tiempos de ensamblaje: el actual de 15 minutos y dos mejoras, 12 y 10. La capacidad de la línea sube de 4 a 5 muebles por hora, pero no pasa de ahí: en E3 la estación más lenta pasa a ser acabado. Las llegadas no cambian, así que lo que esperamos ver es menos cola y menos espera.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">07</span></div>
+  </section>
+
+  <section class="slide alt" id="demo">
+    <p class="kicker">07 · Demostración</p>
+    <h1 class="title sm">Ahora, la simulación en <span class="a">vivo</span></h1>
+    <ul class="icon-row">
+      <li data-step><svg class="icon"><use href="#i-play"/></svg>Animación<p class="desc">Dónde se forman las colas</p></li>
+      <li data-step><svg class="icon"><use href="#i-sliders-horizontal"/></svg>Panel<p class="desc">Usted elige los valores</p></li>
+      <li data-step><svg class="icon"><use href="#i-chart-column"/></svg>Resultados<p class="desc">Simulación frente a M/M/1</p></li>
+    </ul>
+    <aside class="notes">Pasamos a Python. Primero la animación, para ver en qué estación se acumulan los muebles. Después el panel (python panel.py): puede cambiar llegadas, operarios o tiempos y la corremos en vivo. Al final, la tabla compara la simulación con la teoría.</aside>
+    <div class="foot"><span>GRUPO 10 · SIMULACIÓN</span><span class="page">08</span></div>
+  </section>
+  <div id="notes"></div>
+</div>
+<script>
+document.querySelectorAll("[data-tex]").forEach((el) => katex.render(el.dataset.tex, el, { displayMode: true, throwOnError: false }));
+</script>
+<script>
+"use strict";
+const PRINT = new URLSearchParams(location.search).has("print");
+const slides = [...document.querySelectorAll(".slide")];
+let current = 0;
+function show(i, revealAll) {
+  current = Math.max(0, Math.min(slides.length - 1, i));
+  slides[current].querySelectorAll("[data-step]").forEach((step) => step.classList.toggle("on", Boolean(revealAll)));
+  slides.forEach((slide, index) => slide.classList.toggle("active", index === current));
+  const notes = slides[current].querySelector(".notes");
+  document.getElementById("notes").textContent = notes ? notes.textContent : "";
+  history.replaceState(null, "", "#" + (current + 1));
+}
+function revealStep(direction) {
+  const steps = [...slides[current].querySelectorAll("[data-step]")];
+  if (direction > 0) {
+    const next = steps.find((step) => !step.classList.contains("on"));
+    if (!next) return false;
+    next.classList.add("on");
+    return true;
+  }
+  const shown = steps.filter((step) => step.classList.contains("on"));
+  if (!shown.length) return false;
+  shown[shown.length - 1].classList.remove("on");
+  return true;
+}
+function resize() {
+  const scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+  document.getElementById("stage").style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+}
+document.addEventListener("keydown", (event) => {
+  if (["ArrowRight", "PageDown", " ", "Enter"].includes(event.key)) { event.preventDefault(); if (!revealStep(1)) show(current + 1); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) { event.preventDefault(); if (!revealStep(-1)) show(current - 1, true); }
+  else if (event.key === "Home") show(0);
+  else if (event.key === "End") show(slides.length - 1, true);
+  else if (event.key === "f" || event.key === "F") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  else if (event.key === "n" || event.key === "N") document.body.classList.toggle("show-notes");
+});
+if (PRINT) document.body.classList.add("print");
+else { addEventListener("resize", resize); resize(); show(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1)); }
+</script>
+</body>
+</html>

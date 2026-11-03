@@ -1,0 +1,19 @@
+# Guía de defensa — APE 3: cola M/M/1 con SimPy
+cover | Defensa APE 3: caja rápida M/M/1 | portada con λ, μ, ρ | Guía para explicar el código y responder al docente.
+metro-index | Mapa del código por capas | línea de metro: modelo, controlador, vista, pruebas | Cada estación enlaza a su página.
+concept-card | Qué es un M/M/1 | caja rápida: Poisson λ, servicio exp μ, 1 caja FIFO | ρ = λ/μ (la guía lo escribe invertido).
+formula-hero | Fórmulas teóricas (theory.py) | L, Lq, W, Wq y ley de Little | Solo valen si λ < μ; si no, UnstableSystemError.
+flow-steps | Recorrido de una ejecución | __main__ → main → report_scenarios → run_scenario → vistas → ventana | Qué archivo actúa en cada paso.
+concept-card | queue_system.py: el corazón SimPy | Environment, Resource(1), request, timeout, run | Por qué exponential(1/tasa); semilla y spawn(2).
+vs-pair | Promedio en el tiempo vs. por cliente | L, Lq, ρ (área/tiempo) vs. W, Wq (suma/cantidad) | analysis.py: occupancy_trace y time_average.
+terminal-block | Resultados con semilla 42 y 20 000 min | tabla real de consola | Errores 0.2–2.8 % en E1 y E2; ~8 % en E3.
+concept-card | Por qué el escenario 3 se aleja | ρ = 0.967: cola muy correlacionada, converge lento | TIP: más tiempo o réplicas bajan el error.
+figure-full | Diagrama de dispersión de la espera | dispersion_espera.png + 3 fichas | Rachas de espera en E3 explican el 8 %.
+concept-card | MVC: quién hace qué | model/ calcula, view/ dibuja, controller/ conecta | Callback make_run con lru_cache: la vista nunca importa la simulación.
+concept-card | Ventana en vivo y blitting | fondo guardado + capas fast/slow | Redibujo total ~200 ms; con blit ~14 ms por cuadro.
+concept-card | Sistema inestable (λ ≥ μ) | aviso, teoría oculta, la cola crece | No hay estado estable: no se compara con fórmulas.
+terminal-block | Comandos para la demo | --escenario, --llegada/--servicio, --semilla, --sin-animacion | Qué mostrar si el docente pide cambiar parámetros.
+concept-card | Qué prueban los 24 tests | modelo, consola, ventana sin pantalla (Agg) | Semilla reproduce, FIFO, converge, Little.
+quiz-linked | Preguntas probables (1/2) | 6 preguntas con respuesta enlazada | Teoría y simulación.
+quiz-linked | Preguntas probables (2/2) | 6 preguntas con respuesta enlazada | Código, MVC y ventana.
+recap | Lo que tenés que decir en un minuto | 5 frases clave | Cierre para la defensa.
