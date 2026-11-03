@@ -1,0 +1,18 @@
+# Guía de defensa v2 — APE 3: cola M/M/1 con SimPy (teoría → código → gráficas)
+cover | Defensa APE 3: caja rápida M/M/1 | portada con λ, μ, ρ | Guía en el orden en que se explica.
+metro-index | El recorrido de la defensa | cuatro líneas: teoría, código, gráficas, defensa | Cada estación enlaza a su página.
+concept-card | Qué es un M/M/1 | λ llegan, μ atiende, ρ ocupación | λ < μ; ρ = λ/μ (la guía lo escribe invertido).
+formula-hero | Las fórmulas con el escenario 1 | ρ, L, Lq, W, Wq y Little resueltos | La holgura μ − λ manda.
+concept-card | Si hay fórmulas, ¿para qué simular? | promedios vs. aleatoriedad vs. validar | La teoría dice cuánto; la simulación cómo.
+flow-steps | Cómo corre el programa | config → theory → queue_system → analysis → vistas | MVC y 25 tests en una línea.
+terminal-block | La caja en SimPy | código de queue_system + cuatro ideas | Environment, Resource, yield, exponential(1/λ).
+terminal-block | Resultados | tabla semilla 42 · 20 000 min | E3 ~8 % abajo: converge lento, no es bug.
+figure-full | Teórico vs. simulado | comparacion_teorico_simulado.png + 4 bloques | Barras gemelas validan el modelo.
+figure-full | La cola durante 8 horas | cola_en_el_tiempo.png + 4 bloques | Lq es promedio, no máximo.
+figure-full | La espera promedio va hacia Wq | convergencia_espera.png + 4 bloques | Ley de los grandes números; explica el 8 %.
+figure-full | Cuánto esperó cada cliente | histograma_espera.png + 4 bloques | Sin espera = 1 − ρ; mediana < Wq.
+figure-full | La espera de cada cliente | dispersion_espera.png + 4 bloques | Rachas en E3 frenan la convergencia.
+terminal-block | Ventana en vivo y demo | comandos + 3 fichas | Blitting en una frase; λ ≥ μ.
+quiz-linked | Preguntas probables | 12 preguntas enlazadas | Teoría, código y gráficas.
+quiz-linked | Respuestas | 12 respuestas cortas | Cada una vuelve a su pregunta.
+recap | Lo que tenés que poder decir | 5 frases clave | Cierre de un minuto.

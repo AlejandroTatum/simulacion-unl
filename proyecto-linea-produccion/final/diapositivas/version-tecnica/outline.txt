@@ -1,0 +1,12 @@
+# Cuellos de botella en una línea de muebles
+# duration: 4 min
+# theme: taller (experimental, fábrica de muebles)
+# builds: reveal-steps, cada elemento aparece con →
+cover | Cuellos de botella en una línea de muebles | portada nogal, autores | Presentamos el grupo y el problema. | | 0:20
+flow-steps | Cuatro estaciones en serie | 4 estaciones con tiempo y capacidad, luego supuestos (data-dense: son 4 estaciones) | Un operario y una cola FIFO por estación; llegan 3 muebles/h al azar. | | 0:30
+stat-cards | Por qué cada estación es una M/M/1 | M, M, 1 y la razón de elegirlo (data-dense: tarjetas más la razón) | Llegadas Poisson, servicio exponencial, un operario; tiene fórmulas exactas para validar. | | 0:35
+calc-rows | Cómo se calcula | μ, ρ, Lq y Wq de ensamblaje, paso a paso (data-dense: 4 pasos del cálculo) | μ = 4/h, ρ = 75 %, Lq = 2,25, Wq = 45 min; válido si ρ < 1. | | 0:40
+bar-rows | Ensamblaje, la estación más cargada | barras de ρ por estación y capacidad de la línea (data-dense: 4 estaciones) | Ensamblaje tiene la mayor ρ; la línea no supera 4 muebles/h. | | 0:30
+stat-cards | Cómo lo simulamos | 30 réplicas, 1 000 h, 100 h, luego validación (data-dense: el usuario pidió diapositivas más llenas) | SimPy; se compara con M/M/1 y la Ley de Little. | | 0:25
+stat-cards | Tres escenarios de mejora | E1 15, E2 12, E3 10 min con capacidad (data-dense: el usuario pidió diapositivas más llenas) | Solo cambia ensamblaje; la capacidad sube de 4 a 5 muebles/h. | | 0:30
+icon-row | Ahora, la simulación en vivo | animación, panel, resultados | Pasamos a Python y el docente elige los valores. | | 0:30

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="guide">
+<head>
+<meta charset="utf-8">
+<title>Guía de defensa · APE 3 · Cola M/M/1</title>
+<link rel="stylesheet" href="themes/metro.css">
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<script src="assets/katex/katex.min.js"></script>
+<!-- cover (guide) -->
+<style>
+  .page.cover { background: var(--ink); color: var(--paper); }
+  .page.cover .kicker { color: #A9A396; }
+  .page.cover h1 { font-family: var(--head); font-weight: 700; font-size: 50pt; line-height: .92; letter-spacing: -0.035em; margin-top: 5mm; }
+  .page.cover h1 em { font-style: normal; color: var(--d); }
+  .page.cover .lead { max-width: 150mm; margin-top: 5mm; color: #D8D2C4; font-size: 11pt; }
+  .page.cover .howto { position: absolute; left: 16mm; bottom: 12mm; font-family: var(--mono); font-size: 8.6pt; color: #A9A396; max-width: 170mm; }
+  .page.cover .howto b { color: var(--paper); }
+</style>
+<!-- metro-index -->
+<style>
+  .map { display: flex; flex-direction: column; gap: 7.5mm; }
+  .line { position: relative; display: flex; align-items: flex-start; padding-left: 40mm; }
+  .line .lname { position: absolute; left: 0; top: -1mm; width: 37mm; }
+  .line .lname b { font-family: var(--head); font-size: 11pt; display: block; }
+  .line .track { position: absolute; left: 40mm; right: 2mm; top: 2.4mm; height: 2.6mm; border-radius: 2mm; }
+  .stations { display: flex; justify-content: space-between; width: 100%; position: relative; }
+  .st { display: flex; flex-direction: column; align-items: center; width: 34mm; text-align: center; color: inherit; }
+  .st i { width: 7.4mm; height: 7.4mm; border-radius: 50%; background: var(--paper); border: 1.6mm solid currentColor; display: block; }
+  .st b { margin-top: 1.4mm; font-family: var(--head); font-weight: 500; font-size: 10.8pt; color: var(--ink); }
+  .st small { font-family: var(--mono); font-size: 6.8pt; color: var(--muted); }
+</style>
+<!-- concept-card -->
+<style>
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; }
+  .card { background: #FBF9F4; border: 0.3mm solid var(--rule); border-radius: 2.5mm; padding: 3mm 3.6mm; display: flex; flex-direction: column; gap: 1.5mm; }
+  .card .hd { display: flex; align-items: center; gap: 2mm; }
+  .card h3 { font-family: var(--head); font-size: 14.5pt; letter-spacing: -0.01em; line-height: 1.05; }
+  .card .what { font-size: 10.5pt; }
+  .card .like { font-size: 10.5pt; padding-left: 2.4mm; border-left: 0.9mm solid var(--rule); }
+  .card .like::before { content: "Imaginalo: "; font-weight: 600; }
+  .card .trap { margin-top: auto; font-size: 10.5pt; background: var(--paper-2); border-radius: 1.4mm; padding: 1.4mm 2mm; }
+  .card .trap::before { content: "Ojo · "; font-family: var(--mono); font-weight: 600; }
+  .code { font-family: var(--mono); font-weight: 600; font-size: 7.4pt; color: #fff; border-radius: 1.2mm; padding: .4mm 1.6mm; }
+</style>
+<!-- vs-pair -->
+<style>
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm 7mm; }
+  .pair { display: grid; grid-template-columns: 1fr 9mm 1fr; align-items: stretch; }
+  .side { background: #FBF9F4; border: 0.3mm solid var(--rule); border-radius: 2.5mm; padding: 2.6mm 3.2mm; }
+  .side h4 { font-family: var(--head); font-size: 13pt; margin-bottom: 1mm; }
+  .side p { font-size: 10.5pt; }
+  .side .k { font-family: var(--mono); font-size: 8pt; color: var(--muted); margin-top: 1.2mm; }
+  .pair .x { display: grid; place-items: center; font-family: var(--head); font-weight: 700; font-size: 10.5pt; color: var(--muted); }
+  .rule-line { grid-column: 1 / -1; font-size: 10.5pt; font-weight: 600; margin-top: 1.6mm; padding: 1.2mm 2.4mm; border-left: 1mm solid var(--ink); }
+</style>
+<!-- terminal-block -->
+<style>
+  .lab { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+  .cmd { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3mm; align-items: start; }
+  .term { background: var(--ink); color: #E8E3D7; border-radius: 2mm; padding: 2.4mm 3mm; font-family: var(--mono); font-size: 8.6pt; line-height: 1.5; white-space: pre; overflow: hidden; }
+  .term .p { color: var(--d); }
+  .term .hl { color: #7FE3D3; }
+  .cmd h4 { font-family: var(--head); font-size: 12pt; margin-bottom: .8mm; }
+  .cmd .tags { margin-top: 1.2mm; display: flex; gap: 1mm; flex-wrap: wrap; }
+</style>
+<!-- quiz-linked -->
+<style>
+  .quiz { display: grid; grid-template-columns: 1fr 1fr; gap: 3.4mm 6mm; }
+  .q { display: grid; grid-template-columns: 9mm 1fr; gap: 2mm; padding: 2.8mm 3mm; background: #FBF9F4; border: 0.3mm solid var(--rule); border-radius: 2mm; }
+  .q .num, .r .num { font-family: var(--head); font-weight: 700; font-size: 16pt; line-height: 1; }
+  .q p, .r p { font-size: 10.5pt; }
+  .ans { display: grid; grid-template-columns: 1fr 1fr; gap: 2.2mm 6mm; }
+  .r { display: grid; grid-template-columns: 9mm 1fr; gap: 2mm; padding: 1.8mm 0; border-bottom: 0.3mm dashed var(--rule); }
+  .r .back { font-family: var(--mono); font-size: 7.6pt; color: var(--muted); }
+  .r .back a { color: var(--ink); }
+</style>
+<!-- guide scale for the deck components formula-hero, flow-steps and recap (metro tokens, mm/pt) -->
+<style>
+  .formula-hero { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; }
+  .formula-hero .tex { font-size: 13pt; }
+  .formula-hero .tex .katex-display { margin: 1mm 0; }
+  .flow-steps { list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); gap: 5mm; margin-top: 3mm; }
+  .flow-steps li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2mm; text-align: center;
+    font-family: var(--head); font-weight: 700; font-size: 11pt; }
+  .flow-steps .dot { width: 13mm; height: 13mm; border-radius: 50%; display: grid; place-items: center; background: var(--b); color: #fff; font-size: 14pt; }
+  .flow-steps li:nth-child(1) .dot, .flow-steps li:nth-child(2) .dot, .flow-steps li:nth-child(3) .dot { background: var(--d); }
+  .flow-steps li:nth-child(6) .dot, .flow-steps li:nth-child(5) .dot { background: var(--c); }
+  .flow-steps .desc { font-family: var(--text); font-weight: 400; font-size: 10.5pt; line-height: 1.3; }
+  .flow-steps li:not(:last-child)::after { content: "→"; position: absolute; right: -4mm; top: 3.5mm; font-size: 14pt; color: var(--muted); }
+  .recap { list-style: none; display: flex; flex-direction: column; gap: 4mm; }
+  .recap li { display: flex; align-items: center; gap: 5mm; font-family: var(--head); font-weight: 500; font-size: 13pt; }
+  .recap .dot { flex: none; width: 10mm; height: 10mm; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; }
+  .tip { font-family: var(--mono); font-weight: 600; font-size: 7.4pt; background: var(--paper-2); border: 0.3mm solid var(--rule); border-radius: 1.2mm; padding: .2mm 1.4mm; }
+  .note { margin-top: 4mm; font-size: 10.5pt; }
+  .cards.two { grid-template-columns: repeat(2, 1fr); }
+  .cards.four { grid-template-columns: repeat(4, 1fr); }
+</style>
+<!-- chart-read (guide): one chart + four fixed blocks (qué ves, cómo se lee, qué demuestra, te preguntan) -->
+<style>
+  .chart { display: grid; gap: 3.5mm; }
+  .chart.tall { grid-template-columns: 1.15fr 1fr; align-items: start; }
+  .chart.wide { grid-template-rows: auto auto; }
+  .chart img { width: 100%; object-fit: contain; background: #fff; border: 0.3mm solid var(--rule); border-radius: 2mm; }
+  .chart.tall img { max-height: 116mm; }
+  .chart.wide img { max-height: 82mm; }
+  .chart .reads { display: grid; gap: 2.4mm; }
+  .chart.tall .reads { grid-template-columns: 1fr; }
+  .chart.wide .reads { grid-template-columns: repeat(4, 1fr); }
+  .chart .card { padding: 2.2mm 3mm; gap: 1mm; }
+  .chart .card h3 { font-size: 12pt; }
+  .chart .card .what { font-size: 10.5pt; line-height: 1.3; }
+  .chart .ask { background: var(--paper-2); }
+</style>
+<!-- page fill (guide): main block grows to the footer; roomy pages get larger reading text -->
+<style>
+  .page:not(.cover) { display: flex; flex-direction: column; }
+  .page > .top { flex: none; }
+  .grow { flex: 1; min-height: 0; }
+  .page > .note { flex: none; }
+  .map.grow { justify-content: space-evenly; gap: 0; }
+  .roomy .card { padding: 4mm 4.6mm; gap: 2.4mm; }
+  .roomy .card h3 { font-size: 16pt; }
+  .roomy .card .what, .roomy .card .like, .roomy .card .trap { font-size: 12.5pt; line-height: 1.38; }
+  .roomy .note { font-size: 12pt; margin-top: 4mm; }
+  .cards.grow { grid-auto-rows: 1fr; }
+  .formula-hero.grow { grid-auto-rows: 1fr; }
+  .roomy .formula-hero .tex { font-size: 15pt; }
+  .formula-hero .katex-mathml { display: none; } /* hidden MathML copy stacks in its 1px box and overflows the printed page */
+  #mm1 .card h3, #simular .card h3 { font-size: 19pt; }
+  #mm1 .card .what, #mm1 .card .like, #mm1 .card .trap,
+  #simular .card .what, #simular .card .like { font-size: 15pt; line-height: 1.42; }
+  #mm1 .card, #simular .card { padding: 5mm 5.5mm; gap: 4mm; }
+  #mm1 .note, #simular .note { font-size: 13pt; }
+  #simpy .cmd { grid-template-columns: 1.1fr 1fr; }
+  #simpy .term { line-height: 1.85; }
+  #simpy .ideas { display: grid; grid-auto-rows: 1fr; gap: 2.6mm; }
+  #simpy .ideas .card .what { font-size: 12.5pt; }
+  #resultados .term { font-size: 12pt; line-height: 1.6; padding: 4mm 6mm; }
+  #resultados .cards { margin-top: 4mm; }
+  #programa .card h3 { font-size: 17pt; }
+  #programa .card .what, #programa .card .like { font-size: 14pt; }
+  .roomy .formula-hero .card { justify-content: space-between; }
+  .roomy .flow-steps { margin-top: 1mm; }
+  .roomy .flow-steps li { font-size: 12.5pt; }
+  .roomy .flow-steps .desc { font-size: 11.5pt; }
+  .cmd.grow { align-items: stretch; }
+  .roomy .cmd .term { font-size: 10.4pt; padding: 4mm 4.5mm; }
+  .roomy .cmd h4 { font-size: 15pt; margin-bottom: 2mm; }
+  .roomy .cmd p { font-size: 12.5pt; line-height: 1.4; }
+  .quiz.grow, .ans.grow { grid-auto-rows: 1fr; }
+  .quiz.grow .q { align-items: center; }
+  .quiz.grow .q p { font-size: 13pt; }
+  .ans.grow .r { align-items: center; }
+  .ans.grow .r p { font-size: 11.6pt; }
+  .recap.grow { justify-content: space-evenly; gap: 0; }
+  .recap.grow li { font-size: 16pt; }
+  .recap.grow .dot { width: 12mm; height: 12mm; font-size: 14pt; }
+  .live { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5mm; padding-bottom: 2mm; }
+  .live img { width: 100%; max-height: 80mm; object-fit: contain; border: 0.3mm solid var(--rule); border-radius: 2mm; display: block; }
+  .live .term { font-size: 9.6pt; line-height: 1.55; }
+  .live .side-col { display: flex; flex-direction: column; gap: 2.6mm; }
+  .live .term { font-size: 8.8pt; flex: 1; }
+  .live .cards { grid-template-columns: repeat(3, 1fr); margin-top: 3mm; }
+  .live .card .what { font-size: 10.5pt; }
+</style>
+</head>
+<body>
+
+<!-- 1 · Portada -->
+<section class="page cover" id="portada">
+  <div class="kicker">Simulación · Unidad 1 · APE 3 · Guía de defensa</div>
+  <h1>La caja rápida<br>como cola <em>M/M/1</em></h1>
+  <p class="lead">Teoría, código y gráficas, en el mismo orden en que se explican. Semilla 42, 20 000 minutos simulados, λ = 2.0 · 2.5 · 2.9 y μ = 3.0 clientes/min.</p>
+  <p class="howto"><b>Cómo usarla.</b> El mapa enlaza cada página. Cada gráfica tiene cuatro bloques: qué ves, cómo se lee, qué demuestra y qué te pueden preguntar. TIP marca lo que no sale de las diapositivas de la semana 3.</p>
+  <div class="foot"><span>Portada</span><nav><a href="#mapa">Mapa</a><a href="#preguntas">Preguntas</a></nav></div>
+</section>
+
+<!-- 2 · Mapa -->
+<section class="page" id="mapa">
+  <div class="stripe"><span class="bg-a"></span><span class="bg-b"></span><span class="bg-c"></span><span class="bg-d"></span></div>
+  <div class="top"><div><div class="kicker">Índice · cada color es una parte</div><h2>El recorrido de la defensa</h2></div></div>
+  <div class="map grow">
+    <div class="line fg-a">
+      <div class="lname"><b>A · Teoría</b><span>qué modelamos y por qué</span></div>
+      <div class="track bg-a"></div>
+      <div class="stations">
+        <a class="st" href="#mm1"><i></i><b>M/M/1</b><small>A1</small></a>
+        <a class="st" href="#formulas"><i></i><b>Fórmulas</b><small>A2</small></a>
+        <a class="st" href="#simular"><i></i><b>¿Por qué simular?</b><small>A3</small></a>
+      </div>
+    </div>
+    <div class="line fg-b">
+      <div class="lname"><b>B · Código</b><span>cómo lo simulamos</span></div>
+      <div class="track bg-b"></div>
+      <div class="stations">
+        <a class="st" href="#programa"><i></i><b>El programa</b><small>B1</small></a>
+        <a class="st" href="#simpy"><i></i><b>La caja en SimPy</b><small>B2</small></a>
+        <a class="st" href="#resultados"><i></i><b>Resultados</b><small>B3</small></a>
+      </div>
+    </div>
+    <div class="line fg-c">
+      <div class="lname"><b>C · Gráficas</b><span>qué demuestra cada una</span></div>
+      <div class="track bg-c"></div>
+      <div class="stations">
+        <a class="st" href="#g-comparacion"><i></i><b>Comparación</b><small>C1</small></a>
+        <a class="st" href="#g-cola"><i></i><b>Cola</b><small>C2</small></a>
+        <a class="st" href="#g-convergencia"><i></i><b>Convergencia</b><small>C3</small></a>
+        <a class="st" href="#g-histograma"><i></i><b>Histograma</b><small>C4</small></a>
+        <a class="st" href="#g-dispersion"><i></i><b>Dispersión</b><small>C5</small></a>
+      </div>
+    </div>
+    <div class="line fg-d">
+      <div class="lname"><b>D · Defensa</b><span>demo y preguntas</span></div>
+      <div class="track bg-d"></div>
+      <div class="stations">
+        <a class="st" href="#ventana"><i></i><b>Ventana y demo</b><small>D1</small></a>
+        <a class="st" href="#preguntas"><i></i><b>Preguntas</b><small>D2</small></a>
+        <a class="st" href="#cierre"><i></i><b>Tu minuto</b><small>D3</small></a>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Mapa</span><nav><a href="#portada">Portada</a></nav></div>
+</section>
+
+<!-- 3 · Qué es un M/M/1 -->
+<section class="page roomy" id="mm1">
+  <div class="stripe"><span class="bg-a"></span><span class="bg-a"></span><span class="bg-a"></span><span class="bg-a"></span></div>
+  <div class="top"><span class="code bg-a">A1</span><div><div class="kicker">Teoría</div><h2>Qué es un M/M/1</h2></div></div>
+  <div class="cards grow">
+    <article class="card">
+      <div class="hd"><span class="code bg-a">λ</span><h3>Llegan clientes</h3></div>
+      <p class="what">En promedio llegan λ clientes por minuto, pero al azar (Poisson): el tiempo entre dos llegadas es exponencial, con media 1/λ.</p>
+      <p class="like">2 clientes por minuto, nunca a intervalos fijos.</p>
+    </article>
+    <article class="card">
+      <div class="hd"><span class="code bg-a">μ</span><h3>Una caja los atiende</h3></div>
+      <p class="what">La cajera atiende μ clientes por minuto; cada cobro dura en promedio 1/μ, también exponencial. Una sola caja y fila FIFO.</p>
+      <p class="like">μ = 3: un cobro dura 20 segundos en promedio.</p>
+    </article>
+    <article class="card">
+      <div class="hd"><span class="code bg-a">ρ</span><h3>Qué tan ocupada está</h3></div>
+      <p class="what">ρ = λ/μ es la fracción del tiempo con la caja ocupada. Para que la cola no crezca sin límite tiene que cumplirse <b>λ &lt; μ</b>.</p>
+      <p class="trap">La guía escribe ρ invertido (μ/λ). Lo correcto es λ/μ.</p>
+    </article>
+  </div>
+  <p class="note">Los tres escenarios: μ = 3.0 fijo y λ = 2.0 (ρ = 0.667, estable), 2.5 (ρ = 0.833, más carga) y 2.9 (ρ = 0.967, cerca de saturación).</p>
+  <div class="foot"><span>A1 · M/M/1</span><nav><a href="#mapa">Mapa</a><a href="#formulas">Siguiente</a></nav></div>
+</section>
+
+<!-- 4 · Fórmulas -->
+<section class="page roomy" id="formulas">
+  <div class="stripe"><span class="bg-a"></span><span class="bg-a"></span><span class="bg-a"></span><span class="bg-a"></span></div>
+  <div class="top"><span class="code bg-a">A2</span><div><div class="kicker">Teoría · model/theory.py</div><h2>Las fórmulas, con el escenario 1</h2></div></div>
+  <div class="formula-hero grow">
+    <article class="card"><div class="hd"><span class="code bg-a">ρ</span><h3>Utilización</h3></div>
+      <div class="tex" data-tex="\rho = \frac{\lambda}{\mu} = \frac{2}{3} = 0.667"></div><p class="what">La caja está ocupada 2/3 del tiempo.</p></article>
+    <article class="card"><div class="hd"><span class="code bg-a">L</span><h3>Clientes en el sistema</h3></div>
+      <div class="tex" data-tex="L = \frac{\lambda}{\mu-\lambda} = \frac{2}{1} = 2"></div><p class="what">En la fila más el que está pagando.</p></article>
+    <article class="card"><div class="hd"><span class="code bg-a">Lq</span><h3>Clientes en la cola</h3></div>
+      <div class="tex" data-tex="L_q = \frac{\lambda^2}{\mu(\mu-\lambda)} = \frac{4}{3} = 1.33"></div><p class="what">Solo los que esperan.</p></article>
+    <article class="card"><div class="hd"><span class="code bg-a">W</span><h3>Tiempo en el sistema</h3></div>
+      <div class="tex" data-tex="W = \frac{1}{\mu-\lambda} = 1\ \text{min}"></div><p class="what">Desde que llega hasta que se va.</p></article>
+    <article class="card"><div class="hd"><span class="code bg-a">Wq</span><h3>Espera en cola</h3></div>
+      <div class="tex" data-tex="W_q = \frac{\lambda}{\mu(\mu-\lambda)} = 0.667\ \text{min}"></div><p class="what">Desde que llega hasta que lo atienden.</p></article>
+    <article class="card"><div class="hd"><span class="code bg-a">=</span><h3>Ley de Little</h3></div>
+      <div class="tex" data-tex="L = \lambda W \;\Rightarrow\; 2 = 2 \cdot 1"></div><p class="what">Une clientes con tiempos. También Lq = λWq.</p></article>
+  </div>
+  <p class="note">La clave es la <b>holgura μ − λ</b>: está en el denominador. En E1 vale 1; en E3 vale 0.1, y por eso W pasa de 1 a 10 minutos. Si λ ≥ μ, las fórmulas no valen y el código no simula ese caso.</p>
+  <div class="foot"><span>A2 · Fórmulas</span><nav><a href="#mapa">Mapa</a><a href="#simular">Siguiente</a></nav></div>
+</section>
+
+<!-- 5 · Por qué simular -->
+<section class="page roomy" id="simular">
+  <div class="stripe"><span class="bg-a"></span><span class="bg-a"></span><span class="bg-a"></span><span class="bg-a"></span></div>
+  <div class="top"><span class="code bg-a">A3</span><div><div class="kicker">Teoría</div><h2>Si hay fórmulas, ¿para qué simular?</h2></div></div>
+  <div class="cards grow">
+    <article class="card">
+      <div class="hd"><span class="code bg-a">1</span><h3>Las fórmulas son promedios</h3></div>
+      <p class="what">Dan el valor esperado <b>a largo plazo</b>. No dicen cuántos clientes hay a las 10:15 ni cuánto esperó cada uno.</p>
+    </article>
+    <article class="card">
+      <div class="hd"><span class="code bg-a">2</span><h3>La realidad es aleatoria</h3></div>
+      <p class="what">Llegadas y cobros al azar forman picos y rachas. En E1, Lq = 1.33, pero la cola llegó a 20 clientes en una jornada.</p>
+      <p class="like">la fila del súper: en promedio corta, pero a veces se llena.</p>
+    </article>
+    <article class="card">
+      <div class="hd"><span class="code bg-a">3</span><h3>La simulación hace dos cosas</h3></div>
+      <p class="what"><b>Valida</b>: si los promedios simulados coinciden con las fórmulas, el modelo está bien. <b>Muestra</b> lo que el promedio esconde: picos, rachas y la mayoría sin esperar.</p>
+    </article>
+  </div>
+  <p class="note">Frase para la defensa: "La teoría dice cuánto en promedio; la simulación muestra cómo se comporta el sistema minuto a minuto".</p>
+  <div class="foot"><span>A3 · ¿Por qué simular?</span><nav><a href="#mapa">Mapa</a><a href="#programa">Siguiente</a></nav></div>
+</section>
+
+<!-- 6 · El programa -->
+<section class="page roomy" id="programa">
+  <div class="stripe"><span class="bg-b"></span><span class="bg-b"></span><span class="bg-b"></span><span class="bg-b"></span></div>
+  <div class="top"><span class="code bg-b">B1</span><div><div class="kicker">Código · python -m simulacion_ape</div><h2>Cómo corre el programa</h2></div></div>
+  <ol class="flow-steps" style="grid-template-columns: repeat(5, 1fr)">
+    <li><span class="dot" style="background: var(--b)">1</span>config.py<p class="desc">Los 3 escenarios (λ, μ), 20 000 min y semilla 42.</p></li>
+    <li><span class="dot" style="background: var(--b)">2</span>theory.py<p class="desc">Calcula las fórmulas; rechaza λ ≥ μ.</p></li>
+    <li><span class="dot" style="background: var(--b)">3</span>queue_system.py<p class="desc">SimPy simula cliente por cliente y anota cuándo llega, entra a la caja y se va.</p></li>
+    <li><span class="dot" style="background: var(--b)">4</span>analysis.py<p class="desc">Con esas anotaciones mide L, Lq, W, Wq y ρ simulados.</p></li>
+    <li><span class="dot" style="background: var(--c)">5</span>Vistas<p class="desc">Tabla en consola, 5 gráficas PNG y la ventana en vivo.</p></li>
+  </ol>
+  <div class="cards grow" style="margin-top:5mm">
+    <article class="card">
+      <div class="hd"><span class="code bg-b">M</span><h3>model/ calcula</h3></div>
+      <p class="what">Fórmulas, simulación con SimPy y métricas simuladas. No sabe que existe una ventana.</p>
+    </article>
+    <article class="card">
+      <div class="hd"><span class="code bg-c">V</span><h3>view/ dibuja</h3></div>
+      <p class="what">Tabla en consola, las 5 gráficas y la ventana en vivo. Nunca simula: muestra lo que recibe.</p>
+    </article>
+    <article class="card">
+      <div class="hd"><span class="code bg-d">C</span><h3>controller/ conecta</h3></div>
+      <p class="what">Lee los argumentos, pide corridas al modelo y se las pasa a la vista.</p>
+      <p class="like">un mozo: toma el pedido, va a la cocina y trae el plato.</p>
+    </article>
+  </div>
+  <p class="note"><b>25 tests</b> comprueban las fórmulas, que la semilla repite la corrida, el orden FIFO, la convergencia y la ventana.</p>
+  <div class="foot"><span>B1 · El programa</span><nav><a href="#mapa">Mapa</a><a href="#simpy">Siguiente</a></nav></div>
+</section>
+
+<!-- 7 · SimPy -->
+<section class="page roomy" id="simpy">
+  <div class="stripe"><span class="bg-b"></span><span class="bg-b"></span><span class="bg-b"></span><span class="bg-b"></span></div>
+  <div class="top"><span class="code bg-b">B2</span><div><div class="kicker">Código · model/queue_system.py</div><h2>La caja en SimPy</h2></div></div>
+  <div class="cmd grow">
+    <div class="term">env = simpy.Environment()
+cashier = simpy.Resource(env, capacity=1)
+
+<span class="p">def</span> customer(record):
+    <span class="p">with</span> cashier.request() <span class="p">as</span> request:
+        <span class="p">yield</span> request              <span class="hl"># espera su turno</span>
+        record.service_start = env.now
+        <span class="p">yield</span> env.timeout(service_rng.exponential(1/μ))
+        record.departure = env.now
+
+<span class="p">def</span> arrivals():
+    <span class="p">while True</span>:
+        <span class="p">yield</span> env.timeout(arrival_rng.exponential(1/λ))
+        env.process(customer(nuevo_cliente))
+
+env.process(arrivals()); env.run(until=20000)</div>
+    <div>
+      <div class="ideas">
+        <article class="card"><div class="hd"><span class="code bg-b">1</span><h3>Environment = el reloj</h3></div>
+          <p class="what">Lleva el tiempo de la simulación: <b>env.now</b> es el minuto actual.</p></article>
+        <article class="card"><div class="hd"><span class="code bg-b">2</span><h3>Resource = la caja</h3></div>
+          <p class="what"><b>capacity=1</b>: atiende a uno; los demás esperan en su cola FIFO. Con capacity=2 serían dos cajas.</p></article>
+        <article class="card"><div class="hd"><span class="code bg-b">3</span><h3>yield = esperar</h3></div>
+          <p class="what">Pausa al cliente hasta que la caja quede libre (<b>request</b>) o pasen t minutos (<b>timeout</b>).</p></article>
+        <article class="card"><div class="hd"><span class="code bg-b">4</span><h3>exponential(1/λ)</h3></div>
+          <p class="what">NumPy pide la media, no la tasa. La <b>semilla</b> hace que la corrida se repita igual.</p></article>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>B2 · SimPy</span><nav><a href="#mapa">Mapa</a><a href="#resultados">Siguiente</a></nav></div>
+</section>
+
+<!-- 8 · Resultados -->
+<section class="page roomy" id="resultados">
+  <div class="stripe"><span class="bg-b"></span><span class="bg-b"></span><span class="bg-b"></span><span class="bg-b"></span></div>
+  <div class="top"><span class="code bg-b">B3</span><div><div class="kicker">Código · semilla 42 · 20 000 min</div><h2>Resultados</h2></div></div>
+  <div class="term"><span class="p">$</span> python -m simulacion_ape --sin-animacion
+Métrica     E1 teo   E1 sim   E2 teo   E2 sim   E3 teo   E3 sim
+ρ            0.667    0.670    0.833    0.835    0.967    0.968
+L            2.000    2.036    5.000    5.029   29.000   <span class="hl">26.592</span>
+Lq           1.333    1.366    4.167    4.193   28.033   <span class="hl">25.624</span>
+W  (min)     1.000    1.022    2.000    2.016   10.000    <span class="hl">9.183</span>
+Wq (min)     0.667    0.685    1.667    1.681    9.667    <span class="hl">8.849</span>
+Error máx.     2.8 %             0.9 %             8.6 %</div>
+  <div class="cards grow">
+    <article class="card"><div class="hd"><span class="code bg-b">E1 E2</span><h3>Coinciden</h3></div>
+      <p class="what">Menos de 3 % de error. La simulación reproduce la teoría: <b>el modelo está bien</b>.</p></article>
+    <article class="card"><div class="hd"><span class="code bg-b">E3</span><h3>~8 % abajo</h3></div>
+      <p class="what"><b>No es un error del código</b>: cerca de ρ = 1 tarda muchísimo en estabilizarse (<a href="#g-convergencia">gráfica de convergencia</a>).</p></article>
+    <article class="card"><div class="hd"><span class="code bg-b">?</span><h3>La prueba</h3></div>
+      <p class="what">100 000 min: L = 30.3 (4 %). Semilla 1: L = 31.6, <b>arriba</b> de 29. Es azar, no un sesgo. <span class="tip">TIP</span></p></article>
+  </div>
+  <div class="foot"><span>B3 · Resultados</span><nav><a href="#mapa">Mapa</a><a href="#g-comparacion">Siguiente</a></nav></div>
+</section>
+
+<!-- 9 · Comparación -->
+<section class="page" id="g-comparacion">
+  <div class="stripe"><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span></div>
+  <div class="top"><span class="code bg-c">C1</span><div><div class="kicker">Gráficas · resultados/comparacion_teorico_simulado.png</div><h2>Teórico vs. simulado</h2></div></div>
+  <div class="chart wide">
+    <img src="assets/img/comparacion_teorico_simulado.png" alt="Barras de teórico y simulado para ρ, L, Lq, W y Wq en los tres escenarios">
+    <div class="reads">
+      <article class="card"><div class="hd"><span class="code bg-c">1</span><h3>Qué ves</h3></div>
+        <p class="what">Una mini-gráfica por métrica (ρ, L, Lq, W, Wq). <b>Gris = fórmula</b>, <b>azul = simulación</b>, para E1, E2 y E3.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">2</span><h3>Cómo se lee</h3></div>
+        <p class="what">Si las dos barras son gemelas, la simulación reproduce la teoría.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">3</span><h3>Qué demuestra</h3></div>
+        <p class="what">E1 y E2 gemelas: modelo validado. ρ coincide siempre. En E3 la azul queda ~8 % más baja.</p></article>
+      <article class="card ask"><div class="hd"><span class="code bg-d">?</span><h3>Te preguntan</h3></div>
+        <p class="what">"¿Por qué E3 da menos?" Converge lento: con más tiempo se acerca, y con otra semilla queda arriba.</p></article>
+    </div>
+  </div>
+  <div class="foot"><span>C1 · Comparación</span><nav><a href="#mapa">Mapa</a><a href="#g-cola">Siguiente</a></nav></div>
+</section>
+
+<!-- 10 · Cola en el tiempo -->
+<section class="page" id="g-cola">
+  <div class="stripe"><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span></div>
+  <div class="top"><span class="code bg-c">C2</span><div><div class="kicker">Gráficas · resultados/cola_en_el_tiempo.png</div><h2>La cola durante 8 horas</h2></div></div>
+  <div class="chart tall">
+    <img src="assets/img/cola_en_el_tiempo.png" alt="Clientes en cola minuto a minuto durante 8 horas, un panel por escenario">
+    <div class="reads">
+      <article class="card"><div class="hd"><span class="code bg-c">1</span><h3>Qué ves</h3></div>
+        <p class="what">Clientes en la cola minuto a minuto, un panel por escenario. Punteada = <b>L<sub>q</sub> teórico</b>.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">2</span><h3>Cómo se lee</h3></div>
+        <p class="what">Escalones: +1 cuando alguien llega, −1 cuando pasa a la caja.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">3</span><h3>Qué demuestra</h3></div>
+        <p class="what">E1: picos de 20 que se vacían rápido. E2: hasta 29. E3: no se vacía y termina con 69.</p></article>
+      <article class="card ask"><div class="hd"><span class="code bg-d">?</span><h3>Te preguntan</h3></div>
+        <p class="what">"¿Pico de 20 con L<sub>q</sub> = 1.33? ¿Teoría mal?" No: L<sub>q</sub> es un <b>promedio</b> a largo plazo, no un máximo.</p></article>
+    </div>
+  </div>
+  <div class="foot"><span>C2 · Cola</span><nav><a href="#mapa">Mapa</a><a href="#g-convergencia">Siguiente</a></nav></div>
+</section>
+
+<!-- 11 · Convergencia -->
+<section class="page" id="g-convergencia">
+  <div class="stripe"><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span></div>
+  <div class="top"><span class="code bg-c">C3</span><div><div class="kicker">Gráficas · resultados/convergencia_espera.png</div><h2>La espera promedio va hacia W<sub>q</sub></h2></div></div>
+  <div class="chart wide">
+    <img src="assets/img/convergencia_espera.png" alt="Espera promedio acumulada frente a clientes atendidos, en escala logarítmica, con Wq teórico">
+    <div class="reads">
+      <article class="card"><div class="hd"><span class="code bg-c">1</span><h3>Qué ves</h3></div>
+        <p class="what"><b>Sólida</b>: promedio de espera tras cada cliente. <b>Punteada</b> del mismo color: W<sub>q</sub> teórico. Eje x logarítmico.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">2</span><h3>Cómo se lee</h3></div>
+        <p class="what">Cada sólida tiene que terminar pegada a su punteada.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">3</span><h3>Qué demuestra</h3></div>
+        <p class="what">Ley de los grandes números. E1 y E2 llegan; E3 sube a 17 y termina en 8.85 &lt; 9.67: el 8 %.</p></article>
+      <article class="card ask"><div class="hd"><span class="code bg-d">?</span><h3>Te preguntan</h3></div>
+        <p class="what">"¿Por qué arrancan en 0 y saltan?" Los primeros encuentran la caja libre, y con pocos datos un cliente mueve mucho el promedio.</p></article>
+    </div>
+  </div>
+  <div class="foot"><span>C3 · Convergencia</span><nav><a href="#mapa">Mapa</a><a href="#g-histograma">Siguiente</a></nav></div>
+</section>
+
+<!-- 12 · Histograma -->
+<section class="page" id="g-histograma">
+  <div class="stripe"><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span></div>
+  <div class="top"><span class="code bg-c">C4</span><div><div class="kicker">Gráficas · resultados/histograma_espera.png</div><h2>¿Cuánto esperó cada cliente?</h2></div></div>
+  <div class="chart wide">
+    <img src="assets/img/histograma_espera.png" alt="Histograma de los tiempos de espera en cola por escenario con Wq teórico">
+    <div class="reads">
+      <article class="card"><div class="hd"><span class="code bg-c">1</span><h3>Qué ves</h3></div>
+        <p class="what">Cuántos clientes (alto de la barra) esperaron cada cantidad de minutos. Punteada = W<sub>q</sub>.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">2</span><h3>Cómo se lee</h3></div>
+        <p class="what">La barra más alta está en 0; después baja, con una cola larga a la derecha.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">3</span><h3>Qué demuestra</h3></div>
+        <p class="what">El promedio no es lo típico: mediana 0.29 contra W<sub>q</sub> 0.67 en E1. Pocos esperan mucho y suben el promedio.</p></article>
+      <article class="card ask"><div class="hd"><span class="code bg-d">?</span><h3>Te preguntan</h3></div>
+        <p class="what">"¿Por qué tantos en 0?" Sin espera = 1 − ρ: 33.1 / 16.5 / 3.2 % simulado frente a 33.3 / 16.7 / 3.3 %.</p></article>
+    </div>
+  </div>
+  <div class="foot"><span>C4 · Histograma</span><nav><a href="#mapa">Mapa</a><a href="#g-dispersion">Siguiente</a></nav></div>
+</section>
+
+<!-- 13 · Dispersión -->
+<section class="page" id="g-dispersion">
+  <div class="stripe"><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span><span class="bg-c"></span></div>
+  <div class="top"><span class="code bg-c">C5</span><div><div class="kicker">Gráficas · resultados/dispersion_espera.png</div><h2>La espera de cada cliente</h2></div></div>
+  <div class="chart tall">
+    <img src="assets/img/dispersion_espera.png" alt="Espera en cola de cada cliente según su orden de llegada, un panel por escenario">
+    <div class="reads">
+      <article class="card"><div class="hd"><span class="code bg-c">1</span><h3>Qué ves</h3></div>
+        <p class="what">Cada punto es un cliente: x = orden de llegada, y = minutos de espera. Punteada = W<sub>q</sub>. Cada panel tiene su escala.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">2</span><h3>Cómo se lee</h3></div>
+        <p class="what">Puntos sueltos = picos aislados. "Montañas" de puntos = rachas de muchos clientes seguidos esperando.</p></article>
+      <article class="card"><div class="hd"><span class="code bg-c">3</span><h3>Qué demuestra</h3></div>
+        <p class="what">Máximo 7.7 / 18.8 / 45.8 min. En E3, hasta 2 636 clientes seguidos sobre W<sub>q</sub> (E1: 124). Esas rachas frenan la convergencia.</p></article>
+      <article class="card ask"><div class="hd"><span class="code bg-d">?</span><h3>Te preguntan</h3></div>
+        <p class="what">"¿La guía la pedía?" Pide gráficas de la espera; la sumamos porque el docente mostró dispersión en clase.</p></article>
+    </div>
+  </div>
+  <div class="foot"><span>C5 · Dispersión</span><nav><a href="#mapa">Mapa</a><a href="#ventana">Siguiente</a></nav></div>
+</section>
+
+<!-- 14 · Ventana y demo -->
+<section class="page" id="ventana">
+  <div class="stripe"><span class="bg-d"></span><span class="bg-d"></span><span class="bg-d"></span><span class="bg-d"></span></div>
+  <div class="top"><span class="code bg-d">D1</span><div><div class="kicker">Defensa · desde la carpeta codigo/</div><h2>Ventana en vivo y demo</h2></div></div>
+  <div class="live grow">
+    <div>
+      <img src="assets/img/ventana_en_vivo.png" alt="Ventana en vivo en el escenario 3: el local con la fila, el tablero de métricas y tres gráficas">
+      <div class="cards">
+        <article class="card"><div class="hd"><span class="code bg-d">1</span><h3>Qué muestra</h3></div>
+          <p class="what">El local con la fila, el tablero de métricas, 3 gráficas y deslizadores de λ y μ.</p></article>
+        <article class="card"><div class="hd"><span class="code bg-d">2</span><h3>Por qué va fluida</h3></div>
+          <p class="what"><b>Blitting</b>: guarda el fondo y repinta solo lo que se mueve (~14 ms por cuadro).</p></article>
+        <article class="card"><div class="hd"><span class="code bg-d">3</span><h3>Si λ ≥ μ</h3></div>
+          <p class="what">Avisa "Sistema inestable", oculta la teoría y la cola crece sin parar.</p></article>
+      </div>
+    </div>
+    <div class="side-col">
+      <div class="term"><span class="p">$</span> python -m simulacion_ape
+<span class="hl">  tabla + 5 PNG + ventana en vivo</span>
+<span class="p">$</span> python -m simulacion_ape --escenario 3
+<span class="p">$</span> python -m simulacion_ape --llegada 1.5 --servicio 2
+<span class="hl">  λ y μ propios (van juntos)</span>
+<span class="p">$</span> python -m simulacion_ape --semilla 7
+<span class="hl">  otros números, mismas conclusiones</span>
+<span class="p">$</span> python -m simulacion_ape --tiempo 100000
+<span class="hl">  E3 se acerca más a la teoría</span>
+<span class="p">$</span> python -m pytest
+<span class="hl">  25 passed</span>
+
+<span class="hl"># en la ventana</span>
+espacio   pausa
+R         reinicia
+1 2 3     escenarios
+λ μ       deslizadores</div>
+    </div>
+  </div>
+  <div class="foot"><span>D1 · Ventana y demo</span><nav><a href="#mapa">Mapa</a><a href="#preguntas">Siguiente</a></nav></div>
+</section>
+
+<!-- 15 · Preguntas -->
+<section class="page" id="preguntas">
+  <div class="stripe"><span class="bg-a"></span><span class="bg-b"></span><span class="bg-c"></span><span class="bg-d"></span></div>
+  <div class="top"><span class="code bg-d">D2</span><div><div class="kicker">Autoexamen · respondé antes de mirar</div><h2>Preguntas probables</h2></div></div>
+  <div class="quiz grow" style="gap:3mm 6mm">
+    <a class="q" id="q1" href="#r1"><span class="num fg-a">01</span><p>¿Por qué ρ = λ/μ y no μ/λ?</p></a>
+    <a class="q" id="q7" href="#r7"><span class="num fg-b">07</span><p>¿Por qué exponential(1/λ) y no exponential(λ)?</p></a>
+    <a class="q" id="q2" href="#r2"><span class="num fg-a">02</span><p>¿Qué pasa si λ ≥ μ?</p></a>
+    <a class="q" id="q8" href="#r8"><span class="num fg-b">08</span><p>¿Dónde está el MVC y por qué la ventana no simula?</p></a>
+    <a class="q" id="q3" href="#r3"><span class="num fg-a">03</span><p>¿Qué dice la ley de Little y cómo la comprobás?</p></a>
+    <a class="q" id="q9" href="#r9"><span class="num fg-c">09</span><p>La cola llegó a 20 y Lq = 1.33: ¿la teoría está mal?</p></a>
+    <a class="q" id="q4" href="#r4"><span class="num fg-a">04</span><p>¿Por qué el escenario 3 tiene más error?</p></a>
+    <a class="q" id="q10" href="#r10"><span class="num fg-c">10</span><p>¿Por qué la mayoría de los clientes no espera?</p></a>
+    <a class="q" id="q5" href="#r5"><span class="num fg-b">05</span><p>¿Qué hace yield en un proceso de SimPy?</p></a>
+    <a class="q" id="q11" href="#r11"><span class="num fg-d">11</span><p>¿Qué cambiarías para bajar el error?</p></a>
+    <a class="q" id="q6" href="#r6"><span class="num fg-b">06</span><p>¿Para qué sirve la semilla?</p></a>
+    <a class="q" id="q12" href="#r12"><span class="num fg-d">12</span><p>¿Cuál es el sistema real y qué supuestos hacen?</p></a>
+  </div>
+  <div class="foot"><span>D2 · Preguntas</span><nav><a href="#mapa">Mapa</a><a href="#respuestas">Respuestas</a></nav></div>
+</section>
+
+<!-- 16 · Respuestas -->
+<section class="page" id="respuestas">
+  <div class="stripe"><span class="bg-a"></span><span class="bg-b"></span><span class="bg-c"></span><span class="bg-d"></span></div>
+  <div class="top"><span class="code bg-d">D2</span><div><div class="kicker">Respuestas · cada una vuelve a su pregunta</div><h2>Respuestas</h2></div></div>
+  <div class="ans grow" style="gap:0 6mm">
+    <div class="r" id="r1"><span class="num fg-a">01</span><div><p>Es la fracción del tiempo ocupada: lo que llega dividido entre lo que se puede atender. La guía lo escribe invertido. <span class="back"><a href="#q1">volver</a></span></p></div></div>
+    <div class="r" id="r7"><span class="num fg-b">07</span><div><p>NumPy recibe la media, no la tasa. La media entre llegadas es 1/λ y la del cobro 1/μ. <span class="back"><a href="#q7">volver</a></span></p></div></div>
+    <div class="r" id="r2"><span class="num fg-a">02</span><div><p>La cola crece sin límite y no hay estado estable. La consola no lo simula; la ventana lo anima sin teoría. <span class="back"><a href="#q2">volver</a></span></p></div></div>
+    <div class="r" id="r8"><span class="num fg-b">08</span><div><p>model/ calcula, view/ dibuja, controller/ conecta. La ventana pide corridas al controlador y nunca importa SimPy. <span class="back"><a href="#q8">volver</a></span></p></div></div>
+    <div class="r" id="r3"><span class="num fg-a">03</span><div><p>L = λW y Lq = λWq. E1: L = 2 y λW = 2·1 = 2; simulado 2.036 ≈ 2·1.022. <span class="back"><a href="#q3">volver</a></span></p></div></div>
+    <div class="r" id="r9"><span class="num fg-c">09</span><div><p>No. Lq es un promedio a largo plazo, no un máximo. Por el azar hay picos de 20 y ratos en 0; promediado da ≈ 1.33. <span class="back"><a href="#q9">volver</a></span></p></div></div>
+    <div class="r" id="r4"><span class="num fg-a">04</span><div><p>Con ρ = 0.967 casi no hay holgura: hay rachas largas y el promedio converge lento. 20 000 min no alcanzan. <span class="back"><a href="#q4">volver</a></span></p></div></div>
+    <div class="r" id="r10"><span class="num fg-c">10</span><div><p>La caja está libre una fracción 1 − ρ del tiempo; quien llega en ese momento no espera. E1: 33 %. <span class="back"><a href="#q10">volver</a></span></p></div></div>
+    <div class="r" id="r5"><span class="num fg-b">05</span><div><p>Pausa el proceso hasta que ocurre el evento: que la caja quede libre (request) o pasen t minutos (timeout). <span class="back"><a href="#q5">volver</a></span></p></div></div>
+    <div class="r" id="r11"><span class="num fg-d">11</span><div><p>Simular más tiempo (--tiempo) o varias réplicas con semillas distintas y promediar. <span class="tip">TIP</span> <span class="back"><a href="#q11">volver</a></span></p></div></div>
+    <div class="r" id="r6"><span class="num fg-b">06</span><div><p>Hace la corrida reproducible: mismos números, mismos resultados, y los tests comparan valores exactos. <span class="back"><a href="#q6">volver</a></span></p></div></div>
+    <div class="r" id="r12"><span class="num fg-d">12</span><div><p>Caja rápida de supermercado: llegadas de Poisson, cobro exponencial, una caja, fila FIFO y capacidad infinita. <span class="back"><a href="#q12">volver</a></span></p></div></div>
+  </div>
+  <div class="foot"><span>D2 · Respuestas</span><nav><a href="#preguntas">Preguntas</a><a href="#cierre">Siguiente</a></nav></div>
+</section>
+
+<!-- 17 · Cierre -->
+<section class="page" id="cierre">
+  <div class="stripe"><span class="bg-a"></span><span class="bg-b"></span><span class="bg-c"></span><span class="bg-d"></span></div>
+  <div class="top"><span class="code bg-d">D3</span><div><div class="kicker">Cierre · si solo tenés un minuto</div><h2>Lo que tenés que poder decir</h2></div></div>
+  <ol class="recap grow">
+    <li><span class="dot bg-a">1</span>Modelamos una caja rápida como M/M/1: llegadas de Poisson, cobro exponencial, una caja FIFO.</li>
+    <li><span class="dot bg-b">2</span>SimPy simula cada cliente; el código es MVC: el modelo calcula, la vista dibuja.</li>
+    <li><span class="dot bg-b">3</span>E1 y E2 quedan a menos de 3 % de la teoría; E3, cerca de saturación, converge más lento.</li>
+    <li><span class="dot bg-c">4</span>Las gráficas muestran lo que el promedio esconde: picos, rachas y la mayoría sin esperar.</li>
+    <li><span class="dot bg-d">5</span>Semilla fija y 25 tests: los resultados se pueden repetir y verificar.</li>
+  </ol>
+  <div class="foot"><span>D3 · Cierre</span><nav><a href="#portada">Portada</a><a href="#mapa">Mapa</a></nav></div>
+</section>
+
+<script>
+document.querySelectorAll("[data-tex]").forEach((el) => katex.render(el.dataset.tex, el, {
+  displayMode: true, throwOnError: false,
+}));
+</script>
+</body>
+</html>

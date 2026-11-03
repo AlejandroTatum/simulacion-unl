@@ -1,0 +1,64 @@
+/* Theme taller — furniture workshop: sawdust paper, walnut inverse slides, wood-grain planks.
+   Experimental (first used on the chair-line deck, 2026-10-28). Link after deck-base.css.
+   Accents are categories, never decoration:
+     a1 varnish orange  = bottleneck / the point under study
+     a2 leaf green      = improvement scenarios
+     a3 steel blue      = queueing theory (M/M/1)
+   flow-steps dots are neutral walnut; .key marks the bottleneck step in a1. */
+@font-face { font-family: "Barlow"; src: url(../assets/fonts/barlow-600.woff2) format("woff2"); font-weight: 600; font-style: normal; font-display: block; }
+@font-face { font-family: "Barlow"; src: url(../assets/fonts/barlow-700.woff2) format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: "Barlow"; src: url(../assets/fonts/barlow-800.woff2) format("woff2"); font-weight: 800; font-style: normal; font-display: block; }
+@font-face { font-family: "IBM Plex Sans"; src: url(../assets/fonts/ibm-plex-sans-400.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "IBM Plex Sans"; src: url(../assets/fonts/ibm-plex-sans-600.woff2) format("woff2"); font-weight: 600; font-style: normal; font-display: block; }
+@font-face { font-family: "IBM Plex Mono"; src: url(../assets/fonts/ibm-plex-mono-600.woff2) format("woff2"); font-weight: 600; font-style: normal; font-display: block; }
+
+:root {
+  --bg: #EFE4D2; --fg: #2B1D14; --muted: #7A6450;
+  --a1: #C2571A; --a2: #4C7A36; --a3: #35607F;
+  --alt-bg: #3A2618; --alt-fg: #F4EADB;
+  --display: "Barlow", "IBM Plex Sans", sans-serif; --body: "IBM Plex Sans", sans-serif; --mono: "IBM Plex Mono", monospace;
+  --dw: 800; --tt: none; --ls: -0.01em;
+  --dot-fg: #F4EADB;
+}
+
+/* Sawdust paper with a faint grain; a wooden plank runs along the bottom edge. */
+.slide { background-image:
+    repeating-linear-gradient(92deg, #00000005 0 2px, transparent 2px 23px),
+    radial-gradient(circle at 85% 15%, #ffffff55, transparent 45%); }
+.slide::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 26px; z-index: 0;
+  background: repeating-linear-gradient(90deg, #8A5A34 0 340px, #7A4D2B 340px 344px),
+              linear-gradient(#9C6A40, #6E4526); background-blend-mode: multiply; }
+
+/* Walnut inverse slides: long horizontal grain. */
+.slide.alt { background-image:
+    repeating-linear-gradient(178deg, #ffffff07 0 3px, transparent 3px 19px, #00000014 19px 21px, transparent 21px 47px),
+    radial-gradient(ellipse at 30% 40%, #5A3B24, transparent 70%); }
+.slide.alt::after { background: linear-gradient(#C2571A, #9A4213); height: 18px; }
+.alt .kicker { color: #E89A5F; }
+.alt .a { color: #F0A060; }
+
+.kicker { letter-spacing: .14em; }
+.title::after { content: ""; display: block; width: 180px; height: 12px; margin-top: 30px; border-radius: 6px; background: var(--a1); }
+.foot { bottom: 52px; }
+
+.flow-steps .dot { background: var(--fg) !important; }
+.flow-steps li.key .dot { background: var(--a1) !important; box-shadow: 0 0 0 12px #C2571A33; }
+.flow-steps li.key { color: var(--a1); }
+
+/* deck-base sets p { font-size: 32px }, which beats the component's :where() size. */
+.big-number { gap: 40px; }
+.big-number .cap { font-size: 56px; font-weight: 600; }
+
+/* Supporting lines. Bold words keep their category color: .t3 = theory (a3); callout bold = bottleneck (a1). */
+.lead b { color: var(--fg); font-weight: 600; }
+.alt .lead b { color: var(--alt-fg); }
+.lead .t3, .lead b.t3 { color: var(--a3); }
+.lead.strip { padding: 24px 34px; border-radius: 18px; background: color-mix(in srgb, var(--fg) 7%, transparent); color: var(--fg); font-size: 34px; }
+.lead.callout { padding: 26px 36px; border-left: 12px solid var(--a1); border-radius: 0 18px 18px 0; background: #C2571A14; color: var(--fg); font-size: 38px; }
+.lead.callout b { color: var(--a1); }
+.lead.authors { font-size: 30px; opacity: .7; }
+.alt .icon-row .icon { background: #ffffff14; }
+.kicker .math { text-transform: none; letter-spacing: .04em; font-family: var(--body); }
+.alt .icon-row li:nth-child(3n) .icon { color: #8FB6D6; }
+.lead.callout b.t3 { color: var(--a3); }
+.lead.callout:has(b.t3) { border-left-color: var(--a3); background: #35607F14; }

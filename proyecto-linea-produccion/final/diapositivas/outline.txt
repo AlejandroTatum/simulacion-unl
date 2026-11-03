@@ -1,0 +1,12 @@
+# Encuentre el freno de su línea de producción
+# duration: 4 min
+# theme: taller (experimental, fábrica de muebles)
+# builds: reveal-steps, cada elemento aparece con →
+cover | Encuentre el freno de su línea de producción | portada nogal, autores | Presentamos el simulador y el caso de muebles. | | 0:20
+flow-steps | Cada mueble pasa 2 horas en la línea | 4 estaciones con su tiempo; 124 min frente a 45 min de trabajo (data-dense: son 4 estaciones) | Casi dos tercios del tiempo el mueble espera. | | 0:30
+bar-rows | Ensamblaje frena a toda la línea | barras de tiempo ocupada por estación (data-dense: 4 estaciones) | Ensamblaje 75 %, ahí se forma la fila más larga. | | 0:30
+stat-cards | Validado contra la teoría | 30 000 h, menos de 5 %, $ 0 | Coincide con la teoría de colas; sin tocar máquinas. | | 0:25
+stat-cards | Tres escenarios de prueba | E1 15, E2 12, E3 10 min; resto igual | Solo cambia ensamblaje; es una prueba, no una propuesta. | | 0:30
+bar-rows | Confirmado: ensamblaje era el freno | capacidad de la línea en E1, E2 y E3 | 4 → 5 confirma ensamblaje; en E3 el cuello pasa a acabado. | | 0:30
+flow-steps | Pruébelo con los datos de su línea | cargue datos, simule, vea el freno | Cualquier escenario, sin parar la producción. | | 0:30
+icon-row | Pruébenlo en vivo | animación, panel, resultados | El público elige los datos. | | 0:25
