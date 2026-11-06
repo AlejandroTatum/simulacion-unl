@@ -1,0 +1,5 @@
+# Librerías necesarias para ejecutar esta APE: pip install -r requirements.txt
+# SciPy solo se usa en las pruebas, para contrastar los valores p calculados a mano.
+matplotlib==3.11.2
+scipy
+pytest==9.1.1
