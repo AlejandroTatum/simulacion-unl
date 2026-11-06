@@ -16,6 +16,7 @@ Repositorio con las prácticas (APE) y actividades autónomas (AA) de la asignat
 | 1 | 2 | Comparación de modelos determinísticos, estocásticos, discretos y continuos (crecimiento poblacional) | [unidad-1/ape-2-comparacion-modelos](unidad-1/ape-2-comparacion-modelos) |
 | 1 | 3 (grupal) | Simulación de un sistema de líneas de espera M/M/1 mediante SimPy (caja rápida de supermercado) | [unidad-1/ape-3-mm1](unidad-1/ape-3-mm1) |
 | 1 | 4 | Análisis comparativo de herramientas de simulación mediante un modelo común (SIR en Python/SimPy y NetLogo) | [unidad-1/ape-4-sir-herramientas](unidad-1/ape-4-sir-herramientas) |
+| 2 | 5 | Implementación y análisis del Generador Congruencial Lineal en Python y Java | [unidad-2/ape-5-generador-congruencial-lineal](unidad-2/ape-5-generador-congruencial-lineal) |
 
 ## Actividades autónomas
 
