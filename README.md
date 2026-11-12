@@ -18,6 +18,7 @@ Repositorio con las prácticas (APE) y actividades autónomas (AA) de la asignat
 | 1 | 4 | Análisis comparativo de herramientas de simulación mediante un modelo común (SIR en Python/SimPy y NetLogo) | [unidad-1/ape-4-sir-herramientas](unidad-1/ape-4-sir-herramientas) |
 | 2 | 5 | Implementación y análisis del Generador Congruencial Lineal en Python y Java | [unidad-2/ape-5-generador-congruencial-lineal](unidad-2/ape-5-generador-congruencial-lineal) |
 | 2 | 6 | Validación estadística de números pseudoaleatorios mediante Chi-cuadrado y Kolmogorov-Smirnov | [unidad-2/ape-6-validacion-chi-cuadrado-ks](unidad-2/ape-6-validacion-chi-cuadrado-ks) |
+| 2 | 7 | Estimación de resultados mediante el método de Monte Carlo | [unidad-2/ape-7-monte-carlo](unidad-2/ape-7-monte-carlo) |
 
 ## Actividades autónomas
 
