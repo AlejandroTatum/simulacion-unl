@@ -9,7 +9,9 @@
 | **Modalidad** | Individual |
 | **Autor** | Alejandro Padilla |
 | **Guía** | [guia/guia-ape-7.pdf](guia/guia-ape-7.pdf) |
-| **Informe** | [documento/](documento/) |
+| **Informe** | [documento/](documento/) (versión final: v002) |
+| **Presentación** | [presentacion/](presentacion/) |
+| **Video de demostración** | [youtu.be/9CMXO5h75g0](https://youtu.be/9CMXO5h75g0) |
 | **Bibliografía** | [referencias.bib](referencias.bib) |
 
 ## 1. Enunciado y objetivo
