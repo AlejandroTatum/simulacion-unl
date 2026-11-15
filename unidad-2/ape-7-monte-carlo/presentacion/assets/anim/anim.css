@@ -22,7 +22,7 @@
   body:not(.print) .slide.active .compare-side:hover { transform: translateY(-8px); }
   body:not(.print) .slide.active .compare-trait[data-mark]::before { animation: anim-pop .5s cubic-bezier(.3,1.6,.5,1) both; animation-delay: 900ms; }
 
-  body:not(.print) .slide.alt.active::before { content: ""; position: absolute; width: 900px; height: 900px; right: -200px; top: -260px; border-radius: 50%; z-index: 0; pointer-events: none;
+  body:not(.print) .slide.cover.active::before { content: ""; position: absolute; width: 900px; height: 900px; right: -200px; top: -260px; border-radius: 50%; z-index: 0; pointer-events: none;
     background: radial-gradient(circle, color-mix(in srgb, var(--a1, #3D6BFF) 35%, transparent), transparent 65%); animation: anim-drift 9s ease-in-out infinite alternate; }
 
   #progress { position: fixed; left: 0; top: 0; height: 6px; z-index: 10; transition: width .6s cubic-bezier(.2,.8,.2,1);
