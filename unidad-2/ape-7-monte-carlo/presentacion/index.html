@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="deck">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APE 7 · Estimación de resultados mediante el método de Monte Carlo</title>
+<link rel="stylesheet" href="themes/deck-base.css">
+<link rel="stylesheet" href="themes/pizarra.css">
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<!-- component: question-hook -->
+<style>
+  .title.q { font-size: 136px; max-width: 1500px; }
+</style>
+<!-- component: formula-hero -->
+<style>
+  :where(.formula-hero) { display: flex; flex-direction: column; align-items: center; gap: 64px; }
+  :where(.formula-hero .tex) { font-size: 150px; line-height: 1; }
+  :where(.formula-hero .tex .katex-display) { margin: 0; }
+  /* katex.min.css da 1em de margen a .katex-display y le gana a :where(); se anula como en calc-rows. */
+  .formula-hero .tex .katex-display { margin: 0; }
+  :where(.formula-hero .parts) { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 56px; }
+  :where(.formula-hero .parts li) { display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 40px; text-align: center; }
+  :where(.formula-hero .parts b) { font: italic 400 96px/1 KaTeX_Math, serif; }
+  :where(.formula-hero .p1) { color: var(--a1); }
+  :where(.formula-hero .p2) { color: var(--a2); }
+  :where(.formula-hero .p3) { color: var(--a3); }
+</style>
+<!-- component: calc-rows -->
+<style>
+  :where(.calc-rows) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  :where(.calc-rows li) { display: grid; grid-template-columns: 620px 1fr 300px; align-items: center; gap: 40px;
+    padding: 10px 36px; border-radius: 18px; background: color-mix(in srgb, var(--fg) 6%, transparent); }
+  :where(.calc-rows .f) { font-size: 50px; }
+  :where(.calc-rows .s) { font-size: 44px; color: var(--muted); }
+  .calc-rows .katex-display { margin: 0; text-align: left; }
+  .calc-rows .katex-display > .katex { text-align: left; }
+  :where(.calc-rows .res) { font-family: var(--display); font-weight: var(--dw); font-size: 60px; text-align: right; }
+  :where(.calc-rows li.key .res) { color: var(--a1); }
+</style>
+<!-- component: pipeline-flow -->
+<style>
+  :where(.pipeline-flow) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 64px; }
+  :where(.pipeline-flow .stage) { --node: var(--a1); position: relative; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 26px 24px 30px;
+    border-top: 14px solid var(--node); background: color-mix(in srgb, var(--node) 10%, transparent); }
+  :where(.pipeline-flow .stage.k2) { --node: var(--a2); } :where(.pipeline-flow .stage.k3) { --node: var(--a3); }
+  :where(.pipeline-flow .stage + .stage)::before { content: ""; position: absolute; left: -48px; top: 50%; transform: translateY(-50%); width: 0; height: 0;
+    border-top: 22px solid transparent; border-bottom: 22px solid transparent; border-left: 30px solid var(--muted); }
+  :where(.pipeline-flow .tag) { font: 700 24px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--node); }
+  :where(.pipeline-flow .lbl) { font: var(--dw) 52px/1.05 var(--display); text-transform: var(--tt); letter-spacing: var(--ls); overflow-wrap: anywhere; }
+  :where(.pipeline-flow .gate .lbl) { font-size: 128px; line-height: .95; color: var(--node); }
+  :where(.pipeline-flow .desc) { font-size: 30px; line-height: 1.25; }
+  :where(.pipeline-flow .code) { font: 600 22px/1.2 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  :where(.pipeline-flow .stage.pass) { background: var(--node); color: var(--dot-fg, var(--bg)); }
+  :where(.pipeline-flow .stage.pass .tag, .pipeline-flow .stage.pass .lbl) { color: inherit; }
+</style>
+<!-- component: deck-compare -->
+<style>
+  :where(.deck-compare .compare-criterion) { font-size: 34px; color: var(--muted); }
+  :where(.deck-compare .compare-pair) { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  :where(.deck-compare .compare-side) { --side: var(--a1); display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 32px 48px; border-top: 12px solid var(--side); background: color-mix(in srgb, var(--side) 9%, transparent); }
+  :where(.deck-compare .compare-side + .compare-side) { --side: var(--a2); }
+  :where(.deck-compare .compare-side h2) { margin: 0 0 8px; font: var(--dw) 72px/1.05 var(--display); }
+  :where(.deck-compare .compare-trait) { display: flex; align-items: center; gap: 28px; padding: 16px 0; border-top: 2px solid color-mix(in srgb, var(--fg) 14%, transparent); font-size: 42px; }
+  :where(.deck-compare .compare-trait)::before { content: ''; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--side); }
+  :where(.deck-compare .compare-trait[data-mark])::before { width: 64px; height: 64px; display: grid; place-items: center; font: 700 36px/1 var(--body); color: var(--dot-fg, var(--bg)); }
+  :where(.deck-compare .compare-trait[data-mark="yes"])::before { content: '✓'; }
+  :where(.deck-compare .compare-trait[data-mark="no"])::before { content: '✕'; background: var(--muted); }
+  :where(.deck-compare .compare-takeaway) { border-left: 10px solid var(--fg); padding: 6px 0 6px 32px; font-size: 42px; font-weight: 600; }
+</style>
+<!-- component: stat-hero (layout) + big-number (hero figure, without count-up: decimal point) -->
+<style>
+  :where(.stat-hero) { --k: var(--a3); display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; column-gap: 72px; }
+  :where(.stat-hero .hero-chips) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; }
+  :where(.stat-hero .hero-chips li) { display: flex; flex-direction: column; gap: 2px; padding: 18px 28px; border-left: 10px solid var(--k); background: color-mix(in srgb, var(--k) 9%, transparent); }
+  :where(.stat-hero .hero-chips .big) { font: var(--dw) 64px/1 var(--display); color: var(--k); }
+  :where(.stat-hero .hero-chips .lbl) { font-size: 32px; font-weight: 600; }
+  :where(.big-number) { display: flex; flex-direction: column; gap: 24px; }
+  :where(.big-number .num) { font-family: var(--display); font-weight: var(--dw); font-size: 280px; line-height: .9;
+    letter-spacing: var(--ls); color: var(--a1); }
+  :where(.big-number .cap) { font-size: 56px; max-width: 1400px; }
+</style>
+<!-- component: figure-full -->
+<style>
+  :where(.figure-full) { justify-content: center; gap: 28px; }
+  :where(.figure-full figure) { margin: 0; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 24px; }
+  :where(.figure-full figure > img, .figure-full figure > svg) { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
+  :where(.figure-full figcaption) { font-size: 34px; color: var(--muted); }
+</style>
+<!-- component: recap -->
+<style>
+  :where(.recap) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 40px; }
+  :where(.recap li) { display: flex; align-items: center; gap: 40px; font-size: 52px; font-weight: 600; }
+  :where(.recap .dot) { flex: none; width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; background: var(--a1);
+    color: var(--dot-fg, var(--bg)); font-family: var(--display); font-weight: var(--dw); font-size: 56px; }
+  :where(.recap li:nth-child(3n+2) .dot) { background: var(--a2); }
+  :where(.recap li:nth-child(3n) .dot) { background: var(--a3); }
+</style>
+<!-- deck-local layout: APE 7 (único bloque local; ajusta tamaños de los componentes copiados arriba) -->
+<style>
+  /* Cromo: etiquetas legibles en video */
+  .kicker { font-size: 28px; }
+  .foot { font-size: 26px; }
+  /* Diapositiva de contenido: kicker y título siempre arriba; el cuerpo llena el área restante y se centra */
+  .slide.content { justify-content: flex-start; gap: 36px; padding: 80px 140px 110px; }
+  .slide.content > .body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 40px; }
+  /* 02 pregunta: texto a la izquierda, dibujo grande a la derecha */
+  .hook-split { display: grid; grid-template-columns: 1fr 580px; align-items: center; gap: 96px; }
+  .hook-split .txt { display: flex; flex-direction: column; gap: 44px; }
+  .hook-split svg { width: 580px; height: 580px; }
+  /* 03 fórmula: figura grande a la izquierda, fórmula y símbolos a la derecha */
+  .pi-split { flex: 1; min-height: 0; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 96px; }
+  .pi-split > img { height: 600px; width: 600px; border-radius: 12px; }
+  .pi-split .formula-hero { gap: 72px; }
+  .pi-split .formula-hero .tex { font-size: 96px; }
+  .pi-split .formula-hero { align-items: flex-start; }
+  /* fórmula alineada a la izquierda: el MathML oculto de KaTeX empieza en el mismo punto y no sale de la página */
+  .pi-split .formula-hero .katex-display, .pi-split .formula-hero .katex-display > .katex { text-align: left; }
+  .pi-split .formula-hero .parts { align-items: end; gap: 40px; }
+  .pi-split .formula-hero .parts li { align-items: flex-start; text-align: left; }
+  .pi-split .formula-hero .parts li { font-size: 40px; }
+  /* 04 tres pasos en lenguaje simple (calc-rows sin fórmulas): paso + detalle a la izquierda, resultado a la derecha */
+  .calc-rows { gap: 30px; }
+  .calc-rows li { grid-template-columns: 1fr 540px; padding: 26px 44px; }
+  .calc-rows .step { display: flex; flex-direction: column; gap: 14px; }
+  .calc-rows .step-lbl { font-size: 46px; font-weight: 700; line-height: 1.15; }
+  .calc-rows .s { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; font-size: 40px; }
+  .calc-rows .pair { padding: 2px 18px; border: 3px solid var(--a3); border-radius: 12px; font-size: 40px; color: var(--fg); }
+  .calc-rows .res { font-size: 72px; }
+  /* 05 flujo */
+  .pipeline-flow .stage { min-height: 290px; padding: 34px 30px 38px; gap: 14px; }
+  .pipeline-flow .tag { font-size: 28px; }
+  .pipeline-flow .lbl { font-size: 54px; }
+  .pipeline-flow .desc { font-size: 32px; }
+  /* 06 y 09 comparación: columnas que llenan la altura */
+  .deck-compare .compare-side { justify-content: center; gap: 10px; padding: 36px 56px; }
+  .deck-compare .compare-side h2 { font-size: 84px; }
+  .deck-compare .compare-trait { font-size: 46px; padding: 18px 0; }
+  .deck-compare .compare-takeaway { font-size: 44px; }
+  /* 09: título en dos líneas, tarjetas más compactas para que el tiempo grande quepa */
+  #python-java .compare-side { padding: 24px 56px; gap: 4px; }
+  #python-java .compare-side h2 { font-size: 72px; }
+  #python-java .compare-trait { padding: 10px 0; }
+  .deck-compare .time { margin: 10px 0 0; font: var(--dw) 120px/1 var(--display); color: var(--side); }
+  /* 07 resultados */
+  .stat-hero .hero-chips .big { font-size: 80px; }
+  .stat-hero .hero-chips li { padding: 22px 34px; }
+  .stat-hero .hero-chips .lbl { font-size: 34px; }
+  .stat-hero .big-number .num { font-size: 240px; }
+  .stat-hero .big-number .cap { font-size: 48px; }
+  /* 08 figura protagonista */
+  .figure-full figure { gap: 20px; }
+  .figure-full figcaption { font-size: 36px; text-align: center; color: var(--fg); }
+  /* 10 cierre */
+  .recap { gap: 64px; }
+  .recap li { font-size: 58px; }
+  .recap .dot { width: 130px; height: 130px; font-size: 64px; }
+</style>
+<link rel="stylesheet" href="assets/anim/anim.css">
+</head>
+<body>
+<div id="stage">
+
+  <section class="slide alt cover active" id="portada">
+    <p class="kicker">Simulación · Unidad 2 · APE 7</p>
+    <h1 class="title xl">Monte Carlo:<br><span class="a">estimar con azar</span></h1>
+    <p class="lead">Alejandro Padilla · Computación, ciclo 5</p>
+    <p class="lead">Universidad Nacional de Loja · Docente: Ing. José O. Guamán Q.</p>
+    <aside class="notes">Hola, soy Alejandro Padilla. Les presento la práctica 7 de Simulación: estimación de resultados mediante el método de Monte Carlo. La idea es usar experimentos al azar para estimar dos valores: el número π y la probabilidad de que dos dados sumen 7. Hice los dos experimentos en Python y en Java, y al final comparo sus resultados y sus tiempos.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">01</span></div>
+  </section>
+
+  <section class="slide alt question-hook" id="pregunta">
+    <p class="kicker">02 · La idea</p>
+    <div class="hook-split">
+      <div class="txt">
+        <h1 class="title q">¿Se puede calcular π lanzando puntos?</h1>
+        <p class="lead">Repetir un experimento al azar y contar los aciertos</p>
+      </div>
+      <svg viewBox="0 0 560 560" role="img" aria-label="Cuadrado con un círculo inscrito y puntos lanzados al azar: azules dentro del círculo, rosados fuera" fill="none" stroke-width="8">
+        <rect x="10" y="10" width="540" height="540" style="stroke: var(--fg)"/>
+        <circle cx="280" cy="280" r="270" style="stroke: var(--fg)"/>
+        <g style="fill: var(--a3)" stroke="none"><circle cx="220" cy="170" r="14"/><circle cx="330" cy="240" r="14"/><circle cx="180" cy="330" r="14"/><circle cx="300" cy="400" r="14"/><circle cx="400" cy="150" r="14"/><circle cx="130" cy="240" r="14"/><circle cx="390" cy="330" r="14"/><circle cx="250" cy="300" r="14"/><circle cx="210" cy="450" r="14"/><circle cx="350" cy="470" r="14"/><circle cx="450" cy="250" r="14"/><circle cx="160" cy="400" r="14"/><circle cx="280" cy="120" r="14"/><circle cx="440" cy="400" r="14"/><circle cx="120" cy="320" r="14"/></g>
+        <g style="fill: var(--a2)" stroke="none"><circle cx="40" cy="40" r="14"/><circle cx="70" cy="520" r="14"/><circle cx="520" cy="50" r="14"/><circle cx="510" cy="520" r="14"/><circle cx="530" cy="470" r="14"/></g>
+      </svg>
+    </div>
+    <aside class="notes">Empiezo con una pregunta: ¿se puede calcular π lanzando puntos al azar? La respuesta es sí, y esa es la idea del método de Monte Carlo. Se repite muchas veces un experimento al azar y se cuenta cuántas veces pasa lo que nos interesa. Esa proporción se acerca al valor real cuando hay suficientes repeticiones. En el dibujo, los puntos azules cayeron dentro del círculo y los rosados, fuera.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">02</span></div>
+  </section>
+
+  <section class="slide content" id="pi">
+    <p class="kicker">03 · Modelo 1: el círculo</p>
+    <h1 class="title sm">El círculo ocupa π/4 del cuadrado</h1>
+    <div class="pi-split">
+      <img src="figuras/circulo.png" alt="5 000 puntos al azar en un cuadrado: azules dentro del círculo inscrito y naranjas fuera">
+      <div class="formula-hero">
+        <div class="tex" data-tex="\pi \approx 4 \cdot (\htmlClass{p1}{N_c} \,/\, \htmlClass{p2}{N})"></div>
+        <ul class="parts">
+          <li><b class="p1">N<sub>c</sub></b>puntos dentro del círculo</li>
+          <li><b class="p2">N</b>puntos lanzados en total</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes">Este es el primer modelo, el que pide la guía. Dibujo un cuadrado de lado 2 y dentro un círculo de radio 1. Lanzo puntos al azar dentro del cuadrado. El círculo ocupa π/4 del área del cuadrado, así que más o menos el 78.5 % de los puntos cae dentro. Si cuento los puntos que caen dentro, Nc, y los divido para el total, N, y multiplico por 4, obtengo una aproximación de π. En la figura hay 5 000 puntos: los azules están dentro del círculo y los naranjas, fuera.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">03</span></div>
+  </section>
+
+  <section class="slide content" id="dados" data-dense>
+    <p class="kicker">04 · Modelo 2: mi modelo propio</p>
+    <h1 class="title sm">Dos dados que suman 7: 1/6</h1>
+    <div class="body">
+      <ul class="calc-rows">
+        <li class="key fx"><span class="step"><span class="step-lbl">36 combinaciones posibles, 6 suman 7</span><span class="s"><span class="pair">1-6</span><span class="pair">2-5</span><span class="pair">3-4</span><span class="pair">4-3</span><span class="pair">5-2</span><span class="pair">6-1</span></span></span><span class="res">6/36 = 1/6</span></li>
+        <li class="fx"><span class="step"><span class="step-lbl">Cada dado sale de un número al azar</span><span class="s">0.5 × 6 = 3 → cara 4</span></span><span class="res">cara del 1 al 6</span></li>
+        <li class="fx"><span class="step"><span class="step-lbl">Lanzamos 1 000 000 de veces</span><span class="s">167 162 sumaron 7</span></span><span class="res">0.167162 ≈ 1/6</span></li>
+      </ul>
+    </div>
+    <aside class="notes">El docente pidió que escojamos un modelo matemático propio, y yo escogí dos dados que suman 7. Al lanzar dos dados hay 36 resultados posibles, todos igual de probables, y seis de ellos suman 7. Por eso la probabilidad exacta es 6 sobre 36, o sea 1/6, cerca de 0.166667. Cada dado sale de un número al azar u entre 0 y 1: lo multiplico por 6, tomo la parte entera y le sumo 1. Por ejemplo, con u igual a 0.5 sale un 4. La estimación es cuántos lanzamientos sumaron 7, divididos para el total; con un millón de lanzamientos salió 0.167162. Lo elegí porque su valor exacto se conoce y se puede comprobar a mano, así que puedo medir el error igual que con π.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">04</span></div>
+  </section>
+
+  <section class="slide content" id="generador" data-dense>
+    <p class="kicker">05 · Generador propio</p>
+    <h1 class="title sm">Mismo generador, mismos números</h1>
+    <div class="body">
+      <ol class="pipeline-flow">
+        <li class="stage k1 fx"><span class="tag">Inicio</span><span class="lbl">Semilla</span><span class="desc">X₀ = 12345</span></li>
+        <li class="stage k2 fx"><span class="tag">Fórmula</span><span class="lbl">LCG</span><span class="desc">X(n+1) = (a·X(n) + c) mod m</span></li>
+        <li class="stage k3 fx"><span class="tag">Escala</span><span class="lbl">Número u</span><span class="desc">entre 0 y 1: u = X / m</span></li>
+        <li class="stage k1 pass fx"><span class="tag">Uso</span><span class="lbl">Punto o dado</span><span class="desc">dos números seguidos</span></li>
+      </ol>
+      <p class="lead">a = 1664525 · c = 1013904223 · m = 2³² · igual en Python y Java</p>
+    </div>
+    <aside class="notes">Para que Python y Java den lo mismo, no usé el generador de números al azar de cada lenguaje, sino uno propio: un generador congruencial lineal. Parte de una semilla, 12345, y cada número nuevo sale del anterior con la fórmula X de n más 1 igual a a por X de n más c, módulo m. Al dividir para m queda un número entre 0 y 1. Cada punto o cada lanzamiento usa dos de esos números seguidos. Las constantes a, c y m son las mismas en los dos lenguajes, así que los dos producen exactamente la misma lista de números.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">05</span></div>
+  </section>
+
+  <section class="slide content deck-compare" id="mvc">
+    <p class="kicker">06 · Arquitectura</p>
+    <h1 class="title sm">Modelo, Vista y Controlador</h1>
+    <p class="compare-criterion">Misma estructura en los dos lenguajes</p>
+    <div class="compare-pair">
+      <div class="compare-side"><h2>Python</h2>
+        <p class="compare-trait">Modelo calcula</p>
+        <p class="compare-trait">Vista: tablas y gráficas</p>
+        <p class="compare-trait">Controlador coordina</p></div>
+      <div class="compare-side"><h2>Java</h2>
+        <p class="compare-trait">Modelo calcula</p>
+        <p class="compare-trait">Vista: tablas</p>
+        <p class="compare-trait">Controlador coordina</p></div>
+    </div>
+    <p class="compare-takeaway">18 pruebas automáticas</p>
+    <aside class="notes">Los dos programas siguen la arquitectura Modelo-Vista-Controlador. El modelo tiene el generador y los dos experimentos, y calcula la estimación, el error y el tiempo. La vista muestra las tablas en la consola y, en Python, también las gráficas. El controlador recibe el tamaño de muestra y la semilla, ejecuta los experimentos y pasa los resultados a la vista. Además, el programa de Python ejecuta el de Java con los mismos parámetros y junta todo en una tabla. El código tiene 18 pruebas automáticas; una de ellas comprueba que Java cuente los mismos aciertos que Python.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">06</span></div>
+  </section>
+
+  <section class="slide content" id="resultado-pi">
+    <p class="kicker">07 · Resultados del modelo 1</p>
+    <h1 class="title sm">π = 3.141948 con un millón</h1>
+    <div class="body">
+      <div class="stat-hero">
+        <div class="big-number fx"><span class="num">0.000355</span><p class="cap">error frente a 3.141593</p></div>
+        <ul class="hero-chips">
+          <li class="fx"><span class="big">3.188000</span><span class="lbl">N = 1 000</span></li>
+          <li class="fx"><span class="big">3.151600</span><span class="lbl">N = 10 000</span></li>
+          <li class="fx"><span class="big">3.133240</span><span class="lbl">N = 100 000</span></li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes">Estos son los resultados de π con los cuatro tamaños de muestra de la guía. Con 1 000 puntos salió 3.188; con 10 000, 3.1516; con 100 000, 3.13324; y con un millón de puntos, 3.141948. El valor real es 3.141593, así que el error con un millón fue de apenas 0.000355, mientras que con 1 000 puntos era 0.046. En general, más puntos dan menos error. Pero fíjense que de 10 000 a 100 000 casi no mejoró.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">07</span></div>
+  </section>
+
+  <section class="slide content figure-full" id="error">
+    <p class="kicker">08 · Tamaño de muestra y error</p>
+    <h1 class="title sm">El error baja, pero no siempre</h1>
+    <figure>
+      <img src="figuras/error-vs-n.png" alt="Error absoluto según el tamaño de muestra, en escala logarítmica, para π y para los dados, junto con el error estándar teórico">
+      <figcaption>Dados: el error con 1 000 000 (0.000495) fue mayor que con 100 000 (0.000203)</figcaption>
+    </figure>
+    <aside class="notes">Esta gráfica muestra el error según el tamaño de muestra, a la izquierda para π y a la derecha para los dados. La línea punteada es el error típico que se espera. En π el error baja casi siempre. Pero en los dados, el error con un millón de lanzamientos, 0.000495, fue mayor que con 100 000, 0.000203. Esto pasa porque más muestras bajan el error en promedio, no en cada corrida: los lanzamientos extra también tienen su propio azar. Además, el error baja despacio: para tener un error 10 veces menor hacen falta unas 100 veces más muestras.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">08</span></div>
+  </section>
+
+  <section class="slide content deck-compare" id="python-java">
+    <p class="kicker">09 · Python frente a Java</p>
+    <h1 class="title sm">Mismos resultados; Java 46 veces más rápido</h1>
+    <p class="compare-criterion">π, un millón de puntos</p>
+    <div class="compare-pair">
+      <div class="compare-side"><h2>Python</h2>
+        <p class="compare-trait" data-mark="yes">785 487 aciertos</p>
+        <p class="time">0.519 s</p></div>
+      <div class="compare-side"><h2>Java</h2>
+        <p class="compare-trait" data-mark="yes">785 487 aciertos</p>
+        <p class="time">0.011 s</p></div>
+    </div>
+    <p class="compare-takeaway">Solo cambia el tiempo</p>
+    <aside class="notes">Ahora comparo los dos lenguajes. En los ocho casos, cuatro tamaños de muestra por dos modelos, Python y Java contaron exactamente los mismos aciertos; por ejemplo, 785 487 puntos dentro del círculo con un millón. Por eso dieron la misma estimación y el mismo error. Lo único que cambió fue el tiempo: con un millón de puntos, Java tardó 0.011 segundos y Python 0.519, unas 46 veces más rápido. Con pocas muestras la diferencia fue menor, entre 4.9 y 7.2 veces.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">09</span></div>
+  </section>
+
+  <section class="slide content" id="cierre">
+    <p class="kicker">10 · Conclusiones</p>
+    <h1 class="title sm">Lo que aprendí</h1>
+    <div class="body">
+      <ol class="recap">
+        <li><span class="dot">1</span>Monte Carlo estima contando aciertos al azar</li>
+        <li><span class="dot">2</span>Más muestras bajan el error, pero cuestan tiempo</li>
+        <li><span class="dot">3</span>Mismo generador y semilla: mismos resultados</li>
+      </ol>
+    </div>
+    <aside class="notes">Me llevo tres ideas. Primero, Monte Carlo estima un valor contando la proporción de aciertos en un experimento al azar, y funciona igual para π que para los dados. Segundo, más muestras bajan el error en general, pero no en cada corrida, y cuestan tiempo: para un error 10 veces menor hacen falta unas 100 veces más muestras. Y tercero, con el mismo generador y la misma semilla, los resultados se pueden repetir en cualquier lenguaje; Java fue más rápido, pero dio los mismos números que Python. Gracias.</aside>
+    <div class="foot"><span>SIMULACIÓN · APE 7</span><span class="page">10</span></div>
+  </section>
+
+  <div id="notes"></div>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script>
+document.querySelectorAll("[data-tex]").forEach((el) => katex.render(el.dataset.tex, el, {
+  displayMode: true, throwOnError: false, trust: (ctx) => ctx.command === "\\htmlClass",
+}));
+</script>
+<script>
+"use strict";
+const PRINT = new URLSearchParams(location.search).has("print");
+const slides = [...document.querySelectorAll(".slide")];
+let current = 0;
+function show(i) {
+  current = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((slide, index) => slide.classList.toggle("active", index === current));
+  const notes = slides[current].querySelector(".notes");
+  document.getElementById("notes").textContent = notes ? notes.textContent : "";
+  history.replaceState(null, "", "#" + (current + 1));
+}
+function resize() {
+  const scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+  document.getElementById("stage").style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+}
+document.addEventListener("keydown", (event) => {
+  if (["ArrowRight", "PageDown", " ", "Enter"].includes(event.key)) { event.preventDefault(); show(current + 1); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) { event.preventDefault(); show(current - 1); }
+  else if (event.key === "Home") show(0);
+  else if (event.key === "End") show(slides.length - 1);
+  else if (event.key === "f" || event.key === "F") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  else if (event.key === "n" || event.key === "N") document.body.classList.toggle("show-notes");
+});
+if (PRINT) document.body.classList.add("print");
+else { addEventListener("resize", resize); resize(); show(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1)); }
+</script>
+<script src="assets/anim/anim.js"></script>
+</body>
+</html>
