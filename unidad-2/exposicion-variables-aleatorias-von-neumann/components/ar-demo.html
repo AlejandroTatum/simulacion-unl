@@ -1,10 +1,12 @@
 <!-- component: ar-demo | deck, every theme (tokens only) | needs assets/demo/pcg64.js + ar-demo.js (+ resultados.js)
      Source: deck "Métodos para generar variables aleatorias: Aceptación-Rechazo de Von Neumann"
-     (Simulación UNL, unidad 2, 2026-11-23), slides 13-15. Candidate for harvest into the skill
+     (Simulación UNL, unidad 2, 2026-11-23), slides 13-15 of the 20-minute version; slides 29-32 of the 1-hour version. Candidate for harvest into the skill
      components/ as a token-based live demo (the shared live-demo is deportivo-only).
      A live, seeded simulation panel that runs the same algorithm as the Python code shown on the slide.
      Layouts: .ar-code-run (code | plot + counters), .ar-hist-run (histogram | live statistics),
               .ar-m-run (M selector + plot | one .ar-mrow per M with theoretical vs observed bars).
+              .ar-eff-run (live observed efficiency vs 1/M and attempts vs n·M | .ar-geo panel with the
+              geometric law of attempts, KaTeX in .ar-tex); binds data-ar="inv-m|nm|m" too.
      .ar-plot[data-view=scatter|hist] holds two stacked canvases (.ar-pts points, .ar-ovl axes/curves).
      Values bind by data-ar="acc|rej|att|eff|mean|var|m|status"; rows by .ar-mrow[data-m].
      Buttons: data-ar-act="start|pause|reset", data-ar-m="1.5". Keys on a demo slide: S, R, 1-4.
@@ -67,6 +69,15 @@
   :where(.ar-att) { display: flex; flex-direction: column; gap: 4px; text-align: right; }
   :where(.ar-att .ar-big) { font: var(--dw) 44px/1 var(--display); font-variant-numeric: tabular-nums; }
   :where(.ar-att .ar-small) { font: 600 24px/1.2 var(--mono); color: var(--muted); }
+  /* .ar-eff-run (slide 31): live observed vs theoretical efficiency | the geometric number of attempts. */
+  :where(.ar-demo.ar-eff-run) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  :where(.ar-geo) { display: flex; flex-direction: column; gap: 18px; padding: 30px 40px; border-top: 12px solid var(--a3); background: color-mix(in srgb, var(--a3) 9%, transparent); }
+  :where(.ar-geo .ar-l) { font: 600 24px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.ar-geo .ar-tex) { font-size: 52px; }
+  .ar-geo .ar-tex .katex-display { margin: 0; text-align: left; }
+  .ar-geo .ar-tex .katex-display > .katex { text-align: left; }
+  :where(.ar-geo .ar-big3) { font: var(--dw) 96px/1 var(--display); letter-spacing: var(--ls); color: var(--a3); }
+  :where(.ar-geo p) { margin: 0; font-size: 34px; line-height: 1.25; }
   body.print .ar-btn, body.print .ar-status { display: none; }
   body.print .ar-print { display: inline; }
   body.print .ar-fill.obs { transition: none; }

@@ -1,7 +1,7 @@
-/* Demo en vivo de aceptación-rechazo (Beta(2,2), propuesta uniforme), diapositivas 13 a 15.
+/* Demo en vivo de aceptación-rechazo (Beta(2,2), propuesta uniforme), diapositivas 29 a 32.
    Corre el mismo algoritmo que codigo/beta22.py con el mismo generador (pcg64.js =
    numpy.random.default_rng(42)), así que al llegar a 10 000 muestras da los mismos
-   números que Python. Un solo estado compartido: lo que corre en la 13 se ve en la 14 y la 15.
+   números que Python. Un solo estado compartido: lo que corre en la 29 se ve en la 30, la 31 y la 32.
    Controles: botones Iniciar / Pausa / Reiniciar y M; teclado S (iniciar/pausar), R (reiniciar),
    1-4 (M = 1.5, 2, 3, 6) cuando la diapositiva activa tiene una demo.
    En ?print (PDF) no anima: dibuja la corrida completa y escribe los valores de Python

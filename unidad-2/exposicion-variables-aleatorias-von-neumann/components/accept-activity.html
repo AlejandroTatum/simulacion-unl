@@ -1,0 +1,135 @@
+<!-- component: accept-activity | deck, every theme (tokens only)
+     Source: deck "Métodos para generar variables aleatorias: Aceptación-Rechazo de Von Neumann"
+     (Simulación UNL, unidad 2, 2026-11-23), slide 27 (activity with the audience). Candidate for harvest.
+     The audience dictates a candidate Y and a uniform U (0 to 1); the presenter types them in two inputs and
+     clicks «Decidir». The slide shows the threshold 4Y(1−Y), the comparison U ≤ 4Y(1−Y), the verdict
+     (Aceptado / Rechazado) and the point (Y, 1.5·U) over the Beta(2,2) curve f and the envelope M·g = 1.5:
+     below f it is accepted, above f it is rejected (U ≤ f(Y)/1.5 ⇔ 1.5·U ≤ f(Y)).
+     Keyboard: typing inside an input never reaches the deck or the demo keys (keydown stopPropagation);
+     Enter inside an input decides, Esc leaves the input. No new global key. The button loses focus after
+     the click, so Space/Enter keep advancing the deck. Out-of-range or empty values show a message.
+     Editing a value clears the verdict until «Decidir» is pressed again (so the class computes first).
+     The HTML ships a solved example (Y = 0.20, U = 0.60 → 0.64 → Aceptado); ?print shows it without the button.
+     Category colors: --a1 objetivo f y aceptado, --a2 candidato Y, --a3 envolvente M·g; rejected is --muted.
+     Coordinates: X(x) = 90 + 1020·x, V(v) = 500 − 280·v in a 1200×560 viewBox (same as the dot plate). -->
+<style>
+  :where(.aa-wrap) { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 620px; gap: 56px; align-items: stretch; }
+  :where(.aa-fig) { margin: 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px 20px;
+    border: 3px solid color-mix(in srgb, var(--fg) 16%, transparent); background: color-mix(in srgb, #fff 55%, var(--bg)); }
+  :where(.aa-fig svg) { flex: 1; min-height: 0; width: 100%; display: block; }
+  :where(.aa-fig figcaption) { font: 600 24px/1.25 var(--mono); color: var(--muted); }
+  :where(.aa-pt) { fill: var(--a1); stroke: var(--bg); stroke-width: 5; }
+  :where(.aa-pt.no) { fill: var(--bg); stroke: var(--muted); stroke-width: 7; }
+  :where(.aa-guide) { stroke: var(--a1); stroke-width: 5; stroke-dasharray: 12 10; }
+  :where(.aa-off) { visibility: hidden; }
+  :where(.aa-panel) { display: flex; flex-direction: column; justify-content: center; gap: 22px; min-width: 0; }
+  :where(.aa-fields) { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  :where(.aa-field) { display: flex; flex-direction: column; gap: 8px; }
+  :where(.aa-field label) { font: 600 24px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.aa-field input) { width: 100%; box-sizing: border-box; padding: 10px 18px; border: 4px solid var(--fg); border-radius: 14px;
+    background: var(--bg); color: var(--fg); font: 600 56px/1.1 var(--mono); }
+  :where(.aa-field.k2 input) { border-color: var(--a2); }
+  :where(.aa-field input[aria-invalid="true"]) { border-style: dashed; border-color: var(--fg); }
+  :where(.aa-go) { align-self: flex-start; padding: 18px 44px; border: 3px solid var(--fg); border-radius: 999px; background: var(--fg); color: var(--bg);
+    font: 700 32px/1 var(--mono); cursor: pointer; }
+  :where(.aa-out) { display: flex; flex-direction: column; gap: 12px; padding: 20px 26px; border-left: 10px solid var(--muted);
+    background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  :where(.aa-out[data-state="ok"]) { border-left-color: var(--a1); }
+  :where(.aa-line) { margin: 0; font: 600 34px/1.25 var(--mono); }
+  :where(.aa-line b) { font-weight: 700; }
+  :where(.aa-verdict) { align-self: flex-start; padding: 8px 28px; border: 3px solid var(--muted); border-radius: 999px; color: var(--muted); font: 700 38px/1.1 var(--mono); }
+  :where(.aa-out[data-state="ok"] .aa-verdict) { background: var(--a1); border-color: var(--a1); color: var(--dot-fg, var(--bg)); }
+  :where(.aa-msg) { min-height: 1.25em; margin: 0; font-size: 30px; font-weight: 600; line-height: 1.25; }
+  :where(.aa-print) { display: none; margin: 0; font: 600 24px/1.25 var(--mono); color: var(--muted); }
+  body.print .aa-go { display: none; }
+  body.print .aa-print { display: block; }
+  @media print { .aa-go { display: none; } .aa-print { display: block; } }
+</style>
+<div class="aa-wrap">
+  <figure class="aa-fig">
+    <svg viewBox="0 0 1200 560" role="img" aria-label="Curva f de Beta(2,2) bajo la envolvente 1.5, con el punto del intento: bajo la curva se acepta, encima se rechaza" style="font-family: var(--mono)">
+      <rect x="90" y="80" width="1020" height="420" style="fill: color-mix(in srgb, var(--muted) 10%, transparent)"/>
+      <polygon points="90.0,500.0 115.5,459.1 141.0,420.2 166.5,383.5 192.0,348.8 217.5,316.2 243.0,285.8 268.5,257.5 294.0,231.2 319.5,207.0 345.0,185.0 370.5,165.1 396.0,147.2 421.5,131.4 447.0,117.8 472.5,106.2 498.0,96.8 523.5,89.5 549.0,84.2 574.5,81.1 600.0,80.0 625.5,81.0 651.0,84.2 676.5,89.4 702.0,96.8 727.5,106.2 753.0,117.8 778.5,131.4 804.0,147.2 829.5,165.1 855.0,185.0 880.5,207.1 906.0,231.2 931.5,257.4 957.0,285.8 982.5,316.2 1008.0,348.8 1033.5,383.5 1059.0,420.2 1084.5,459.0 1110.0,500.0" stroke-width="7" stroke-linejoin="round" style="fill: color-mix(in srgb, var(--a1) 14%, transparent); stroke: var(--a1)"/>
+      <line x1="90" y1="80" x2="1110" y2="80" stroke-width="7" style="stroke: var(--a3)"/>
+      <g stroke-width="4" style="stroke: var(--fg)"><line x1="90" y1="500" x2="1110" y2="500"/><line x1="90" y1="500" x2="90" y2="70"/></g>
+      <line class="aa-guide" data-aa="guide" x1="294" y1="500" x2="294" y2="231.2"/>
+      <circle class="aa-pt" data-aa="pt" cx="294" cy="248" r="18"/>
+      <g font-size="28" font-weight="600" style="fill: var(--muted)">
+        <text x="90" y="540" text-anchor="middle">0</text><text x="600" y="540" text-anchor="middle">0.5</text><text x="1110" y="540" text-anchor="middle">1</text>
+        <text x="76" y="510" text-anchor="end">0</text><text x="76" y="90" text-anchor="end">1.5</text>
+      </g>
+      <g font-size="30" font-weight="600">
+        <text x="1110" y="62" text-anchor="end" style="fill: var(--a3)">M·g = 1.5</text>
+        <text x="100" y="62" style="fill: var(--a1)">f(x) = 6x(1−x)</text>
+        <text x="600" y="420" text-anchor="middle" style="fill: var(--a1)">se acepta</text>
+        <text x="1100" y="130" text-anchor="end" style="fill: var(--muted)">se rechaza</text>
+      </g>
+    </svg>
+    <figcaption>punto (Y, 1.5·U): bajo f ⇔ U ≤ 4Y(1−Y)</figcaption>
+  </figure>
+  <div class="aa-panel">
+    <div class="aa-fields">
+      <div class="aa-field k2"><label for="aa-y">Candidato Y</label><input id="aa-y" data-aa="y" type="number" min="0" max="1" step="0.01" value="0.20" inputmode="decimal" autocomplete="off"></div>
+      <div class="aa-field"><label for="aa-u">Uniforme U</label><input id="aa-u" data-aa="u" type="number" min="0" max="1" step="0.01" value="0.60" inputmode="decimal" autocomplete="off"></div>
+    </div>
+    <button type="button" class="aa-go" data-aa="go">Decidir</button>
+    <div class="aa-out" data-aa="out" data-state="ok" aria-live="polite">
+      <p class="aa-line">Umbral 4Y(1−Y) = <b data-aa="thr">0.64</b></p>
+      <p class="aa-line" data-aa="cmp">U = 0.60 ≤ 0.64</p>
+      <span class="aa-verdict" data-aa="verdict">Aceptado</span>
+    </div>
+    <p class="aa-msg" data-aa="msg" role="alert"></p>
+    <p class="aa-print">Ejemplo resuelto: intento 1 de la tabla</p>
+  </div>
+</div>
+<script>
+"use strict";
+// Actividad de la diapositiva 27 (componente local accept-activity): el público dicta Y y U, se decide con U ≤ 4Y(1−Y).
+// Las teclas escritas en las casillas no llegan a la navegación ni a la demo; Enter decide y Esc sale de la casilla.
+(function () {
+  const box = document.querySelector(".aa-wrap");
+  if (!box) return;
+  const $ = (key) => box.querySelector('[data-aa="' + key + '"]');
+  const yIn = $("y"), uIn = $("u"), out = $("out"), msg = $("msg"), pt = $("pt"), guide = $("guide");
+  const X = (x) => 90 + 1020 * x, V = (v) => 500 - 280 * v;
+  // 0.6 → "0.60", 0.8844 → "0.8844", 1 → "1.00"
+  const fmt = (v) => { const s = String(Number(v.toFixed(4))); const d = (s.split(".")[1] || "").length; return d >= 2 ? s : v.toFixed(2); };
+  function read(input, name) {
+    const raw = input.value.trim().replace(",", ".");
+    const v = raw === "" ? NaN : Number(raw);
+    const bad = !Number.isFinite(v) || v < 0 || v > 1;
+    input.setAttribute("aria-invalid", String(bad));
+    return bad ? { error: name + " debe ser un número entre 0 y 1 (por ejemplo 0.35)." } : { v };
+  }
+  function clear(text) {
+    out.dataset.state = "";
+    $("thr").textContent = "—"; $("cmp").textContent = "U = —"; $("verdict").textContent = text;
+    pt.classList.add("aa-off"); guide.classList.add("aa-off");
+  }
+  function decide() {
+    const y = read(yIn, "Y"), u = read(uIn, "U");
+    const error = y.error || u.error;
+    if (error) { msg.textContent = (y.error && u.error) ? "Y y U deben ser números entre 0 y 1 (por ejemplo 0.35)." : error; clear("Revisar valores"); return; }
+    msg.textContent = "";
+    const thr = Math.round(4 * y.v * (1 - y.v) * 1e12) / 1e12;
+    const ok = u.v <= thr;
+    $("thr").textContent = fmt(thr);
+    $("cmp").textContent = "U = " + fmt(u.v) + (ok ? " ≤ " : " > ") + fmt(thr);
+    $("verdict").textContent = ok ? "Aceptado" : "Rechazado";
+    out.dataset.state = ok ? "ok" : "no";
+    pt.setAttribute("cx", X(y.v).toFixed(1)); pt.setAttribute("cy", V(1.5 * u.v).toFixed(1));
+    pt.classList.toggle("no", !ok); pt.classList.remove("aa-off");
+    guide.setAttribute("x1", X(y.v).toFixed(1)); guide.setAttribute("x2", X(y.v).toFixed(1));
+    guide.setAttribute("y2", V(1.5 * thr).toFixed(1)); guide.classList.remove("aa-off");
+  }
+  [yIn, uIn].forEach((input) => {
+    input.addEventListener("keydown", (event) => {
+      event.stopPropagation();
+      if (event.key === "Enter") { event.preventDefault(); decide(); }
+      else if (event.key === "Escape") input.blur();
+    });
+    input.addEventListener("input", () => { msg.textContent = ""; input.setAttribute("aria-invalid", "false"); clear("Pulse Decidir"); });
+  });
+  $("go").addEventListener("click", (event) => { event.stopPropagation(); decide(); event.currentTarget.blur(); });
+})();
+</script>
