@@ -548,12 +548,12 @@
     <p class="kicker">Cierre</p>
     <h1 class="title sm">Lo que hay que llevarse</h1>
     <ol class="recap">
-      <li><span class="dot">1</span>Se transforman uniformes: inversa, especial o rechazo</li>
-      <li><span class="dot">2</span>Von Neumann propone con g y filtra con f/(M·g)</li>
-      <li><span class="dot">3</span>Siempre correcto; eficiente según 1/M</li>
+      <li><span class="dot">1</span>Generar una variable es transformar uniformes; sin F⁻¹ usable, se filtra</li>
+      <li><span class="dot">2</span>Es exacto si g cubre a f y f ≤ M·g: media 0.5036 frente a 0.5</li>
+      <li><span class="dot">3</span>M fija el costo: 66.80 % con M = 1.5, 16.67 % con M = 6</li>
     </ol>
-    <p class="lead fx">Repaso: ¿qué pasa si g = 0 donde f &gt; 0? · ¿por qué M = 6 es peor que M = 1.5?</p>
-    <aside class="notes">Apertura (Anexo A, cierre): «El método es válido siempre que exista una propuesta con soporte adecuado y una envolvente correcta. Pero una implementación correcta debe ir acompañada de comprobaciones estadísticas y análisis de eficiencia». Puntos clave: 1) Generar variables aleatorias es transformar uniformes: inversa, transformaciones especiales o rechazo, según costo y validez. 2) Von Neumann propone con g y filtra con f/(M·g); los aceptados siguen f. 3) Siempre correcto si la envolvente es válida; eficiente según 1/M. Preguntas de repaso: ¿qué ocurre si g(x) = 0 en una región con f(x) &gt; 0? (nunca se proponen candidatos allí: no se reproduce f). ¿Con f y g fijas, por qué M = 6 es peor que M = 1.5? (la aceptación esperada es 1/M: más rechazo). Frase final: «Aceptación-rechazo convierte candidatos fáciles de simular en muestras de otra distribución mediante un filtro probabilístico. Su valor está en la flexibilidad, y su principal compromiso es la cantidad de rechazos».</aside>
+    <p class="lead fx">Regla práctica: elegir g parecida a f para que M quede cerca de 1.</p>
+    <aside class="notes">Apertura (Anexo A, cierre): «El método es válido siempre que exista una propuesta con soporte adecuado y una envolvente correcta. Pero una implementación correcta debe ir acompañada de comprobaciones estadísticas y análisis de eficiencia». Puntos clave: 1) Generar variables aleatorias es transformar uniformes. La inversa es la vía directa cuando F⁻¹ se puede evaluar; si no, aceptación-rechazo propone con g y filtra con f/(M·g). 2) El resultado es exacto, no aproximado, pero solo bajo dos condiciones: g cubre todo el soporte de f y f ≤ M·g en todo el dominio. Lo demostramos (la g se cancela) y lo comprobamos: con 10 000 muestras la media dio 0.5036 frente a 0.5 y la varianza 0.0497 frente a 0.05. El histograma confirma, pero no reemplaza a la demostración. 3) M no afecta la corrección, afecta el costo: con M = 1.5 se aceptó el 66.80 % (14 969 intentos) y con M = 6 solo el 16.67 % (59 983 intentos), con la misma forma final. Por eso conviene una g parecida a f, para que M quede cerca de 1. Preguntas de repaso, si sobra tiempo: ¿qué ocurre si g(x) = 0 en una región con f(x) &gt; 0? (nunca se proponen candidatos allí: no se reproduce f). ¿Con f y g fijas, por qué M = 6 es peor que M = 1.5? (la aceptación esperada es 1/M: más rechazo). Frase final: «Aceptación-rechazo convierte candidatos fáciles de simular en muestras de otra distribución mediante un filtro probabilístico. Su valor está en la flexibilidad, y su principal compromiso es la cantidad de rechazos».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 17</span></div>
   </section>
 
