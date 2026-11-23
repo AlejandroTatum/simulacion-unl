@@ -1,10 +1,11 @@
 # Métodos para generar variables aleatorias: Aceptación-Rechazo de Von Neumann
 # duration: 20 min
 # speakers: Expositor 1, Expositor 2, Expositor 3
+# 18 diapositivas: las 17 del esquema aprobado (S5) + la 18, ronda final de preguntas fuera de los 20:00 (T5, tiempo 0:00).
 # Esquema aprobado (S5 de odd/tasks/expo-variables-aleatorias-von-neumann.md). Fuente única: borrador
 # "Guia_Detallada_3_Expositores_Von_Neumann.pdf" (p. = página, § = sección). Colores: a1 naranja = objetivo f y
 # aceptados; a2 verde azulado = propuesta g y candidatos; a3 morado = envolvente M·g; gris = rechazados.
-# Componentes locales (en components/, para cosecha): trial-table (12) y ar-demo (13-15); la columna 1 nombra el
+# Componentes locales (en components/, para cosecha): trial-table (12), ar-demo (13-15) y reveal-qa (18); la columna 1 nombra el
 # componente compartido más cercano. Repetición deliberada: deck-compare en 3 y 16 (dos contrastes de dos lados,
 # lejos entre sí; el 16 usa marcas sí/no) y calc-rows en 5 y 11 (dos cálculos paso a paso).
 cover | Métodos para generar variables aleatorias | portada: título, subtítulo Aceptación-Rechazo de Von Neumann, objetivo | Presentar tema, grupo y objetivo de la clase. Fuente: borrador p. 1 (título y objetivo de aprendizaje). | Expositor 1 | 0:30
@@ -24,3 +25,4 @@ figure-full | El histograma confirma la forma | demo en vivo: histograma de dens
 bar-rows | Correcto no es lo mismo que eficiente: aceptación = 1/M | demo en vivo: selector M 1.5/2/3/6, eficiencia observada vs 1/M e intentos vs n·M (data-dense) | Subir M mantiene la corrección y aumenta los rechazos. Fuente: borrador §12 y tabla de M, p. 11-12. | Expositor 3 | 1:20
 deck-compare | Dónde se usa y cuándo no conviene | aplicaciones ✓ frente a errores frecuentes ✕ (data-dense) | Aplicaciones ilustrativas y errores frecuentes del borrador. Fuente: borrador §14, p. 13. | Expositor 3 | 1:20
 recap | Lo que hay que llevarse | tres ideas + dos preguntas de repaso (data-dense) | Cierre con la transición del Anexo A (E3→cierre) y preguntas 1 y 3 del §15. Fuente: borrador §15, p. 14; Anexo A, p. 15. | Expositor 3 | 1:20
+question-hook | Preguntas | ronda final: 5 preguntas sencillas, cada una con botón «Ver respuesta» que muestra la respuesta en su lugar (componente local reveal-qa; PDF: todas visibles) (data-dense) | Fuera de los 20:00: leer la pregunta, esperar unos segundos, tomar una respuesta y confirmarla con el botón. Repasa diap. 2, 4, 9, 8 y 15. Pedido L8. | Expositor 3 | 0:00

@@ -212,6 +212,22 @@
   body.print .ar-fill.obs { transition: none; }
   @media print { .ar-btn, .ar-status { display: none; } .ar-print { display: inline; } }
 </style>
+<style> /* component: reveal-qa (local, components/reveal-qa.html) */
+  :where(.rq-list) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: rq; }
+  :where(.rq-item) { counter-increment: rq; display: grid; grid-template-columns: 64px minmax(0, 1fr) 340px; column-gap: 28px; row-gap: 6px;
+    align-items: center; padding: 12px 24px; border-left: 10px solid var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  :where(.rq-item)::before { content: counter(rq); grid-row: 1 / span 2; font: var(--dw) 56px/1 var(--display); color: var(--fg); }
+  :where(.rq-q) { grid-column: 2; font-size: 36px; font-weight: 600; line-height: 1.2; }
+  :where(.rq-a) { grid-column: 2; font-size: 32px; line-height: 1.2; }
+  :where(.rq-a b) { font: 600 24px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 14px; }
+  :where(.rq-a[hidden]) { display: block; visibility: hidden; }
+  :where(.rq-btn) { grid-column: 3; grid-row: 1 / span 2; justify-self: end; font: 700 26px/1 var(--mono); padding: 14px 26px; border-radius: 999px;
+    border: 3px solid var(--fg); background: transparent; color: var(--fg); cursor: pointer; white-space: nowrap; }
+  :where(.rq-btn[aria-expanded="true"]) { background: var(--fg); color: var(--bg); }
+  body.print .rq-btn { display: none; }
+  body.print .rq-a[hidden] { visibility: visible; }
+  @media print { .rq-btn { display: none; } .rq-a[hidden] { visibility: visible; } }
+</style>
 <link rel="stylesheet" href="assets/anim/anim.css">
 </head>
 <body>
@@ -557,6 +573,31 @@
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 17</span></div>
   </section>
 
+  <!-- 18 · Ronda final de preguntas (fuera de los 20:00) -->
+  <section class="slide" id="preguntas" data-dense>
+    <p class="kicker">Ronda final</p>
+    <h1 class="title sm">Preguntas</h1>
+    <ol class="rq-list">
+      <li class="rq-item"><p class="rq-q">¿Qué números produce el computador como punto de partida?</p>
+        <p class="rq-a" id="rq-a1" hidden><b>Respuesta</b>Uniformes entre 0 y 1.</p>
+        <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a1">Ver respuesta</button></li>
+      <li class="rq-item"><p class="rq-q">¿Una densidad puede valer más de 1?</p>
+        <p class="rq-a" id="rq-a2" hidden><b>Respuesta</b>Sí. Lo que debe valer 1 es el área bajo la curva.</p>
+        <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a2">Ver respuesta</button></li>
+      <li class="rq-item"><p class="rq-q">¿Qué se hace con un candidato rechazado?</p>
+        <p class="rq-a" id="rq-a3" hidden><b>Respuesta</b>Se descarta: no entra en la muestra.</p>
+        <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a3">Ver respuesta</button></li>
+      <li class="rq-item"><p class="rq-q">¿Dónde debe quedar la envolvente M·g?</p>
+        <p class="rq-a" id="rq-a4" hidden><b>Respuesta</b>Siempre por encima de f.</p>
+        <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a4">Ver respuesta</button></li>
+      <li class="rq-item"><p class="rq-q">Si M crece, ¿el método se vuelve más rápido o más lento?</p>
+        <p class="rq-a" id="rq-a5" hidden><b>Respuesta</b>Más lento: se rechazan más candidatos.</p>
+        <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a5">Ver respuesta</button></li>
+    </ol>
+    <aside class="notes">Ronda final, fuera de los 20:00 de la exposición: la modera el expositor 3 y responde quien tenga el tema (E1: preguntas 1 y 2; E2: 3 y 4; E3: 5). Cómo hacerla: 1) Leer la pregunta en voz alta, sin pulsar nada. 2) Esperar unos segundos en silencio para que el público piense. 3) Tomar una respuesta del público (o de quien levante la mano) y repetirla en voz alta. 4) Pulsar «Ver respuesta» con el mouse para confirmarla y comentarla en una frase. El clic no cambia de diapositiva; el mismo botón vuelve a ocultar la respuesta. Si falta tiempo, hacer solo 2 o 3 preguntas. Más preguntas, con la respuesta esperada, en la página 7 de la guía de expositores.</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">Todos · 18</span></div>
+  </section>
+
   <div id="notes"></div>
 </div>
 <script src="assets/katex/katex.min.js"></script>
@@ -594,6 +635,21 @@ document.addEventListener("keydown", (event) => {
 });
 if (PRINT) document.body.classList.add("print");
 else { addEventListener("resize", resize); resize(); show(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1)); }
+</script>
+<script>
+"use strict";
+// Botones «Ver respuesta»: muestran u ocultan la respuesta de su fila; no cambian de diapositiva.
+document.addEventListener("click", (event) => {
+  const btn = event.target.closest(".rq-btn");
+  if (!btn) return;
+  event.stopPropagation();
+  const answer = document.getElementById(btn.getAttribute("aria-controls"));
+  const open = answer.hidden;
+  answer.hidden = !open;
+  btn.setAttribute("aria-expanded", String(open));
+  btn.textContent = open ? "Ocultar respuesta" : "Ver respuesta";
+  btn.blur();
+});
 </script>
 <script src="assets/demo/pcg64.js"></script>
 <script src="assets/demo/resultados.js"></script>

@@ -1,0 +1,45 @@
+<!-- component: reveal-qa | deck, every theme (tokens only)
+     Source: deck "Métodos para generar variables aleatorias: Aceptación-Rechazo de Von Neumann"
+     (Simulación UNL, unidad 2, 2026-11-23), slide 18 (closing questions round). Candidate for harvest.
+     A list of short questions for the audience; each row has its own button that shows or hides the
+     answer in place (mouse click only; no key is bound, so the deck keys keep working). Answers carry
+     the hidden attribute in the HTML, but their space is reserved, so revealing one does not move the
+     other rows. The button loses focus after the click, so Space/Enter keep advancing the deck.
+     ?print (and @media print) shows every answer and hides the buttons. Mark the slide data-dense
+     when it has more than 3 questions. Neutral colors: the answer is not a data category. -->
+<style>
+  :where(.rq-list) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: rq; }
+  :where(.rq-item) { counter-increment: rq; display: grid; grid-template-columns: 64px minmax(0, 1fr) 340px; column-gap: 28px; row-gap: 6px;
+    align-items: center; padding: 12px 24px; border-left: 10px solid var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  :where(.rq-item)::before { content: counter(rq); grid-row: 1 / span 2; font: var(--dw) 56px/1 var(--display); color: var(--fg); }
+  :where(.rq-q) { grid-column: 2; font-size: 36px; font-weight: 600; line-height: 1.2; }
+  :where(.rq-a) { grid-column: 2; font-size: 32px; line-height: 1.2; }
+  :where(.rq-a b) { font: 600 24px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 14px; }
+  :where(.rq-a[hidden]) { display: block; visibility: hidden; }
+  :where(.rq-btn) { grid-column: 3; grid-row: 1 / span 2; justify-self: end; font: 700 26px/1 var(--mono); padding: 14px 26px; border-radius: 999px;
+    border: 3px solid var(--fg); background: transparent; color: var(--fg); cursor: pointer; white-space: nowrap; }
+  :where(.rq-btn[aria-expanded="true"]) { background: var(--fg); color: var(--bg); }
+  body.print .rq-btn { display: none; }
+  body.print .rq-a[hidden] { visibility: visible; }
+  @media print { .rq-btn { display: none; } .rq-a[hidden] { visibility: visible; } }
+</style>
+<ol class="rq-list">
+  <li class="rq-item"><p class="rq-q">Pregunta corta</p>
+    <p class="rq-a" id="rq-a1" hidden><b>Respuesta</b>Respuesta corta.</p>
+    <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a1">Ver respuesta</button></li>
+</ol>
+<script>
+"use strict";
+// Botones «Ver respuesta»: muestran u ocultan la respuesta de su fila; no cambian de diapositiva.
+document.addEventListener("click", (event) => {
+  const btn = event.target.closest(".rq-btn");
+  if (!btn) return;
+  event.stopPropagation();
+  const answer = document.getElementById(btn.getAttribute("aria-controls"));
+  const open = answer.hidden;
+  answer.hidden = !open;
+  btn.setAttribute("aria-expanded", String(open));
+  btn.textContent = open ? "Ocultar respuesta" : "Ver respuesta";
+  btn.blur();
+});
+</script>
