@@ -8,6 +8,7 @@ y una demo en vivo que corre el código Python del ejemplo dentro de la presenta
 | --- | --- |
 | `index.html` | Presentación animada con la demo en vivo (abrir en el navegador; funciona sin internet) |
 | `index.pdf` | Versión estática; las diapositivas 13 a 15 muestran la corrida real de Python (semilla 42, n = 10 000) |
+| `guia-expositores.pdf` | Guía A4 de 8 páginas para los tres expositores: tiempos, frase de apertura literal, puntos clave, transiciones y respuestas preparadas (fuente: `guia-expositores.html`) |
 | `codigo/beta22.py` | Código del ejemplo Beta(2,2); genera `codigo/resultados.json` y `assets/demo/resultados.js` |
 | `outline.txt` | Esquema aprobado: diapositiva, mensaje, expositor y tiempo |
 | `assets/` | Tipografías, KaTeX y la demo (`assets/demo/`) locales; `assets/thumbs/` miniaturas y capturas de respaldo de la demo |
