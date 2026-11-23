@@ -1,0 +1,34 @@
+<!-- component: trial-table | deck, every theme (tokens only)
+     Source: deck "Métodos para generar variables aleatorias: Aceptación-Rechazo de Von Neumann"
+     (Simulación UNL, unidad 2, 2026-11-23), slide 12. Candidate for harvest into the skill components/.
+     A worked table of trials done by hand: one row per trial, numeric cells in mono, the decision as a chip
+     (.res.ok filled --a1 = accepted, .res.no outlined --muted = rejected), and a side panel (.trial-side)
+     with the observed vs theoretical rate (.trial-rate) and a question for the audience (.trial-ask).
+     Put data-step on rows to reveal them one by one. Mark the slide data-dense: the table is the content. -->
+<style>
+  :where(.trial-wrap) { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 56px; align-items: center; }
+  :where(.trial-table) { width: 100%; border-collapse: separate; border-spacing: 0 10px; font-size: 38px; }
+  :where(.trial-table th) { padding: 0 22px 4px; text-align: left; font: 600 24px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.trial-table td) { padding: 12px 22px; background: color-mix(in srgb, var(--fg) 5%, transparent); font: 500 38px/1.1 var(--mono); font-variant-numeric: tabular-nums; }
+  :where(.trial-table td:first-child) { border-left: 10px solid var(--muted); font-family: var(--display); font-weight: var(--dw); }
+  :where(.trial-table tr.acc td:first-child) { border-left-color: var(--a1); }
+  :where(.trial-table td.thr) { font-weight: 600; }
+  :where(.trial-table .res) { display: inline-block; padding: 6px 20px; border-radius: 999px; border: 3px solid var(--muted); color: var(--muted); font: 700 28px/1.1 var(--mono); }
+  :where(.trial-table .res.ok) { background: var(--a1); border-color: var(--a1); color: var(--dot-fg, var(--bg)); }
+  :where(.trial-side) { display: flex; flex-direction: column; gap: 36px; }
+  :where(.trial-rate) { display: flex; flex-direction: column; gap: 10px; padding: 26px 32px; border-top: 12px solid var(--a1); background: color-mix(in srgb, var(--a1) 9%, transparent); }
+  :where(.trial-rate .big) { font: var(--dw) 120px/.95 var(--display); letter-spacing: var(--ls); color: var(--a1); }
+  :where(.trial-rate .vs) { font: 600 32px/1.25 var(--mono); }
+  :where(.trial-rate .vs b) { color: var(--a3); }
+  :where(.trial-ask) { margin: 0; padding: 20px 28px; border-left: 10px solid var(--fg); font-size: 36px; font-weight: 600; line-height: 1.25; }
+</style>
+<div class="trial-wrap">
+  <table class="trial-table">
+    <thead><tr><th>#</th><th>Y</th><th>U</th><th>4Y(1−Y)</th><th>Resultado</th></tr></thead>
+    <tbody><tr class="acc"><td>1</td><td>0.20</td><td>0.60</td><td class="thr">0.64</td><td><span class="res ok">Aceptado</span></td></tr></tbody>
+  </table>
+  <div class="trial-side">
+    <div class="trial-rate"><span class="big">60 %</span><span class="vs">teórico <b>1/M = 66.7 %</b></span></div>
+    <p class="trial-ask">¿Por qué Y = 0.5 se acepta siempre?</p>
+  </div>
+</div>

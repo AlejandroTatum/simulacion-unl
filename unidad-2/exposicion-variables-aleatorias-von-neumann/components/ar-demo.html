@@ -1,0 +1,92 @@
+<!-- component: ar-demo | deck, every theme (tokens only) | needs assets/demo/pcg64.js + ar-demo.js (+ resultados.js)
+     Source: deck "Métodos para generar variables aleatorias: Aceptación-Rechazo de Von Neumann"
+     (Simulación UNL, unidad 2, 2026-11-23), slides 13-15. Candidate for harvest into the skill
+     components/ as a token-based live demo (the shared live-demo is deportivo-only).
+     A live, seeded simulation panel that runs the same algorithm as the Python code shown on the slide.
+     Layouts: .ar-code-run (code | plot + counters), .ar-hist-run (histogram | live statistics),
+              .ar-m-run (M selector + plot | one .ar-mrow per M with theoretical vs observed bars).
+     .ar-plot[data-view=scatter|hist] holds two stacked canvases (.ar-pts points, .ar-ovl axes/curves).
+     Values bind by data-ar="acc|rej|att|eff|mean|var|m|status"; rows by .ar-mrow[data-m].
+     Buttons: data-ar-act="start|pause|reset", data-ar-m="1.5". Keys on a demo slide: S, R, 1-4.
+     Category colors: --a1 objetivo f y aceptados, --a2 candidatos (propuesta g), --a3 envolvente M·g;
+     rejected points and counters are --muted. ?print hides the buttons and shows .ar-print instead.
+     The HTML ships the Python values as default text, so the PDF keeps them even without script. -->
+<style>
+  /* Demo slides need room: a tighter slide gap and a 72px title (still above the 28px body minimum). */
+  .slide.ar-slide { gap: 26px; padding-top: 72px; }
+  .slide.ar-slide .title.sm { font-size: 72px; }
+  :where(.ar-demo) { flex: 1; min-height: 0; display: grid; gap: 48px; }
+  :where(.ar-demo.ar-code-run) { grid-template-columns: 700px minmax(0, 1fr); }
+  :where(.ar-demo.ar-hist-run) { grid-template-columns: minmax(0, 1fr) 470px; }
+  :where(.ar-demo.ar-m-run) { grid-template-columns: 700px minmax(0, 1fr); }
+  :where(.ar-col) { display: flex; flex-direction: column; gap: 22px; min-width: 0; min-height: 0; }
+  :where(.ar-code) { margin: 0; padding: 26px 30px; display: flex; flex-direction: column; justify-content: center; border-left: 10px solid var(--muted);
+    background: color-mix(in srgb, var(--fg) 7%, transparent); font: 500 24px/1.55 var(--mono); white-space: pre; overflow: hidden; counter-reset: ln; }
+  :where(.ar-code span.ln) { display: block; counter-increment: ln; }
+  :where(.ar-code span.ln)::before { content: counter(ln); display: inline-block; width: 2ch; margin-right: 1.2ch; text-align: right; color: var(--muted); }
+  :where(.ar-code .hl-g, .ar-code .hl-m, .ar-code .hl-f) { margin: 0 -30px; padding: 0 30px; }
+  :where(.ar-code .hl-g) { background: color-mix(in srgb, var(--a2) 18%, transparent); }
+  :where(.ar-code .hl-m) { background: color-mix(in srgb, var(--a3) 18%, transparent); }
+  :where(.ar-code .hl-f) { background: color-mix(in srgb, var(--a1) 18%, transparent); }
+  :where(.ar-plot) { position: relative; flex: 1; min-height: 0; border: 3px solid color-mix(in srgb, var(--fg) 16%, transparent);
+    background: color-mix(in srgb, #fff 55%, var(--bg)); }
+  :where(.ar-plot canvas) { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  :where(.ar-legend) { position: absolute; right: 24px; top: 70px; display: flex; flex-direction: column; gap: 6px; padding: 10px 16px;
+    background: color-mix(in srgb, var(--bg) 85%, transparent); font: 600 24px/1.2 var(--mono); }
+  :where(.ar-legend .ok) { color: var(--a1); } :where(.ar-legend .no) { color: var(--muted); }
+  :where(.ar-stats) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  :where(.ar-stats.ar-stack) { grid-template-columns: 1fr; gap: 22px; }
+  :where(.ar-stat) { --k: var(--muted); display: flex; flex-direction: column; gap: 6px; padding: 12px 18px 14px; border-top: 10px solid var(--k);
+    background: color-mix(in srgb, var(--k) 10%, transparent); }
+  :where(.ar-stat.k1) { --k: var(--a1); } :where(.ar-stat.k2) { --k: var(--a2); } :where(.ar-stat.k3) { --k: var(--a3); }
+  :where(.ar-stat .ar-v) { font: var(--dw) 42px/1 var(--display); letter-spacing: var(--ls); color: var(--k); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  :where(.ar-stats.ar-stack .ar-v) { font-size: 84px; }
+  :where(.ar-stat .ar-l) { font: 600 22px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.ar-stat .ar-ref) { font: 600 30px/1.2 var(--mono); color: var(--fg); }
+  :where(.ar-controls) { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  :where(.ar-btn) { font: 700 26px/1 var(--mono); padding: 14px 26px; border-radius: 999px; border: 3px solid var(--fg); background: transparent; color: var(--fg); cursor: pointer; }
+  :where(.ar-btn.go) { background: var(--fg); color: var(--bg); }
+  :where(.ar-btn[data-ar-m]) { border-color: var(--a3); color: var(--a3); }
+  :where(.ar-btn[data-ar-m][aria-pressed="true"]) { background: var(--a3); color: var(--bg); }
+  :where(.ar-status) { margin-left: auto; font: 600 24px/1.2 var(--mono); color: var(--muted); }
+  :where(.ar-print) { display: none; font: 600 24px/1.2 var(--mono); color: var(--muted); }
+  :where(.ar-mrows) { display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+  :where(.ar-mhead) { display: grid; grid-template-columns: 150px minmax(0, 1fr) 230px; gap: 24px; padding: 0 22px; font: 600 22px/1.2 var(--mono);
+    letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.ar-mrow) { display: grid; grid-template-columns: 150px minmax(0, 1fr) 230px; align-items: center; gap: 24px; padding: 14px 22px;
+    border-left: 10px solid color-mix(in srgb, var(--a3) 35%, transparent); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  :where(.ar-mrow.on) { border-left-color: var(--a3); background: color-mix(in srgb, var(--a3) 12%, transparent); }
+  :where(.ar-mrow .ar-m) { font: var(--dw) 56px/1 var(--display); color: var(--a3); white-space: nowrap; }
+  :where(.ar-bars) { display: flex; flex-direction: column; gap: 8px; }
+  :where(.ar-track) { height: 26px; border-radius: 8px; background: color-mix(in srgb, var(--fg) 8%, transparent); overflow: hidden; }
+  :where(.ar-fill) { display: block; height: 100%; width: calc(var(--v, 0) * 1%); border-radius: 8px; }
+  :where(.ar-fill.theo) { border: 4px solid var(--a3); }
+  :where(.ar-fill.obs) { background: var(--a3); transition: width .2s linear; }
+  :where(.ar-bv) { font: 600 26px/1.2 var(--mono); }
+  :where(.ar-bv b) { color: var(--a3); }
+  :where(.ar-att) { display: flex; flex-direction: column; gap: 4px; text-align: right; }
+  :where(.ar-att .ar-big) { font: var(--dw) 44px/1 var(--display); font-variant-numeric: tabular-nums; }
+  :where(.ar-att .ar-small) { font: 600 24px/1.2 var(--mono); color: var(--muted); }
+  body.print .ar-btn, body.print .ar-status { display: none; }
+  body.print .ar-print { display: inline; }
+  body.print .ar-fill.obs { transition: none; }
+  @media print { .ar-btn, .ar-status { display: none; } .ar-print { display: inline; } }
+</style>
+
+<!-- markup: code + scatter + counters (see index.html slides 13-15 for the histogram and M layouts) -->
+<div class="ar-demo ar-code-run">
+  <pre class="ar-code"><code><span class="ln">x = 1</span></code></pre>
+  <div class="ar-col">
+    <div class="ar-plot" data-view="scatter"><canvas class="ar-pts"></canvas><canvas class="ar-ovl"></canvas></div>
+    <div class="ar-stats">
+      <div class="ar-stat k1"><span class="ar-l">aceptados</span><span class="ar-v" data-ar="acc">0</span></div>
+    </div>
+    <div class="ar-controls">
+      <button class="ar-btn go" type="button" data-ar-act="start">Iniciar</button>
+      <button class="ar-btn" type="button" data-ar-act="pause">Pausa</button>
+      <button class="ar-btn" type="button" data-ar-act="reset">Reiniciar</button>
+      <span class="ar-status" data-ar="status">listo para iniciar</span>
+      <span class="ar-print">Corrida Python · semilla 42</span>
+    </div>
+  </div>
+</div>

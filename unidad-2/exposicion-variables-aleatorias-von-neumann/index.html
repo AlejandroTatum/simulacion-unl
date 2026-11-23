@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="deck">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Métodos para generar variables aleatorias · Aceptación-Rechazo de Von Neumann</title>
+<!-- Shell academic-slides-flow (deck), tema metro-deck. Todo local: fuentes, KaTeX y la demo funcionan sin internet.
+     Colores con significado: --a1 naranja = densidad objetivo f y valores aceptados; --a2 verde azulado = propuesta g y
+     candidatos; --a3 morado = envolvente M·g y la constante M; gris = rechazados. -->
+<link rel="stylesheet" href="themes/deck-base.css">
+<link rel="stylesheet" href="themes/metro-deck.css">
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<style> /* component: deck-case-map (skill academic-slides-flow) */
+  :where(.deck-case-map .case-map) { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 160px minmax(0, 1fr) 160px minmax(0, 1fr); align-items: stretch; gap: 16px; }
+  :where(.deck-case-map .case-node) { --node: var(--a1); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: 44px 40px; border-top: 14px solid var(--node); background: color-mix(in srgb, var(--node) 10%, transparent); }
+  :where(.deck-case-map .case-node:nth-child(3)) { --node: var(--a2); }
+  :where(.deck-case-map .case-node:nth-child(5)) { --node: var(--a3); }
+  :where(.deck-case-map .case-role) { font: 600 26px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  :where(.deck-case-map .case-node strong) { font: var(--dw) 58px/1.05 var(--display); overflow-wrap: anywhere; }
+  :where(.deck-case-map .case-node p:last-child) { font-size: 38px; }
+  :where(.deck-case-map .case-tag) { align-self: flex-start; padding: 6px 20px; border: 3px solid var(--node); border-radius: 999px; color: var(--node); font: 700 26px/1.2 var(--mono); }
+  :where(.deck-case-map .case-tag.on) { background: var(--node); color: var(--dot-fg, var(--bg)); }
+  :where(.deck-case-map .case-link) { align-self: center; text-align: center; font-size: 32px; font-weight: 600; line-height: 1.2; }
+  :where(.deck-case-map .case-link)::after { content: '⟶'; display: block; font-size: 88px; line-height: 1; color: var(--muted); }
+</style>
+<style> /* component: deck-compare (skill academic-slides-flow) */
+  :where(.deck-compare .compare-criterion) { font-size: 34px; color: var(--muted); }
+  :where(.deck-compare .compare-pair) { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  :where(.deck-compare .compare-side) { --side: var(--a1); display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 32px 48px; border-top: 12px solid var(--side); background: color-mix(in srgb, var(--side) 9%, transparent); }
+  :where(.deck-compare .compare-side + .compare-side) { --side: var(--a2); }
+  :where(.deck-compare .compare-side h2) { margin: 0 0 8px; font: var(--dw) 72px/1.05 var(--display); }
+  :where(.deck-compare .compare-trait) { display: flex; align-items: center; gap: 28px; padding: 16px 0; border-top: 2px solid color-mix(in srgb, var(--fg) 14%, transparent); font-size: 42px; }
+  :where(.deck-compare .compare-trait)::before { content: ''; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--side); }
+  :where(.deck-compare .compare-trait[data-mark])::before { width: 64px; height: 64px; display: grid; place-items: center; font: 700 36px/1 var(--body); color: var(--dot-fg, var(--bg)); }
+  :where(.deck-compare .compare-trait[data-mark="yes"])::before { content: '✓'; }
+  :where(.deck-compare .compare-trait[data-mark="no"])::before { content: '✕'; background: var(--muted); }
+  :where(.deck-compare .compare-takeaway) { border-left: 10px solid var(--fg); padding: 6px 0 6px 32px; font-size: 42px; font-weight: 600; }
+</style>
+<style> /* component: figure-full (skill academic-slides-flow) */
+  :where(.figure-full) { justify-content: center; gap: 28px; }
+  :where(.figure-full figure) { margin: 0; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 24px; }
+  :where(.figure-full figure > img, .figure-full figure > svg) { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
+  :where(.figure-full figcaption) { font-size: 34px; color: var(--muted); }
+</style>
+<style> /* component: calc-rows (skill academic-slides-flow) */
+  :where(.calc-rows) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  :where(.calc-rows li) { display: grid; grid-template-columns: 620px 1fr 300px; align-items: center; gap: 40px;
+    padding: 10px 36px; border-radius: 18px; background: color-mix(in srgb, var(--fg) 6%, transparent); }
+  :where(.calc-rows .f) { font-size: 50px; }
+  :where(.calc-rows .s) { font-size: 44px; color: var(--muted); }
+  /* katex.min.css centers display math with a 1em margin; a row needs it flush left. */
+  .calc-rows .katex-display { margin: 0; text-align: left; }
+  .calc-rows .katex-display > .katex { text-align: left; }
+  :where(.calc-rows .res) { font-family: var(--display); font-weight: var(--dw); font-size: 60px; text-align: right; }
+  :where(.calc-rows li.key .res) { color: var(--a1); }
+</style>
+<style> /* component: stat-cards (skill academic-slides-flow) */
+  :where(.stat-cards) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 48px; }
+  :where(.stat-cards li) { display: flex; flex-direction: column; gap: 14px; padding: 44px 48px 48px; border-radius: 28px;
+    background: color-mix(in srgb, var(--fg) 6%, transparent); border-top: 12px solid color-mix(in srgb, var(--fg) 35%, transparent); }
+  :where(.stat-cards .big) { font-family: var(--display); font-weight: var(--dw); font-size: 112px; line-height: 1; letter-spacing: var(--ls); }
+  :where(.stat-cards .lbl) { font-size: 44px; font-weight: 600; }
+  :where(.stat-cards .desc) { font-size: 32px; line-height: 1.3; opacity: .8; }
+  :where(.stat-cards .k1) { border-top-color: var(--a1); } :where(.stat-cards .k1 .big) { color: var(--a1); }
+  :where(.stat-cards .k2) { border-top-color: var(--a2); } :where(.stat-cards .k2 .big) { color: var(--a2); }
+  :where(.stat-cards .k3) { border-top-color: var(--a3); } :where(.stat-cards .k3 .big) { color: var(--a3); }
+</style>
+<style> /* component: sheet-frame (skill academic-slides-flow) */
+  :where(.sheet-frame) { --k: var(--a1); --fig-h: 640px; flex: 0 1 auto; margin: 0; display: flex; flex-direction: column; min-width: 0; min-height: 0; border: 4px solid var(--k); background: var(--bg); box-shadow: 14px 14px 0 color-mix(in srgb, var(--k) 22%, transparent); }
+  :where(.sheet-frame.k2) { --k: var(--a2); } :where(.sheet-frame.k3) { --k: var(--a3); }
+  :where(.sheet-frame .sheet) { flex: 0 1 auto; display: grid; place-items: center; padding: 14px; background: #fff; }
+  :where(.sheet-frame .fit) { position: relative; max-width: 100%; }
+  :where(.sheet-frame .fit img) { display: block; width: auto; height: auto; max-width: 100%; max-height: var(--fig-h); }
+  :where(.sheet-frame .sheet-title) { flex: none; display: flex; align-items: stretch; border-top: 4px solid var(--k); font: 600 24px/1.2 var(--mono); }
+  :where(.sheet-frame .sheet-title > *) { display: flex; align-items: center; gap: 16px; padding: 10px 26px; border-right: 3px solid color-mix(in srgb, var(--k) 45%, transparent); white-space: nowrap; }
+  :where(.sheet-frame .sheet-title > :last-child) { border-right: 0; }
+  :where(.sheet-frame .sheet-title .fig) { background: var(--k); color: var(--dot-fg, var(--bg)); font-weight: 700; letter-spacing: .14em; }
+  :where(.sheet-frame .sheet-title .src) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--muted); }
+  :where(.sheet-frame .tabs) { gap: 10px; }
+  :where(.sheet-frame .tab) { padding: 2px 14px; border: 3px solid var(--k); border-radius: 8px; color: var(--k); font-weight: 700; }
+  :where(.sheet-frame .tab.on) { background: var(--k); color: var(--dot-fg, var(--bg)); }
+  :where(.sheet-frame .legend) { flex: 1; gap: 28px; }
+  :where(.sheet-frame .legend span) { display: inline-flex; align-items: center; gap: 10px; }
+  :where(.sheet-frame .legend .pin) { width: 38px; height: 38px; margin: 0; font-size: 22px; --pin: var(--k); }
+</style>
+<style> /* component: formula-hero (skill academic-slides-flow) */
+  /* Deck fix (for harvest): katex.min.css .katex-display margin beats the :where() reset below; same fix calc-rows ships. */
+  .formula-hero .tex .katex-display { margin: 0; }
+  :where(.formula-hero) { display: flex; flex-direction: column; align-items: center; gap: 64px; }
+  :where(.formula-hero .tex) { font-size: 150px; line-height: 1; }
+  :where(.formula-hero .tex .katex-display) { margin: 0; }
+  :where(.formula-hero .parts) { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 56px; }
+  :where(.formula-hero .parts li) { display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 40px; text-align: center; }
+  :where(.formula-hero .parts b) { font: italic 400 96px/1 KaTeX_Math, serif; }
+  :where(.formula-hero .p1) { color: var(--a1); }
+  :where(.formula-hero .p2) { color: var(--a2); }
+  :where(.formula-hero .p3) { color: var(--a3); }
+</style>
+<style> /* component: pipeline-flow (skill academic-slides-flow) */
+  :where(.pipeline-flow) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 64px; }
+  :where(.pipeline-flow .stage) { --node: var(--a1); position: relative; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 26px 24px 30px;
+    border-top: 14px solid var(--node); background: color-mix(in srgb, var(--node) 10%, transparent); }
+  :where(.pipeline-flow .stage.k2) { --node: var(--a2); } :where(.pipeline-flow .stage.k3) { --node: var(--a3); }
+  :where(.pipeline-flow .stage + .stage)::before { content: ""; position: absolute; left: -48px; top: 50%; transform: translateY(-50%); width: 0; height: 0;
+    border-top: 22px solid transparent; border-bottom: 22px solid transparent; border-left: 30px solid var(--muted); }
+  :where(.pipeline-flow .tag) { font: 700 24px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--node); }
+  :where(.pipeline-flow .lbl) { font: var(--dw) 52px/1.05 var(--display); text-transform: var(--tt); letter-spacing: var(--ls); overflow-wrap: anywhere; }
+  :where(.pipeline-flow .gate .lbl) { font-size: 128px; line-height: .95; color: var(--node); }
+  :where(.pipeline-flow .desc) { font-size: 30px; line-height: 1.25; }
+  :where(.pipeline-flow .code) { font: 600 22px/1.2 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  :where(.pipeline-flow.slim) { gap: 56px; grid-auto-columns: auto; justify-content: space-between; }
+  :where(.pipeline-flow.slim .stage) { flex-direction: row; align-items: center; gap: 18px; padding: 12px 22px; border-top: 0; border-left: 10px solid var(--node); }
+  :where(.pipeline-flow.slim .stage .pin) { --pin: var(--node); flex: none; margin: 0; width: 44px; height: 44px; font-size: 26px; }
+  :where(.pipeline-flow.slim .lbl) { font-size: 38px; text-transform: none; white-space: nowrap; }
+  :where(.pipeline-flow.big .stage) { padding: 44px 40px 48px; gap: 20px; }
+  :where(.pipeline-flow.big .lbl) { font-size: 68px; }
+  :where(.pipeline-flow.big .desc) { font-size: 42px; }
+  :where(.pipeline-flow .stage.pass) { background: var(--node); color: var(--dot-fg, var(--bg)); }
+  :where(.pipeline-flow .stage.pass .tag, .pipeline-flow .stage.pass .lbl) { color: inherit; }
+</style>
+<style> /* component: stair-steps (skill academic-slides-flow) */
+  :where(.stair-steps) { --k: var(--a1); list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 20px; align-items: end; }
+  :where(.stair-steps li) { --r: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; min-height: calc(250px + var(--r) * 52px); padding: 26px 22px 30px;
+    border-top: 14px solid var(--k); background: color-mix(in srgb, var(--k) calc(8% + var(--r) * 4%), transparent); }
+  :where(.stair-steps .n) { margin-bottom: auto; font: var(--dw) 76px/1 var(--display); color: var(--k); }
+  :where(.stair-steps .lbl) { font: var(--dw) 36px/1.05 var(--display); text-transform: var(--tt); letter-spacing: var(--ls); overflow-wrap: anywhere; }
+  :where(.stair-steps .desc) { font-size: 30px; line-height: 1.25; opacity: .85; }
+</style>
+<style> /* component: recap (skill academic-slides-flow) */
+  :where(.recap) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 40px; }
+  :where(.recap li) { display: flex; align-items: center; gap: 40px; font-size: 52px; font-weight: 600; }
+  :where(.recap .dot) { flex: none; width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; background: var(--a1);
+    color: var(--dot-fg, var(--bg)); font-family: var(--display); font-weight: var(--dw); font-size: 56px; }
+  :where(.recap li:nth-child(3n+2) .dot) { background: var(--a2); }
+  :where(.recap li:nth-child(3n) .dot) { background: var(--a3); }
+</style>
+<style> /* component: trial-table (local, components/trial-table.html) */
+  :where(.trial-wrap) { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 56px; align-items: center; }
+  :where(.trial-table) { width: 100%; border-collapse: separate; border-spacing: 0 10px; font-size: 38px; }
+  :where(.trial-table th) { padding: 0 22px 4px; text-align: left; font: 600 24px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.trial-table td) { padding: 12px 22px; background: color-mix(in srgb, var(--fg) 5%, transparent); font: 500 38px/1.1 var(--mono); font-variant-numeric: tabular-nums; }
+  :where(.trial-table td:first-child) { border-left: 10px solid var(--muted); font-family: var(--display); font-weight: var(--dw); }
+  :where(.trial-table tr.acc td:first-child) { border-left-color: var(--a1); }
+  :where(.trial-table td.thr) { font-weight: 600; }
+  :where(.trial-table .res) { display: inline-block; padding: 6px 20px; border-radius: 999px; border: 3px solid var(--muted); color: var(--muted); font: 700 28px/1.1 var(--mono); }
+  :where(.trial-table .res.ok) { background: var(--a1); border-color: var(--a1); color: var(--dot-fg, var(--bg)); }
+  :where(.trial-side) { display: flex; flex-direction: column; gap: 36px; }
+  :where(.trial-rate) { display: flex; flex-direction: column; gap: 10px; padding: 26px 32px; border-top: 12px solid var(--a1); background: color-mix(in srgb, var(--a1) 9%, transparent); }
+  :where(.trial-rate .big) { font: var(--dw) 120px/.95 var(--display); letter-spacing: var(--ls); color: var(--a1); }
+  :where(.trial-rate .vs) { font: 600 32px/1.25 var(--mono); }
+  :where(.trial-rate .vs b) { color: var(--a3); }
+  :where(.trial-ask) { margin: 0; padding: 20px 28px; border-left: 10px solid var(--fg); font-size: 36px; font-weight: 600; line-height: 1.25; }
+</style>
+<style> /* component: ar-demo (local, components/ar-demo.html) */
+  /* Demo slides need room: a tighter slide gap and a 72px title (still above the 28px body minimum). */
+  .slide.ar-slide { gap: 26px; padding-top: 72px; }
+  .slide.ar-slide .title.sm { font-size: 72px; }
+  :where(.ar-demo) { flex: 1; min-height: 0; display: grid; gap: 48px; }
+  :where(.ar-demo.ar-code-run) { grid-template-columns: 700px minmax(0, 1fr); }
+  :where(.ar-demo.ar-hist-run) { grid-template-columns: minmax(0, 1fr) 470px; }
+  :where(.ar-demo.ar-m-run) { grid-template-columns: 700px minmax(0, 1fr); }
+  :where(.ar-col) { display: flex; flex-direction: column; gap: 22px; min-width: 0; min-height: 0; }
+  :where(.ar-code) { margin: 0; padding: 26px 30px; display: flex; flex-direction: column; justify-content: center; border-left: 10px solid var(--muted);
+    background: color-mix(in srgb, var(--fg) 7%, transparent); font: 500 24px/1.55 var(--mono); white-space: pre; overflow: hidden; counter-reset: ln; }
+  :where(.ar-code span.ln) { display: block; counter-increment: ln; }
+  :where(.ar-code span.ln)::before { content: counter(ln); display: inline-block; width: 2ch; margin-right: 1.2ch; text-align: right; color: var(--muted); }
+  :where(.ar-code .hl-g, .ar-code .hl-m, .ar-code .hl-f) { margin: 0 -30px; padding: 0 30px; }
+  :where(.ar-code .hl-g) { background: color-mix(in srgb, var(--a2) 18%, transparent); }
+  :where(.ar-code .hl-m) { background: color-mix(in srgb, var(--a3) 18%, transparent); }
+  :where(.ar-code .hl-f) { background: color-mix(in srgb, var(--a1) 18%, transparent); }
+  :where(.ar-plot) { position: relative; flex: 1; min-height: 0; border: 3px solid color-mix(in srgb, var(--fg) 16%, transparent);
+    background: color-mix(in srgb, #fff 55%, var(--bg)); }
+  :where(.ar-plot canvas) { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  :where(.ar-legend) { position: absolute; right: 24px; top: 70px; display: flex; flex-direction: column; gap: 6px; padding: 10px 16px;
+    background: color-mix(in srgb, var(--bg) 85%, transparent); font: 600 24px/1.2 var(--mono); }
+  :where(.ar-legend .ok) { color: var(--a1); } :where(.ar-legend .no) { color: var(--muted); }
+  :where(.ar-stats) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  :where(.ar-stats.ar-stack) { grid-template-columns: 1fr; gap: 22px; }
+  :where(.ar-stat) { --k: var(--muted); display: flex; flex-direction: column; gap: 6px; padding: 12px 18px 14px; border-top: 10px solid var(--k);
+    background: color-mix(in srgb, var(--k) 10%, transparent); }
+  :where(.ar-stat.k1) { --k: var(--a1); } :where(.ar-stat.k2) { --k: var(--a2); } :where(.ar-stat.k3) { --k: var(--a3); }
+  :where(.ar-stat .ar-v) { font: var(--dw) 42px/1 var(--display); letter-spacing: var(--ls); color: var(--k); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  :where(.ar-stats.ar-stack .ar-v) { font-size: 84px; }
+  :where(.ar-stat .ar-l) { font: 600 22px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.ar-stat .ar-ref) { font: 600 30px/1.2 var(--mono); color: var(--fg); }
+  :where(.ar-controls) { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  :where(.ar-btn) { font: 700 26px/1 var(--mono); padding: 14px 26px; border-radius: 999px; border: 3px solid var(--fg); background: transparent; color: var(--fg); cursor: pointer; }
+  :where(.ar-btn.go) { background: var(--fg); color: var(--bg); }
+  :where(.ar-btn[data-ar-m]) { border-color: var(--a3); color: var(--a3); }
+  :where(.ar-btn[data-ar-m][aria-pressed="true"]) { background: var(--a3); color: var(--bg); }
+  :where(.ar-status) { margin-left: auto; font: 600 24px/1.2 var(--mono); color: var(--muted); }
+  :where(.ar-print) { display: none; font: 600 24px/1.2 var(--mono); color: var(--muted); }
+  :where(.ar-mrows) { display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+  :where(.ar-mhead) { display: grid; grid-template-columns: 150px minmax(0, 1fr) 230px; gap: 24px; padding: 0 22px; font: 600 22px/1.2 var(--mono);
+    letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  :where(.ar-mrow) { display: grid; grid-template-columns: 150px minmax(0, 1fr) 230px; align-items: center; gap: 24px; padding: 14px 22px;
+    border-left: 10px solid color-mix(in srgb, var(--a3) 35%, transparent); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  :where(.ar-mrow.on) { border-left-color: var(--a3); background: color-mix(in srgb, var(--a3) 12%, transparent); }
+  :where(.ar-mrow .ar-m) { font: var(--dw) 56px/1 var(--display); color: var(--a3); white-space: nowrap; }
+  :where(.ar-bars) { display: flex; flex-direction: column; gap: 8px; }
+  :where(.ar-track) { height: 26px; border-radius: 8px; background: color-mix(in srgb, var(--fg) 8%, transparent); overflow: hidden; }
+  :where(.ar-fill) { display: block; height: 100%; width: calc(var(--v, 0) * 1%); border-radius: 8px; }
+  :where(.ar-fill.theo) { border: 4px solid var(--a3); }
+  :where(.ar-fill.obs) { background: var(--a3); transition: width .2s linear; }
+  :where(.ar-bv) { font: 600 26px/1.2 var(--mono); }
+  :where(.ar-bv b) { color: var(--a3); }
+  :where(.ar-att) { display: flex; flex-direction: column; gap: 4px; text-align: right; }
+  :where(.ar-att .ar-big) { font: var(--dw) 44px/1 var(--display); font-variant-numeric: tabular-nums; }
+  :where(.ar-att .ar-small) { font: 600 24px/1.2 var(--mono); color: var(--muted); }
+  body.print .ar-btn, body.print .ar-status { display: none; }
+  body.print .ar-print { display: inline; }
+  body.print .ar-fill.obs { transition: none; }
+  @media print { .ar-btn, .ar-status { display: none; } .ar-print { display: inline; } }
+</style>
+<link rel="stylesheet" href="assets/anim/anim.css">
+</head>
+<body>
+<div id="stage">
+
+  <!-- 01 · Portada -->
+  <section class="slide alt cover active" id="portada">
+    <p class="kicker">Simulación · Unidad 2 · Exposición grupal</p>
+    <h1 class="title xl">Métodos para generar <span class="a">variables aleatorias</span></h1>
+    <p class="lead">Aceptación-Rechazo de Von Neumann</p>
+    <p class="lead">Objetivo: generar valores con la distribución correcta y medir cuánto cuesta.</p>
+    <aside class="notes">Apertura: «Buenos días. Hoy respondemos una pregunta concreta: si la computadora solo nos da números uniformes, ¿cómo obtenemos valores que sigan otra distribución?». Puntos clave: 1) Somos tres expositores: fundamentos y métodos (expositor 1), algoritmo y demostración (expositor 2), código y eficiencia (expositor 3). 2) Objetivo: entender por qué hay que transformar los uniformes, verificar una envolvente, aplicar el método a mano, programarlo y evaluar su eficiencia.</aside>
+    <div class="foot"><span>Simulación · UNL</span><span class="page">E1 · 01</span></div>
+  </section>
+
+  <!-- 02 · Caso: restaurante -->
+  <section class="slide deck-case-map" id="frecuencia" data-dense>
+    <p class="kicker">01 · Fundamentos · ejemplo del borrador</p>
+    <h1 class="title sm">Simular es incorporar incertidumbre con la frecuencia correcta</h1>
+    <div class="case-map" aria-label="Del restaurante a la distribución y al método">
+      <div class="case-node"><p class="case-role">Sistema real</p><strong>Atención</strong><p>Restaurante: 4, 6, 11 o 17 min</p></div>
+      <div class="case-link">¿con qué frecuencia?</div>
+      <div class="case-node"><p class="case-role">Distribución</p><strong>Modelo</strong><p>Qué tiempos salen más</p></div>
+      <div class="case-link">¿cómo generarla?</div>
+      <div class="case-node"><p class="case-role">Hoy</p><strong>Método</strong><p>Valores con esa frecuencia</p></div>
+    </div>
+    <aside class="notes">Apertura: «Un simulador no necesita solamente números que cambien; necesita números que cambien con la frecuencia adecuada». Puntos clave: 1) En un restaurante la atención puede durar 4, 6, 11 o 17 minutos, pero esos tiempos no aparecen igual de seguido. 2) Generar 10 000 números uniformes no produce automáticamente 10 000 tiempos de atención realistas. 3) Hay dos preguntas: ¿qué distribución representa el fenómeno? y ¿cómo generamos valores con esa distribución? Hoy respondemos la segunda. Enlace: «Para eso primero precisemos qué es una variable aleatoria».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 02</span></div>
+  </section>
+
+  <!-- 03 · Discreta vs continua -->
+  <section class="slide deck-compare" id="tipos">
+    <p class="kicker">01 · Fundamentos</p>
+    <h1 class="title sm">Una variable aleatoria puede ser discreta o continua</h1>
+    <div class="compare-pair">
+      <div class="compare-side"><h2>Discreta</h2>
+        <p class="compare-trait">Pacientes por hora: 0, 1, 2…</p>
+        <p class="compare-trait"><span data-tex="\textstyle\sum_k p(k) = 1" data-inline></span></p></div>
+      <div class="compare-side"><h2>Continua</h2>
+        <p class="compare-trait">Espera de 3.25 min</p>
+        <p class="compare-trait"><span data-tex="\textstyle\int f(x)\,dx = 1" data-inline></span>&ensp;·&ensp;<span data-tex="P(X=a)=0" data-inline></span></p></div>
+    </div>
+    <p class="compare-takeaway">En la continua, la probabilidad es un área.</p>
+    <aside class="notes">Apertura: «Una variable aleatoria asigna un número a cada resultado de un experimento; no es el número que sale de la computadora, es el modelo». Puntos clave: 1) Discreta: valores contables, como los pacientes que llegan en una hora; cada valor tiene su probabilidad p(k) y la suma de todas da 1. 2) Continua: valores en un intervalo, como una espera de 3.25 minutos; se describe con una densidad f y la probabilidad es un área: la integral total da 1. 3) Por eso, en una continua, P(X = a) = 0: un punto no tiene área. Enlace: «Si la probabilidad es área, la altura de la curva nos dice otra cosa».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 03</span></div>
+  </section>
+
+  <!-- 04 · Uniforme vs Beta(2,2) -->
+  <section class="slide figure-full" id="altura">
+    <p class="kicker">01 · Fundamentos</p>
+    <h1 class="title sm">Uniforme vs no uniforme: la altura dice dónde caen más valores</h1>
+    <figure>
+      <svg viewBox="0 0 1640 540" role="img" aria-label="Densidad uniforme de altura 1 y densidad Beta(2,2) con máximo 1.5, en la misma escala" style="font-family: var(--mono)">
+        <g stroke-width="3" stroke-dasharray="10 12" style="stroke: var(--muted)">
+          <line x1="110" y1="230" x2="1540" y2="230"/><line x1="110" y1="110" x2="1540" y2="110"/>
+        </g>
+        <g font-size="30" font-weight="600" text-anchor="end" style="fill: var(--muted)">
+          <text x="95" y="240">1</text><text x="95" y="120">1.5</text><text x="95" y="480">0</text>
+        </g>
+        <rect x="120" y="230" width="600" height="240" stroke-width="7" style="fill: color-mix(in srgb, var(--a2) 18%, transparent); stroke: var(--a2)"/>
+        <polygon points="920,470.0 935,434.9 950,401.6 965,370.1 980,340.4 995,312.5 1010,286.4 1025,262.1 1040,239.6 1055,218.9 1070,200.0 1085,182.9 1100,167.6 1115,154.1 1130,142.4 1145,132.5 1160,124.4 1175,118.1 1190,113.6 1205,110.9 1220,110.0 1235,110.9 1250,113.6 1265,118.1 1280,124.4 1295,132.5 1310,142.4 1325,154.1 1340,167.6 1355,182.9 1370,200.0 1385,218.9 1400,239.6 1415,262.1 1430,286.4 1445,312.5 1460,340.4 1475,370.1 1490,401.6 1505,434.9 1520,470.0" stroke-width="7" stroke-linejoin="round" style="fill: color-mix(in srgb, var(--a1) 18%, transparent); stroke: var(--a1)"/>
+        <g stroke-width="4" style="stroke: var(--fg)"><line x1="110" y1="470" x2="730" y2="470"/><line x1="910" y1="470" x2="1530" y2="470"/></g>
+        <g font-size="30" font-weight="600" text-anchor="middle" style="fill: var(--muted)">
+          <text x="120" y="510">0</text><text x="720" y="510">1</text><text x="920" y="510">0</text><text x="1220" y="510">0.5</text><text x="1520" y="510">1</text>
+        </g>
+        <g font-size="40" font-weight="600" text-anchor="middle">
+          <text x="420" y="60" style="fill: var(--a2)">U(0,1): g(x) = 1</text>
+          <text x="1220" y="60" style="fill: var(--a1)">Beta(2,2): f(x) = 6x(1−x)</text>
+          <text x="420" y="370" style="fill: var(--fg)">área = 1</text>
+          <text x="1220" y="370" style="fill: var(--fg)">área = 1</text>
+        </g>
+        <text x="1300" y="104" font-size="34" font-weight="600" style="fill: var(--a1)">f(0.5) = 1.5</text>
+      </svg>
+      <figcaption>Misma área, distinta altura: f(0.5) = 1.5 &gt; 1 es válido porque el área total es 1.</figcaption>
+    </figure>
+    <aside class="notes">Apertura: «Miren las dos curvas: tienen la misma área, pero no la misma forma». Puntos clave: 1) En la uniforme U(0,1) la altura es 1 en todo el intervalo: dos tramos de igual longitud tienen igual probabilidad. 2) En Beta(2,2), f(x) = 6x(1−x): hay más densidad cerca de 0.5 y casi nada cerca de 0 y de 1. 3) f(0.5) = 1.5 supera 1 y es válido: la condición es que el área total sea 1, no que la altura sea como máximo 1. Para Beta(2,2) la media es 0.5 y la varianza 0.05; las usaremos para verificar la simulación. Enlace: «La computadora nos da la curva plana; ¿cómo llegamos a la otra?».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 04</span></div>
+  </section>
+
+  <!-- 05 · Transformada inversa -->
+  <section class="slide" id="inversa">
+    <p class="kicker">02 · Métodos · transformada inversa</p>
+    <h1 class="title sm">Primer método: transformada inversa X&nbsp;=&nbsp;F<sup>−1</sup>(U)</h1>
+    <p class="lead">Ejemplo: exponencial, <span data-tex="F(x) = 1 - e^{-\lambda x},\ x \ge 0" data-inline></span></p>
+    <ul class="calc-rows">
+      <li><span class="f" data-tex="U = F(X)"></span><span class="s" data-tex="U = 1 - e^{-\lambda X}"></span><span class="res">sortear</span></li>
+      <li><span class="f" data-tex="e^{-\lambda X} = 1 - U"></span><span class="s" data-tex="-\lambda X = \ln(1 - U)"></span><span class="res">despejar</span></li>
+      <li class="key"><span class="f" data-tex="X = F^{-1}(U)"></span><span class="s" data-tex="X = -\dfrac{\ln(1 - U)}{\lambda}"></span><span class="res">muestra</span></li>
+    </ul>
+    <aside class="notes">Apertura: «El primer método es la transformada inversa: elegimos un percentil al azar y lo convertimos en el valor que le corresponde». Puntos clave: 1) Si U es uniforme en (0,1) y F es continua y creciente, X = F⁻¹(U) tiene distribución F, porque P(F⁻¹(U) ≤ x) = P(U ≤ F(x)) = F(x). 2) Exponencial: F(x) = 1 − e^(−λx); igualamos U = F(X) y despejamos X = −ln(1−U)/λ. Como 1 − U también es uniforme, a veces se escribe −ln(U)/λ. 3) Es directo si F⁻¹ se puede evaluar; si la acumulada no tiene inversa cerrada o es costosa, conviene otro método. Enlace: «¿Qué otras opciones hay?».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 05</span></div>
+  </section>
+
+  <!-- 06 · Tres métodos -->
+  <section class="slide" id="metodos" data-dense>
+    <p class="kicker">02 · Métodos · comparación</p>
+    <h1 class="title sm">No hay un método mejor; cada uno tiene su límite</h1>
+    <ul class="stat-cards">
+      <li><span class="big">F⁻¹(U)</span><span class="lbl">Inversa</span><p class="desc">✓ Una transformación directa por muestra</p><p class="desc">✕ La inversa puede ser inaccesible o costosa</p></li>
+      <li><span class="big">U → N</span><span class="lbl">Transformación especial</span><p class="desc">✓ Identidades conocidas (Box-Muller)</p><p class="desc">✕ No existe una receta universal</p></li>
+      <li class="k3"><span class="big">f ≤ M·g</span><span class="lbl">Aceptación-rechazo</span><p class="desc">✓ No necesita invertir F</p><p class="desc">✕ Exige envolvente y desperdicia candidatos</p></li>
+    </ul>
+    <aside class="notes">Apertura: «No hay un método mejor en todos los problemas». Puntos clave: 1) Inversa: una transformación directa por muestra, pero la inversa puede no existir en forma cerrada o ser cara de evaluar. 2) Transformaciones especiales, como Box-Muller, que obtiene normales a partir de uniformes: aprovechan identidades matemáticas, pero no hay una receta universal. 3) Aceptación-rechazo no necesita invertir la acumulada, pero exige una envolvente válida y puede desperdiciar muchos candidatos. Frase: «La pregunta correcta es qué método representa la distribución deseada con menor costo y sin sacrificar la validez».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 06</span></div>
+  </section>
+
+  <!-- 07 · Intuición geométrica + pase a E2 -->
+  <section class="slide alt" id="filtro">
+    <p class="kicker">02 · Hacia Von Neumann</p>
+    <h1 class="title sm">¿Y si no puedo invertir F? Von Neumann: proponer y filtrar</h1>
+    <figure class="sheet-frame fx" style="--fig-h: 360px">
+      <div class="sheet"><div class="fit">
+        <svg viewBox="0 0 1200 560" width="771" height="360" role="img" aria-label="Puntos en un rectángulo de altura 1.5: los que quedan bajo la curva f se aceptan y los de encima se rechazan" style="font-family: var(--mono)">
+          <rect x="90" y="80" width="1020" height="420" fill="none" stroke-width="3" stroke-dasharray="10 10" style="stroke: var(--muted)"/>
+          <line x1="90" y1="80" x2="1110" y2="80" stroke-width="7" style="stroke: var(--a3)"/>
+          <polyline points="90.0,500.0 107.0,472.5 124.0,445.9 141.0,420.2 158.0,395.5 175.0,371.7 192.0,348.8 209.0,326.9 226.0,305.9 243.0,285.8 260.0,266.7 277.0,248.5 294.0,231.2 311.0,214.9 328.0,199.5 345.0,185.0 362.0,171.5 379.0,158.9 396.0,147.2 413.0,136.5 430.0,126.7 447.0,117.8 464.0,109.9 481.0,102.9 498.0,96.8 515.0,91.7 532.0,87.5 549.0,84.2 566.0,81.9 583.0,80.5 600.0,80.0 617.0,80.5 634.0,81.9 651.0,84.2 668.0,87.5 685.0,91.7 702.0,96.8 719.0,102.9 736.0,109.9 753.0,117.8 770.0,126.7 787.0,136.5 804.0,147.2 821.0,158.9 838.0,171.5 855.0,185.0 872.0,199.5 889.0,214.9 906.0,231.2 923.0,248.5 940.0,266.7 957.0,285.8 974.0,305.9 991.0,326.9 1008.0,348.8 1025.0,371.7 1042.0,395.5 1059.0,420.2 1076.0,445.9 1093.0,472.5 1110.0,500.0" fill="none" stroke-width="8" style="stroke: var(--a1)"/>
+          <circle cx="728" cy="123" r="10" style="fill: var(--a1)"/><circle cx="881" cy="405" r="10" style="fill: var(--a1)"/><circle cx="396" cy="133" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="95" cy="155" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="903" cy="303" r="10" style="fill: var(--a1)"/><circle cx="399" cy="383" r="10" style="fill: var(--a1)"/><circle cx="350" cy="313" r="10" style="fill: var(--a1)"/><circle cx="605" cy="268" r="10" style="fill: var(--a1)"/><circle cx="1105" cy="167" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="725" cy="85" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="310" cy="433" r="10" style="fill: var(--a1)"/><circle cx="715" cy="482" r="10" style="fill: var(--a1)"/><circle cx="126" cy="284" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="566" cy="115" r="10" style="fill: var(--a1)"/><circle cx="732" cy="284" r="10" style="fill: var(--a1)"/><circle cx="597" cy="396" r="10" style="fill: var(--a1)"/><circle cx="102" cy="419" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="796" cy="416" r="10" style="fill: var(--a1)"/><circle cx="467" cy="498" r="10" style="fill: var(--a1)"/><circle cx="937" cy="435" r="10" style="fill: var(--a1)"/><circle cx="363" cy="130" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="610" cy="144" r="10" style="fill: var(--a1)"/><circle cx="743" cy="188" r="10" style="fill: var(--a1)"/><circle cx="183" cy="273" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="608" cy="134" r="10" style="fill: var(--a1)"/><circle cx="458" cy="249" r="10" style="fill: var(--a1)"/><circle cx="150" cy="337" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="419" cy="437" r="10" style="fill: var(--a1)"/><circle cx="923" cy="341" r="10" style="fill: var(--a1)"/><circle cx="1088" cy="252" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="707" cy="232" r="10" style="fill: var(--a1)"/><circle cx="780" cy="437" r="10" style="fill: var(--a1)"/><circle cx="539" cy="399" r="10" style="fill: var(--a1)"/><circle cx="501" cy="459" r="10" style="fill: var(--a1)"/><circle cx="1077" cy="410" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="775" cy="374" r="10" style="fill: var(--a1)"/><circle cx="982" cy="222" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="224" cy="145" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="1054" cy="120" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="671" cy="439" r="10" style="fill: var(--a1)"/><circle cx="286" cy="110" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="653" cy="424" r="10" style="fill: var(--a1)"/><circle cx="992" cy="231" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="671" cy="342" r="10" style="fill: var(--a1)"/><circle cx="509" cy="399" r="10" style="fill: var(--a1)"/><circle cx="129" cy="132" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="567" cy="270" r="10" style="fill: var(--a1)"/><circle cx="419" cy="184" r="10" style="fill: var(--a1)"/><circle cx="116" cy="344" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="121" cy="448" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="1076" cy="224" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="527" cy="280" r="10" style="fill: var(--a1)"/><circle cx="980" cy="355" r="10" style="fill: var(--a1)"/><circle cx="692" cy="213" r="10" style="fill: var(--a1)"/><circle cx="453" cy="282" r="10" style="fill: var(--a1)"/><circle cx="871" cy="118" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="244" cy="108" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="95" cy="184" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="917" cy="443" r="10" style="fill: var(--a1)"/><circle cx="517" cy="158" r="10" style="fill: var(--a1)"/><circle cx="105" cy="236" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="899" cy="285" r="10" style="fill: var(--a1)"/><circle cx="830" cy="405" r="10" style="fill: var(--a1)"/><circle cx="292" cy="347" r="10" style="fill: var(--a1)"/><circle cx="273" cy="355" r="10" style="fill: var(--a1)"/><circle cx="1057" cy="259" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="437" cy="386" r="10" style="fill: var(--a1)"/><circle cx="1061" cy="313" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="1090" cy="283" r="9" fill="none" stroke-width="4" style="stroke: var(--muted)"/><circle cx="622" cy="123" r="10" style="fill: var(--a1)"/>
+          <g font-size="30" font-weight="600">
+            <text x="1110" y="62" text-anchor="end" style="fill: var(--a3)">techo M·g(x) = 1.5</text>
+            <text x="90" y="62" style="fill: var(--a1)">f(x) = 6x(1−x)</text>
+            <text x="90" y="546" style="fill: var(--muted)">0</text><text x="1110" y="546" text-anchor="end" style="fill: var(--muted)">1</text>
+            <text x="600" y="546" text-anchor="middle" style="fill: var(--fg)">candidato Y (posición)</text>
+          </g>
+        </svg>
+      </div></div>
+      <figcaption class="sheet-title"><span class="fig">FIG. 01</span><span class="src">● bajo f: se acepta · ○ sobre f: se descarta · ilustración, 70 puntos</span></figcaption>
+    </figure>
+    <aside class="notes">Apertura: «¿Y si no puedo invertir F? Von Neumann propone otra idea: generar candidatos fáciles y filtrarlos». Puntos clave: 1) Con propuesta uniforme y un techo de altura 1.5: se sortea una posición Y entre 0 y 1 y una altura entre 0 y 1.5; si el punto queda bajo la curva f, se acepta; si queda encima, se descarta. 2) Cerca de 0.5 la curva es alta y casi todo se acepta; cerca de 0 y de 1 casi todo se rechaza: esa diferencia construye la distribución. 3) De los aceptados solo nos quedamos con la posición horizontal Y, no con la altura. Pase al expositor 2 (Anexo A): «Ya entendimos por qué no basta con generar números uniformes y cómo una envolvente permite visualizar el filtro. Ahora veremos cómo se expresa esa idea en una regla matemática rigurosa y por qué realmente produce la distribución que buscamos».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 07</span></div>
+  </section>
+
+  <!-- 08 · f, g, M -->
+  <section class="slide" id="ingredientes">
+    <p class="kicker">03 · Algoritmo · componentes</p>
+    <h1 class="title sm">Tres ingredientes: f, g y M, con f ≤ M·g</h1>
+    <div class="formula-hero">
+      <div class="tex" role="img" aria-label="f de x menor o igual que M por g de x" data-output="html" data-tex="\htmlClass{p1}{f(x)} \;\le\; \htmlClass{p3}{M}\cdot\htmlClass{p2}{g(x)}"></div>
+      <ul class="parts">
+        <li><b class="p1">f</b>densidad objetivo</li>
+        <li><b class="p2">g</b>propuesta que cubre a f</li>
+        <li><b class="p3">M</b>cota: M ≥ sup f/g</li>
+      </ul>
+    </div>
+    <aside class="notes">Apertura: «El método tiene tres ingredientes y una sola condición que los une: f(x) ≤ M·g(x) para todo x». Puntos clave: 1) f es la densidad objetivo, la que queremos reproducir; g es la propuesta, fácil de simular, y debe ser positiva donde f lo es: si g = 0 en una zona donde f &gt; 0, esa zona nunca se propone. 2) M es una cota: M ≥ sup f/g. Como f y g integran 1, integrar f ≤ M·g da 1 ≤ M: M nunca es menor que 1. 3) Frase: «M es un multiplicador de seguridad: garantiza que la regla de aceptación nunca pida una probabilidad imposible, mayor que uno». Enlace: «Con estos tres ingredientes, el algoritmo cabe en cuatro pasos».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 08</span></div>
+  </section>
+
+  <!-- 09 · Algoritmo -->
+  <section class="slide" id="algoritmo" data-dense>
+    <p class="kicker">03 · Algoritmo · pasos</p>
+    <h1 class="title sm">El algoritmo en 4 pasos</h1>
+    <ol class="pipeline-flow big">
+      <li class="stage k2 fx"><span class="tag">1 · Proponer</span><span class="lbl">Y ~ g</span><span class="desc">Candidato fácil de generar</span></li>
+      <li class="stage k2 fx"><span class="tag">2 · Sortear</span><span class="lbl">U</span><span class="desc">Uniforme (0,1) independiente</span></li>
+      <li class="stage k3 fx"><span class="tag">3 · Comparar</span><span class="lbl">U ≤ a(Y)</span><span class="desc"><span data-tex="a(Y)=\dfrac{f(Y)}{M\,g(Y)}" data-inline></span></span></li>
+      <li class="stage k1 pass fx"><span class="tag">4 · Decidir</span><span class="lbl">X = Y</span><span class="desc">Sí: se guarda. No: se descarta</span></li>
+    </ol>
+    <p class="lead fx">↺ Rechazado: volver al paso 1, hasta reunir n aceptados (no n intentos).</p>
+    <aside class="notes">Apertura: «Cada intento usa dos fuentes de azar independientes». Puntos clave: 1) Proponer un candidato Y desde g y sortear U uniforme. 2) Comparar U con a(Y) = f(Y)/[M·g(Y)]: como P(U ≤ p) = p, la comparación acepta exactamente con probabilidad a(Y); la g del denominador corrige la frecuencia con que llegan los candidatos y la M evita que el cociente pase de 1. 3) Si se acepta, Y se guarda como X; si no, se descarta y se vuelve al paso 1. El ciclo sigue hasta tener n aceptados, no n intentos: el número de intentos es variable. Enlace: «¿Por qué esto produce f y no g?».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 09</span></div>
+  </section>
+
+  <!-- 10 · Demostración -->
+  <section class="slide" id="demostracion">
+    <p class="kicker">03 · Algoritmo · ¿por qué funciona?</p>
+    <h1 class="title sm">La g se cancela: por eso los aceptados siguen f</h1>
+    <p class="lead">Antes del filtro: g. Después: f.</p>
+    <ol class="stair-steps">
+      <li class="fx" style="--r: 0"><span class="n">f/M</span><span class="lbl"><span data-tex="\cancel{g(y)}\cdot\dfrac{f(y)}{M\,\cancel{g(y)}}=\dfrac{f(y)}{M}" data-inline></span></span><span class="desc">g se cancela</span></li>
+      <li class="fx" style="--r: 1"><span class="n">1/M</span><span class="lbl"><span data-tex="P(A)=\displaystyle\int\frac{f(y)}{M}\,dy=\frac{1}{M}" data-inline></span></span><span class="desc">probabilidad de aceptar</span></li>
+      <li class="fx" style="--r: 2"><span class="n">f</span><span class="lbl"><span data-tex="\dfrac{f(y)/M}{1/M}=f(y)" data-inline></span></span><span class="desc">densidad aceptada</span></li>
+    </ol>
+    <aside class="notes">Apertura: «Antes de filtrar, los valores siguen g; después de filtrar, siguen f. No lo suponemos: lo demostramos en tres líneas». Puntos clave: 1) Dado Y = y, aceptar tiene probabilidad f(y)/[M g(y)]. La densidad de proponer y aceptar es g(y) · f(y)/[M g(y)] = f(y)/M: la g se cancela, y esa cancelación es el corazón del algoritmo. 2) Integrando sobre todos los candidatos: P(A) = ∫ f(y)/M dy = 1/M, porque f integra 1. 3) Condicionando a haber sido aceptado: (f(y)/M) / (1/M) = f(y). Los aceptados tienen exactamente densidad f. Enlace: «Ahora lo hacemos con números: Beta(2,2)».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 10</span></div>
+  </section>
+
+  <!-- 11 · Beta(2,2): M y regla -->
+  <section class="slide" id="beta">
+    <p class="kicker">04 · Ejemplo Beta(2,2)</p>
+    <h1 class="title sm">Beta(2,2): M = 1.5 y la regla queda 4Y(1−Y)</h1>
+    <p class="lead"><span data-tex="f(x) = 6x(1-x)" data-inline></span> y propuesta uniforme <span data-tex="g(x) = 1" data-inline></span> en [0, 1]</p>
+    <ul class="calc-rows">
+      <li><span class="f" data-tex="f'(x) = 6 - 12x = 0"></span><span class="s" data-tex="x = 0.5"></span><span class="res">máximo</span></li>
+      <li><span class="f" data-tex="M = f(0.5)"></span><span class="s" data-tex="6 \cdot 0.5 \cdot (1 - 0.5)"></span><span class="res">1.5</span></li>
+      <li class="key"><span class="f" data-tex="U \le \frac{f(Y)}{M\,g(Y)}"></span><span class="s" data-tex="\frac{6Y(1-Y)}{1.5}"></span><span class="res">4Y(1−Y)</span></li>
+    </ul>
+    <aside class="notes">Apertura: «Tomemos f(x) = 6x(1−x) en [0, 1] y la propuesta uniforme, g(x) = 1». Puntos clave: 1) f es una densidad: es no negativa y ∫(6x − 6x²) dx = [3x² − 2x³] de 0 a 1 = 3 − 2 = 1. La uniforme cubre todo el intervalo donde f es positiva. 2) Para hallar M derivamos: f′(x) = 6 − 12x = 0 en x = 0.5; f″(x) = −12 &lt; 0, así que es un máximo, y en los extremos f vale 0. M = f(0.5) = 1.5. 3) Sustituyendo: U ≤ 6Y(1−Y)/1.5 = 4Y(1−Y), que vale como máximo 1 en Y = 0.5: es una probabilidad válida. Enlace: «Probemos la regla con cinco intentos».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 11</span></div>
+  </section>
+
+  <!-- 12 · Cinco intentos a mano + pase a E3 -->
+  <section class="slide" id="a-mano" data-dense>
+    <p class="kicker">04 · Ejercicio en clase · regla U ≤ 4Y(1−Y)</p>
+    <h1 class="title sm">5 intentos a mano: se aceptan 3</h1>
+    <div class="trial-wrap">
+      <table class="trial-table">
+        <thead><tr><th>#</th><th>Y</th><th>U</th><th>4Y(1−Y)</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr class="acc fx"><td>1</td><td>0.20</td><td>0.60</td><td class="thr">0.64</td><td><span class="res ok">Aceptado</span></td></tr>
+          <tr class="fx"><td>2</td><td>0.80</td><td>0.90</td><td class="thr">0.64</td><td><span class="res no">Rechazado</span></td></tr>
+          <tr class="acc fx"><td>3</td><td>0.50</td><td>0.80</td><td class="thr">1.00</td><td><span class="res ok">Aceptado</span></td></tr>
+          <tr class="fx"><td>4</td><td>0.10</td><td>0.50</td><td class="thr">0.36</td><td><span class="res no">Rechazado</span></td></tr>
+          <tr class="acc fx"><td>5</td><td>0.65</td><td>0.70</td><td class="thr">0.91</td><td><span class="res ok">Aceptado</span></td></tr>
+        </tbody>
+      </table>
+      <div class="trial-side">
+        <div class="trial-rate fx"><span class="big">60 %</span><span class="vs">3 de 5 · teórico <b>1/M = 66.7 %</b></span></div>
+        <p class="trial-ask fx">¿Por qué Y = 0.5 se acepta siempre?</p>
+      </div>
+    </div>
+    <aside class="notes">Apertura: «Hagamos cinco intentos a mano: para cada uno calculamos 4Y(1−Y) y lo comparamos con U». Puntos clave: 1) Intento 1: Y = 0.20 da 0.64 y U = 0.60 queda por debajo: aceptado. Intento 2: Y = 0.80 da otra vez 0.64, pero U = 0.90 lo supera: rechazado. Seguir igual con los intentos 3, 4 y 5. 2) Se aceptan 3 de 5: 60 % observado frente a 1/M = 66.67 % teórico; con tan pocos intentos la diferencia es normal. 3) Pregunta al público: ¿por qué Y = 0.5 se acepta siempre? (porque el umbral vale 1). ¿Por qué un Y cerca de 0 casi siempre se rechaza? (el umbral es casi 0). ¿Se pueden meter los rechazados en el histograma? (no: mezclaría otra distribución). Pase al expositor 3 (Anexo A): «Hemos calculado manualmente los umbrales y demostrado la corrección del método. La siguiente pregunta es qué ocurre al ejecutarlo miles de veces, cuánto cuesta y cómo verificamos que el programa está funcionando».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 12</span></div>
+  </section>
+
+  <!-- 13 · Demo: código + puntos -->
+  <section class="slide ar-slide" id="codigo" data-dense>
+    <p class="kicker">05 · Demo en vivo · el navegador corre el mismo código, semilla 42</p>
+    <h1 class="title sm">El código repite lo que hicimos a mano</h1>
+    <div class="ar-demo ar-code-run">
+<pre class="ar-code"><code><span class="ln">import numpy as np</span><span class="ln">def beta_22(x):</span><span class="ln">    return 6*x*(1-x)</span><span class="ln">def generar(n, m=1.5, semilla=42):</span><span class="ln">    rng = np.random.default_rng(semilla)</span><span class="ln">    muestras, intentos = [], 0</span><span class="ln">    while len(muestras) &lt; n:</span><span class="ln hl-g">        y = rng.uniform(0, 1)</span><span class="ln hl-g">        u = rng.uniform(0, 1)</span><span class="ln">        intentos += 1</span><span class="ln hl-m">        if u &lt;= beta_22(y) / m:</span><span class="ln hl-f">            muestras.append(y)</span><span class="ln">    return np.array(muestras), intentos</span><span class="ln">x, k = generar(10000, m=<b data-ar="m">1.5</b>)</span></code></pre>
+      <div class="ar-col">
+        <div class="ar-plot" data-view="scatter"><canvas class="ar-pts"></canvas><canvas class="ar-ovl"></canvas>
+          <div class="ar-legend"><span class="ok">● aceptado</span><span class="no">○ rechazado</span></div></div>
+        <div class="ar-stats">
+          <div class="ar-stat k1"><span class="ar-l">aceptados</span><span class="ar-v" data-ar="acc">10 000</span></div>
+          <div class="ar-stat"><span class="ar-l">rechazados</span><span class="ar-v" data-ar="rej">4 969</span></div>
+          <div class="ar-stat k2"><span class="ar-l">intentos</span><span class="ar-v" data-ar="att">14 969</span></div>
+          <div class="ar-stat k3"><span class="ar-l">eficiencia</span><span class="ar-v" data-ar="eff">66.80 %</span></div>
+        </div>
+        <div class="ar-controls">
+          <button class="ar-btn go" type="button" data-ar-act="start">Iniciar</button>
+          <button class="ar-btn" type="button" data-ar-act="pause">Pausa</button>
+          <button class="ar-btn" type="button" data-ar-act="reset">Reiniciar</button>
+          <span class="ar-status" data-ar="status">listo para iniciar</span>
+          <span class="ar-print">Corrida real de codigo/beta22.py · semilla 42 · n = 10 000</span>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Apertura: «La computadora solo automatiza los mismos pasos que acabamos de hacer en la pizarra». Puntos clave: 1) Recorrer el código: las líneas 8 y 9 son los dos sorteos, Y y U; la línea 11 es la regla; la línea 12 guarda solo los aceptados, mientras intentos cuenta todos. 2) Pulsar Iniciar (o la tecla S): los puntos naranjas quedan bajo f y los grises encima; los contadores suben en vivo. 3) Al terminar: 10 000 aceptados, 4 969 rechazados, 14 969 intentos, eficiencia 66.80 %: exactamente lo que imprime Python con semilla 42, porque el navegador usa el mismo generador que numpy (PCG64, dato técnico TIP). Antes de exponer: abrir el HTML y pulsar Reiniciar (tecla R). Si la demo falla, los mismos números están en el PDF. Enlace: «Que el código corra no prueba que esté bien».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 13</span></div>
+  </section>
+
+  <!-- 14 · Demo: histograma -->
+  <section class="slide ar-slide" id="histograma" data-dense>
+    <p class="kicker">05 · Demo en vivo · validación</p>
+    <h1 class="title sm">El histograma confirma la forma</h1>
+    <div class="ar-demo ar-hist-run">
+      <div class="ar-col">
+        <div class="ar-plot" data-view="hist"><canvas class="ar-pts"></canvas><canvas class="ar-ovl"></canvas></div>
+        <div class="ar-controls">
+          <button class="ar-btn go" type="button" data-ar-act="start">Iniciar</button>
+          <button class="ar-btn" type="button" data-ar-act="pause">Pausa</button>
+          <button class="ar-btn" type="button" data-ar-act="reset">Reiniciar</button>
+          <span class="ar-status" data-ar="status">listo para iniciar</span>
+          <span class="ar-print">Histograma de densidad (20 clases) · codigo/beta22.py · semilla 42</span>
+        </div>
+      </div>
+      <div class="ar-stats ar-stack">
+        <div class="ar-stat k1"><span class="ar-l">media</span><span class="ar-v" data-ar="mean">0.5036</span><span class="ar-ref">teórica 0.5</span></div>
+        <div class="ar-stat k1"><span class="ar-l">varianza</span><span class="ar-v" data-ar="var">0.0497</span><span class="ar-ref">teórica 0.05</span></div>
+        <div class="ar-stat"><span class="ar-l">aceptados</span><span class="ar-v" data-ar="acc">10 000</span><span class="ar-ref">meta n = 10 000</span></div>
+      </div>
+    </div>
+    <aside class="notes">Apertura: «Que el código corra no prueba que esté bien: miremos la forma de lo que sale». Puntos clave: 1) Es un histograma de densidad (density=True): estima la densidad, no cuenta valores; el área de sus barras suma 1 y por eso se puede comparar con la curva f(x). Si la corrida se pausó o reinició, pulsar Iniciar y ver cómo las barras se acercan a la curva. 2) Con 10 000 muestras: media 0.5036 frente a 0.5 y varianza 0.0497 frente a 0.05 (corrida de Python, semilla 42). 3) Es una verificación empírica: una media correcta sola no asegura toda la distribución, y el histograma no reemplaza la demostración. Enlace: «Funciona. ¿Pero cuánto nos costó?».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 14</span></div>
+  </section>
+
+  <!-- 15 · Demo: efecto de M -->
+  <section class="slide ar-slide" id="eficiencia" data-dense>
+    <p class="kicker">06 · Demo en vivo · eficiencia</p>
+    <h1 class="title sm">Correcto no es lo mismo que eficiente: aceptación = 1/M</h1>
+    <div class="ar-demo ar-m-run">
+      <div class="ar-col">
+        <div class="ar-controls">
+          <button class="ar-btn" type="button" data-ar-m="1.5" aria-pressed="true">M = 1.5</button>
+          <button class="ar-btn" type="button" data-ar-m="2" aria-pressed="false">M = 2</button>
+          <button class="ar-btn" type="button" data-ar-m="3" aria-pressed="false">M = 3</button>
+          <button class="ar-btn" type="button" data-ar-m="6" aria-pressed="false">M = 6</button>
+          <span class="ar-print">Gráfico: M = 6 · valores: codigo/beta22.py, semilla 42</span>
+        </div>
+        <div class="ar-plot" data-view="scatter"><canvas class="ar-pts"></canvas><canvas class="ar-ovl"></canvas></div>
+        <div class="ar-controls">
+          <button class="ar-btn go" type="button" data-ar-act="start">Iniciar</button>
+          <button class="ar-btn" type="button" data-ar-act="pause">Pausa</button>
+          <button class="ar-btn" type="button" data-ar-act="reset">Reiniciar</button>
+          <span class="ar-status" data-ar="status">listo para iniciar</span>
+        </div>
+      </div>
+      <div class="ar-mrows">
+        <div class="ar-mhead"><span>M</span><span>aceptación: 1/M vs observada</span><span>intentos n·M</span></div>
+        <div class="ar-mrow" data-m="1.5"><span class="ar-m">1.5</span>
+          <div class="ar-bars"><span class="ar-track"><span class="ar-fill theo" style="--v: 66.67"></span></span><span class="ar-track"><span class="ar-fill obs" style="--v: 66.80"></span></span>
+            <span class="ar-bv">66.67 % · obs. <b data-ar-row="eff">66.80 %</b></span></div>
+          <div class="ar-att"><span class="ar-big">15 000</span><span class="ar-small">obs. <span data-ar-row="att">14 969</span></span></div></div>
+        <div class="ar-mrow" data-m="2"><span class="ar-m">2</span>
+          <div class="ar-bars"><span class="ar-track"><span class="ar-fill theo" style="--v: 50"></span></span><span class="ar-track"><span class="ar-fill obs" style="--v: 50.02"></span></span>
+            <span class="ar-bv">50.00 % · obs. <b data-ar-row="eff">50.02 %</b></span></div>
+          <div class="ar-att"><span class="ar-big">20 000</span><span class="ar-small">obs. <span data-ar-row="att">19 991</span></span></div></div>
+        <div class="ar-mrow" data-m="3"><span class="ar-m">3</span>
+          <div class="ar-bars"><span class="ar-track"><span class="ar-fill theo" style="--v: 33.33"></span></span><span class="ar-track"><span class="ar-fill obs" style="--v: 33.21"></span></span>
+            <span class="ar-bv">33.33 % · obs. <b data-ar-row="eff">33.21 %</b></span></div>
+          <div class="ar-att"><span class="ar-big">30 000</span><span class="ar-small">obs. <span data-ar-row="att">30 107</span></span></div></div>
+        <div class="ar-mrow" data-m="6"><span class="ar-m">6</span>
+          <div class="ar-bars"><span class="ar-track"><span class="ar-fill theo" style="--v: 16.67"></span></span><span class="ar-track"><span class="ar-fill obs" style="--v: 16.67"></span></span>
+            <span class="ar-bv">16.67 % · obs. <b data-ar-row="eff">16.67 %</b></span></div>
+          <div class="ar-att"><span class="ar-big">60 000</span><span class="ar-small">obs. <span data-ar-row="att">59 983</span></span></div></div>
+      </div>
+    </div>
+    <aside class="notes">Apertura: «El algoritmo puede estar matemáticamente correcto y aun así ser ineficiente». Puntos clave: 1) Eficiencia observada = aceptados / intentos; la teórica es 1/M, y los intentos esperados para n muestras son n·M (cada muestra cuesta en promedio M intentos). 2) Cambiar M en vivo con los botones o las teclas 1 a 4. Corrida de Python, semilla 42, 10 000 muestras: M = 1.5 → 66.80 % con 14 969 intentos; M = 2 → 50.02 % (19 991); M = 3 → 33.21 % (30 107); M = 6 → 16.67 % (59 983). La teoría da 66.67, 50, 33.33 y 16.67 %, y 15 000, 20 000, 30 000 y 60 000 intentos. 3) Con M = 6 el histograma sigue saliendo bien: lo que cambia es el desperdicio. Frase: «Buscamos una propuesta fácil de generar cuya envolvente se ajuste bien a la distribución objetivo». También cuenta el costo de evaluar f y g, no solo el porcentaje.</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 15</span></div>
+  </section>
+
+  <!-- 16 · Usos y errores -->
+  <section class="slide deck-compare" id="usos" data-dense>
+    <p class="kicker">07 · Uso del método</p>
+    <h1 class="title sm">Dónde se usa y cuándo no conviene</h1>
+    <div class="compare-pair">
+      <div class="compare-side"><h2>Se usa en</h2>
+        <p class="compare-trait" data-mark="yes">Hospitales: tiempos de servicio</p>
+        <p class="compare-trait" data-mark="yes">Redes: tiempos de respuesta</p>
+        <p class="compare-trait" data-mark="yes">Seguros: montos de siniestros</p></div>
+      <div class="compare-side"><h2>Errores frecuentes</h2>
+        <p class="compare-trait" data-mark="no">M menor que el máximo de f/g</p>
+        <p class="compare-trait" data-mark="no">g = 0 donde f &gt; 0</p>
+        <p class="compare-trait" data-mark="no">Contar rechazados como muestras</p></div>
+    </div>
+    <p class="compare-takeaway">No conviene si la inversa es más rápida, no hay cota finita o la dimensión es alta.</p>
+    <aside class="notes">Apertura: «¿Dónde se usa y cuándo no conviene?». Puntos clave: 1) Aplicaciones ilustrativas: hospitales (tiempos de servicio y duración de procedimientos), servidores y redes (tiempos de respuesta), seguros (montos de siniestros en Monte Carlo) y manufactura (tiempos de reparación). Sirve cuando hay una función objetivo evaluable y una propuesta válida. 2) Conviene si no hay una inversa sencilla y existe una propuesta con soporte correcto y envolvente ajustada; no conviene si la inversa o un método específico es mucho más rápido, si no se puede demostrar una cota finita o en dimensiones altas, donde la aceptación cae muchísimo. 3) Errores frecuentes: usar M menor que el máximo de f/g, elegir g = 0 donde f &gt; 0, contar los rechazados como muestras, y confundir un histograma parecido con una prueba formal.</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 16</span></div>
+  </section>
+
+  <!-- 17 · Cierre -->
+  <section class="slide" id="cierre" data-dense>
+    <p class="kicker">Cierre</p>
+    <h1 class="title sm">Lo que hay que llevarse</h1>
+    <ol class="recap">
+      <li><span class="dot">1</span>Se transforman uniformes: inversa, especial o rechazo</li>
+      <li><span class="dot">2</span>Von Neumann propone con g y filtra con f/(M·g)</li>
+      <li><span class="dot">3</span>Siempre correcto; eficiente según 1/M</li>
+    </ol>
+    <p class="lead fx">Repaso: ¿qué pasa si g = 0 donde f &gt; 0? · ¿por qué M = 6 es peor que M = 1.5?</p>
+    <aside class="notes">Apertura (Anexo A, cierre): «El método es válido siempre que exista una propuesta con soporte adecuado y una envolvente correcta. Pero una implementación correcta debe ir acompañada de comprobaciones estadísticas y análisis de eficiencia». Puntos clave: 1) Generar variables aleatorias es transformar uniformes: inversa, transformaciones especiales o rechazo, según costo y validez. 2) Von Neumann propone con g y filtra con f/(M·g); los aceptados siguen f. 3) Siempre correcto si la envolvente es válida; eficiente según 1/M. Preguntas de repaso: ¿qué ocurre si g(x) = 0 en una región con f(x) &gt; 0? (nunca se proponen candidatos allí: no se reproduce f). ¿Con f y g fijas, por qué M = 6 es peor que M = 1.5? (la aceptación esperada es 1/M: más rechazo). Frase final: «Aceptación-rechazo convierte candidatos fáciles de simular en muestras de otra distribución mediante un filtro probabilístico. Su valor está en la flexibilidad, y su principal compromiso es la cantidad de rechazos».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 17</span></div>
+  </section>
+
+  <div id="notes"></div>
+</div>
+<script src="assets/katex/katex.min.js"></script>
+<script>
+"use strict";
+// Fórmulas con KaTeX local. data-inline = en línea; sin él, en bloque. \htmlClass pinta f, g y M con su color.
+document.querySelectorAll("[data-tex]").forEach((el) => katex.render(el.dataset.tex, el, {
+  displayMode: !el.hasAttribute("data-inline"), throwOnError: false, strict: "ignore", output: el.dataset.output || "htmlAndMathml",
+  trust: (ctx) => ctx.command === "\\htmlClass",
+}));
+</script>
+<script>
+"use strict";
+const PRINT = new URLSearchParams(location.search).has("print");
+const slides = [...document.querySelectorAll(".slide")];
+let current = 0;
+function show(i) {
+  current = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((slide, index) => slide.classList.toggle("active", index === current));
+  const notes = slides[current].querySelector(".notes");
+  document.getElementById("notes").textContent = notes ? notes.textContent : "";
+  history.replaceState(null, "", "#" + (current + 1));
+}
+function resize() {
+  const scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+  document.getElementById("stage").style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+}
+document.addEventListener("keydown", (event) => {
+  if (["ArrowRight", "PageDown", " ", "Enter"].includes(event.key)) { event.preventDefault(); show(current + 1); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) { event.preventDefault(); show(current - 1); }
+  else if (event.key === "Home") show(0);
+  else if (event.key === "End") show(slides.length - 1);
+  else if (event.key === "f" || event.key === "F") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  else if (event.key === "n" || event.key === "N") document.body.classList.toggle("show-notes");
+});
+if (PRINT) document.body.classList.add("print");
+else { addEventListener("resize", resize); resize(); show(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1)); }
+</script>
+<script src="assets/demo/pcg64.js"></script>
+<script src="assets/demo/resultados.js"></script>
+<script src="assets/demo/ar-demo.js"></script>
+<script src="assets/anim/anim.js"></script>
+</body>
+</html>
