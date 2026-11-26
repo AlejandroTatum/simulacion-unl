@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Ficha de repaso · Expositor 3 · Von Neumann</title>
+<style>
+  @page { size: A4; margin: 11mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Inter", "Noto Sans", "DejaVu Sans", sans-serif; font-size: 9.2pt; line-height: 1.3; color: #1d1d1f; margin: 0; }
+  h1 { font-size: 17pt; margin: 0 0 2mm; }
+  .sub { color: #666; margin: 0 0 5mm; font-size: 9.5pt; }
+  h2 { font-size: 11pt; margin: 4mm 0 2mm; padding-bottom: 1mm; border-bottom: 2px solid #e8590c; }
+  table { width: 100%; border-collapse: collapse; margin: 1mm 0 2mm; }
+  th, td { border: 1px solid #d0d0d0; padding: 1.2mm 1.8mm; vertical-align: top; text-align: left; }
+  th { background: #f4f1ec; font-size: 9.5pt; }
+  td.n { white-space: nowrap; font-weight: 700; }
+  .say { border-left: 3px solid #e8590c; background: #fff6ef; padding: 1.5mm 2.5mm; margin: 1mm 0 2mm; font-style: italic; }
+  .box { border: 1.5px solid #1d1d1f; border-radius: 2mm; padding: 2.5mm 3.5mm; margin: 2mm 0 3mm; }
+  .box ul { margin: 0; padding-left: 5mm; }
+  .box li { margin: 0.8mm 0; }
+  .ok { color: #1a7f37; font-weight: 700; }
+  .bad { color: #c62828; font-weight: 700; }
+  kbd { font-family: monospace; border: 1px solid #999; border-radius: 1mm; padding: 0 1.2mm; font-size: 9pt; background: #f6f6f6; }
+  .q { font-weight: 700; margin: 2mm 0 0.3mm; }
+  .page-break { break-before: page; }
+  p { margin: 1.5mm 0; }
+</style>
+</head>
+<body>
+
+<h1>Ficha de repaso · mi parte (diapositivas 12–15)</h1>
+<p class="sub">Métodos para generar variables aleatorias · Aceptación-Rechazo de Von Neumann · Expositor 3 · 18:00–27:00 · modero la 16 (27:00–30:00)</p>
+
+<div class="box"><b>Antes de empezar:</b> mientras va la actividad (diapositiva 11), avanzar a la 12 y apretar <kbd>R</kbd>.
+Durante la demo: <kbd>S</kbd> inicia o pausa · en la 13, <kbd>1</kbd>–<kbd>4</kbd> eligen el techo M = 1.5 / 2 / 3 / 6.
+<b>Si la demo falla:</b> abrir <code>index.pdf</code> en las diapositivas 12–13 (mismos números).</div>
+
+<h2>Guion por diapositiva</h2>
+<table>
+  <tr><th style="width:15%">Diapositiva</th><th style="width:22%">Abro con</th><th>Lo esencial</th><th style="width:18%">Cierro con</th></tr>
+  <tr><td class="n">12 · Demo<br>3:00</td><td>«Ahora la compu tira miles de dardos por nosotros.»</td>
+      <td><kbd>S</kbd> para iniciar. Bajo la curva se guarda (naranja); encima se descarta (gris). Con las posiciones de los guardados, el histograma toma la forma de la lomita.
+      <b>14 969 tiros para 10 000 muestras · 66.80 % vs 66.67 % teórico</b>. Como en Monte Carlo: con muchos tiros, lo práctico se acerca a lo teórico.</td>
+      <td>«Funciona. ¿Cuánto nos costó?»</td></tr>
+  <tr><td class="n">13 · Costo<br>2:30</td><td>«¿Cuánto desperdiciamos? Depende de qué tan alto esté el techo.»</td>
+      <td>Con M = 1.5 se guardan 2 de cada 3. Tecla <kbd>4</kbd> (M = 6): 1 de cada 6, 59 983 tiros. <b>La forma sigue bien, solo desperdicia.</b> Regla: se guarda 1 de cada M → tiros ≈ muestras × M.</td>
+      <td>«Entonces, ¿cuándo conviene usarlo?»</td></tr>
+  <tr><td class="n">14 · Conviene / errores<br>2:00</td><td>«Con todo lo visto, ¿cuándo conviene usar esto?»</td>
+      <td>Conviene: no hay fórmula directa, dardos baratos, techo ajustado (bancos, hospitales, redes, fábricas).
+      Errores: <b>techo bajo</b> (punta aplanada) · <b>dardos que no cubren toda la curva</b> (números que nunca salen) · <b>contar descartados</b> como muestras. Cada dardo cuesta: generarlo y evaluar la curva.</td>
+      <td>Paso a la 15 con la transición 3.</td></tr>
+  <tr><td class="n">15 · Cierre<br>1:30</td><td><b>Transición 3, literal</b> (abajo).</td>
+      <td>1) Números con la forma correcta: la realidad no es pareja (banco).<br>2) Si no hay fórmula directa: tirar dardos y quedarse con los buenos.<br>3) Techo justo: correcto · techo alto: caro · techo bajo: incorrecto.</td>
+      <td>Frase final (abajo) + «Gracias».</td></tr>
+  <tr><td class="n">16 · Preguntas<br>3:00</td><td>«Cerramos con cinco preguntas rápidas.»</td>
+      <td>Leer, esperar respuesta, pulsar «Ver respuesta» (~35 s cada una). 1–2 E1 · 3–4 E2 · <b>5 es mía</b>: techo más alto → sale bien, pero desperdicia más dardos. Si falta tiempo, solo 2 o 3.</td><td>—</td></tr>
+</table>
+
+<h2>Para no confundirme</h2>
+<div class="box"><ul>
+  <li><b>Tiros ≠ muestras.</b> Muestras = guardados (10 000). Tiros = todos los dardos (14 969).</li>
+  <li><b>M es la altura del techo.</b> Número más grande = techo más arriba. 1.2 es <i>más bajo</i> que la punta (1.5): la corta.</li>
+  <li><span class="ok">Techo alto = caro pero correcto.</span> <span class="bad">Techo bajo = barato pero incorrecto.</span> Lo ideal: tocar justo la punta.</li>
+  <li><b>Von Neumann fabrica; el histograma solo comprueba.</b></li>
+  <li>Dardos que no cubren toda la curva: tirar más <b>no lo arregla</b>, hay que cubrir toda la zona.</li>
+  <li>66.67 % sale de áreas: lomita = 1, rectángulo = 1 × 1.5 → 1 / 1.5 = 2/3.</li>
+</ul></div>
+
+<div class="page-break"></div>
+
+<h2>Frases para decir literal</h2>
+<p><b>Transición 3 (al abrir la 15):</b></p>
+<div class="say">«El método es válido siempre que exista una propuesta con soporte adecuado y una envolvente correcta. Pero una implementación correcta debe ir acompañada de comprobaciones estadísticas y análisis de eficiencia.»</div>
+<p style="font-size:9.3pt;color:#555">Traducción: soporte adecuado = los dardos cubren toda la curva · envolvente correcta = techo no más bajo que la punta · comprobaciones = histograma, media 0.5, varianza 0.05 · eficiencia = cuántos tiros se pierden.</p>
+
+<p><b>Cierre completo de la 15 (~1:30):</b></p>
+<div class="say">«Cerramos con tres ideas. Primero: un simulador necesita números con la forma correcta. La realidad no es pareja: en un banco, la mayoría tarda unos minutos y pocos tardan muchísimo; si simulamos con números parejos, el simulador nos miente. Segundo: si no se puede generar directo, tiramos dardos y nos quedamos con los buenos; eso es Von Neumann. Tercero: siempre sale bien si el techo toca la punta y los dardos cubren toda la curva; un techo más alto también funciona, pero desperdicia más tiros: el techo decide cuánto cuesta.<br><br>
+En resumen: Von Neumann convierte candidatos fáciles en muestras con la forma que queremos, filtrándolos al azar. Gracias.»</div>
+
+<p><b>Demo de la 12 (~2 min):</b></p>
+<div class="say">«Ahora la compu tira miles de dardos por nosotros. Cada dardo cae en un punto al azar del rectángulo. Si queda bajo la curva, lo guardamos; si queda encima, lo descartamos. Con las posiciones de los guardados se arma este histograma, que va tomando la forma de la lomita. El rectángulo tiene área 1.5 y la curva área 1, así que en teoría se guardan 2 de cada 3, un 66.67 %. Nos salió 66.80 %: como en Monte Carlo, con muchos tiros lo práctico se acerca a lo teórico. Para juntar 10 000 muestras hicieron falta 14 969 tiros, cerca de los 15 000 que esperábamos.»</div>
+
+<h2>Preguntas difíciles · respuestas preparadas</h2>
+<p class="q">¿Para qué queremos números con forma de lomita?</p>
+<div class="say">«Porque la compu nos da números parejos y la realidad no es pareja: si simulamos tiempos de atención con números parejos, el simulador nos miente.»</div>
+
+<p class="q">¿Por qué salió 66.80 % y no 66.67 %? ¿El método está mal?</p>
+<div class="say">«No, el método está bien. La diferencia es de 0.13 puntos y es por el azar: es una muestra finita. Como tirar una moneda 100 veces: no salen exactamente 50 caras, pero con más tiros se acerca. Es la ley de los grandes números.»</div>
+
+<p class="q">¿Por qué no poner el techo en 1.2 y tirar menos dardos?</p>
+<div class="say">«Ahorramos dardos, pero le cortamos la punta a la lomita y los números salen con la forma equivocada. Es más rápido, pero incorrecto.»</div>
+
+<p class="q">Si ya tenemos la transformada inversa, ¿para qué sirve Von Neumann?</p>
+<div class="say">«Si la inversa se puede despejar fácil, conviene usarla: da un número por cada tiro, sin desperdicio. Von Neumann sirve cuando esa fórmula no existe o es muy difícil de calcular: tiramos dardos, nos quedamos con los buenos y el histograma confirma que la forma salió bien.»</div>
+
+<p class="q">¿Cómo sabemos que la demo hace lo mismo que el código de Python?</p>
+<div class="say">«La demo corre en el navegador, sin internet ni servidor, una copia del mismo generador de Python con la misma semilla, 42. Con la misma semilla la secuencia se repite igual, por eso da exactamente los mismos números: 14 969 tiros y 66.80 %.»</div>
+
+<div class="box" style="margin-top:5mm"><b>Mañana antes de entrar:</b> leer esta ficha una vez y decir en voz alta la transición 3 y la frase final.</div>
+
+</body>
+</html>
