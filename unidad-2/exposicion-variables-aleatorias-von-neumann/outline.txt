@@ -1,31 +1,28 @@
 # Métodos para generar variables aleatorias: Aceptación-Rechazo de Von Neumann
 # duration: 30 min
 # speakers: Expositor 1, Expositor 2, Expositor 3, Todos
-# 18 diapositivas, versión de 30 minutos (S8 de odd/tasks/expo-variables-aleatorias-von-neumann.md): E1 0:00-9:00 (1-7),
-# E2 9:00-18:00 (8-13), E3 18:00-27:00 (14-17), Todos 27:00-30:00 (18, ronda de preguntas). La última columna es la duración.
-# Sin fundamentos, transformada inversa, Box-Muller ni comparación de métodos (los da el docente): la 3 es un puente de una
-# línea. Fuente única: borrador "Guia_Detallada_3_Expositores_Von_Neumann.pdf" (p. = página, § = sección). h(x) sin
-# normalizar solo en la guía. Colores: a1 naranja = objetivo f y aceptados; a2 verde azulado = propuesta g y candidatos;
-# a3 morado = envolvente M·g y M; gris = rechazados; tinta = neutro.
-# Componentes locales (components/, para cosecha): trial-table (12), accept-activity (13), ar-demo (14-15), reveal-qa (18);
-# la columna 1 nombra el componente compartido más cercano. Repeticiones deliberadas: question-hook en 3, 13 y 18 (puente,
-# actividad y ronda final: las tres son preguntas al público); calc-rows en 11 y 12 (el mismo ejercicio Beta); ar-demo en
-# 14-15 (una misma corrida en vivo).
-cover | Métodos para generar variables aleatorias | portada: título, subtítulo Aceptación-Rechazo de Von Neumann, objetivo | Presentar tema, grupo y objetivo. Fuente: borrador p. 1. | Expositor 1 | 0:40
-rail-timeline | Al final podrán generar una variable aleatoria y medir su costo | riel de tres tramos: entender (E1), aplicar (E2), evaluar (E3) con minutos; ronda 27-30 (data-dense: ruta con tiempos) | Objetivos del borrador repartidos por expositor. Fuente: borrador §1, p. 1-2. | Expositor 1 | 0:50
-question-hook | ¿Y si F⁻¹ no se puede despejar? | pausa invertida: la inversa X = F⁻¹(U) necesita F⁻¹ cerrada; Von Neumann: proponer y filtrar | Puente de una línea: la inversa la da el docente; motiva Von Neumann. Fuente: borrador §3.2-3.3, p. 3-4. | Expositor 1 | 1:20
-deck-case-map | Candidato, filtro y muestra final: tres cosas distintas | Y ~ g (candidato) → U ≤ a(Y) (filtro) → X = Y (muestra) | Si se aceptan todos se obtiene g; el filtro selecciona. Fuente: borrador §4.1-4.2, p. 4-5. | Expositor 1 | 1:40
+# 16 diapositivas, versión de 30 minutos en lenguaje sencillo (S9 de odd/tasks/expo-variables-aleatorias-von-neumann.md):
+# E1 0:00-9:00 (1-7), E2 9:00-18:00 (8-11), E3 18:00-27:00 (12-15), Todos 27:00-30:00 (16). La última columna es la duración.
+# Regla S9: en la diapositiva, la idea en palabras simples + un dibujo; las fórmulas (sup f/g, condiciones, demostración,
+# derivada, E[T] = M) van a las notas y a la guía como respaldo. Sin las diapositivas de la regla ni de la demostración.
+# Fuente única: borrador "Guia_Detallada_3_Expositores_Von_Neumann.pdf" (p. = página, § = sección). h(x) solo en la guía.
+# Colores: a1 naranja = curva f y guardados; a2 verde azulado = dardos (g); a3 morado = techo M; gris = descartados.
+# Componentes locales (components/): trial-table (10), accept-activity (11), ar-demo (12-13), reveal-qa (16). Repeticiones
+# deliberadas: question-hook en 3, 11 y 16 (preguntas al público); pipeline-flow en 8 y 9 (pasos del algoritmo y su ejemplo);
+# ar-demo en 12-13 (una misma corrida en vivo).
+cover | Métodos para generar variables aleatorias | portada: título, subtítulo, objetivo | Presentar tema, grupo y objetivo. Fuente: borrador p. 1. | Expositor 1 | 0:40
+rail-timeline | Al final podrán generar una variable aleatoria y medir su costo | riel de tres tramos con minutos; ronda 27-30 (data-dense) | Objetivos repartidos por expositor. Fuente: borrador §1, p. 1-2. | Expositor 1 | 0:50
+question-hook | Hay distribuciones que no se pueden generar directo. | pausa invertida: «Entonces: tirar candidatos y quedarse con los buenos.» | Puente: la inversa la da el docente (F⁻¹ solo en notas). Fuente: borrador §3.2-3.3, p. 3-4. | Expositor 1 | 1:20
+deck-case-map | Tiro un dardo, si cae bajo la curva lo guardo | dardo (candidato) → ¿bajo la curva? (filtro) → lo guardo (muestra), sin símbolos (data-dense) | Analogía del dardo; Y ~ g y U solo en notas. Fuente: borrador §4.1-4.2, p. 4-5. | Expositor 1 | 1:40
 sheet-frame | Con puntos: bajo la curva se acepta, encima se descarta | lámina de 70 puntos bajo/sobre f con techo 1.5 | Intuición geométrica. Fuente: borrador §5, p. 5. | Expositor 1 | 1:40
-block-opener | Tres ingredientes, tres condiciones | panel + filas f, g, M con normalización, cobertura y dominación (data-dense) | f objetivo, g propuesta, M cota y sus tres condiciones. Fuente: borrador §6 y §4.1, p. 4-6. | Expositor 1 | 1:30
-figure-full | M debe cubrir el mayor cociente f/g, y nunca es menor que 1 | cociente 6x(1−x) con M=1.5 (válido), M=1.2 (inválido) y M=1; pase a E2 | M ≥ sup f/g; integrar da M ≥ 1; transición del Anexo A (E1→E2). Fuente: borrador §6, p. 6; Anexo A, p. 15. | Expositor 1 | 1:20
-pipeline-flow | El algoritmo repite 4 pasos hasta reunir n aceptados | proponer → sortear → comparar → decidir, con bucle (data-dense: 4 pasos) | Dos fuentes de azar; n aceptados, no n intentos. Fuente: borrador §7, p. 6. | Expositor 2 | 1:20
-formula-hero | Cada pieza de la regla tiene un porqué | U ≤ f(Y)/(M g(Y)) con U, g y M explicados | Por qué aparecen U, g y M. Fuente: borrador §7, p. 6. | Expositor 2 | 1:10
-stair-steps | La g se cancela: por eso los aceptados siguen f | cuatro escalones: P(A∣y), cancelación de g, P(A)=1/M, f(y∣A)=f(y) | Demostración intuitiva en una diapositiva. Fuente: borrador §8, p. 7. | Expositor 2 | 1:40
-calc-rows | Beta(2,2): f es una densidad, g = 1 la cubre y M = 1.5 | ∫(6x−6x²)dx = 1, g = 1, f′=0 en 0.5 y M = f(0.5) = 1.5 | Pasos 1 a 3 del ejercicio. Fuente: borrador §9, p. 8. | Expositor 2 | 1:20
-calc-rows | Regla U ≤ 4Y(1−Y): de 5 intentos se aceptan 3 | tabla de 5 intentos (componente local trial-table) + 60 % vs 66.7 % + pregunta (data-dense) | Pasos 4 y 5: regla y tabla; 3 de 5 = 60 %, teórica 66.67 %. Fuente: borrador §9, p. 8. | Expositor 2 | 1:30
-question-hook | Ustedes deciden: ¿se acepta el candidato? | actividad interactiva (accept-activity): casillas Y y U + Decidir, umbral, punto y veredicto; PDF: ejemplo resuelto (data-dense); pase a E3 | El público dicta Y y U, dos o tres intentos; transición del Anexo A (E2→E3). Fuente: borrador §10, p. 9; Anexo A, p. 15. | Expositor 2 | 2:00
-deck-annotated-code | El código repite lo hecho a mano | demo en vivo (ar-demo): código + puntos + histograma + contadores; PDF: corrida Python semilla 42 (data-dense) | Código del borrador recortado; media 0.5036 y varianza 0.0497. Fuente: borrador §11, p. 10-11; codigo/beta22.py. | Expositor 3 | 3:00
-bar-rows | Cada muestra cuesta en promedio M intentos | demo en vivo: E[T] = M + selector M 1.5/2/3/6 y tabla 1/M vs observada, n·M vs observados (data-dense) | T geométrica; subir M mantiene la corrección y aumenta los rechazos. Fuente: borrador §12 y tabla de M, p. 11-12. | Expositor 3 | 2:30
-deck-compare | Conviene con una buena envolvente; falla con estos errores | conviene ✓ frente a errores ✕ + costo real (data-dense) | Conviene/evitar, costo de generar y evaluar, aplicaciones y errores. Fuente: borrador §12 y §14, p. 12-13. | Expositor 3 | 2:00
+block-opener | Necesitamos 3 cosas | panel + filas f, g, M en palabras + frase S9 (data-dense) | Condiciones formales solo en notas. Fuente: borrador §6, p. 6. | Expositor 1 | 1:30
+figure-full | ¿Qué tan alto va el techo? | lomita con techos 1.5 (toca ✓), 1.2 (corta ✕) y 2 (desperdicia), frase S9 completa (data-dense); pase a E2 | sup f/g solo en notas; transición del Anexo A (E1→E2). Fuente: borrador §6, p. 6; Anexo A, p. 15. | Expositor 1 | 1:20
+pipeline-flow | 4 pasos que se repiten | proponer → sortear → comparar con la curva → guardar o descartar + «Los que sobreviven tienen la forma de f.» (data-dense) | Regla y demostración solo en notas y guía. Fuente: borrador §7-8, p. 6-7. | Expositor 2 | 2:00
+pipeline-flow | Ejemplo: una lomita con la punta en 1.5 | punta 1.5 → techo M = 1.5 → regla U ≤ 4Y(1−Y) (data-dense) | Integral y derivada solo en notas y guía. Fuente: borrador §9, p. 8. | Expositor 2 | 2:00
+calc-rows | Regla U ≤ 4Y(1−Y): de 5 intentos se aceptan 3 | tabla de 5 intentos (trial-table) + 60 % vs 66.7 % + pregunta (data-dense) | Tabla del borrador. Fuente: borrador §9, p. 8. | Expositor 2 | 2:30
+question-hook | Ustedes deciden: ¿se acepta el candidato? | actividad interactiva (accept-activity); PDF: ejemplo resuelto (data-dense); pase a E3 | El público dicta Y y U; transición del Anexo A (E2→E3). Fuente: borrador §10, p. 9; Anexo A, p. 15. | Expositor 2 | 2:30
+deck-annotated-code | El código hace lo mismo que hicimos a mano | demo en vivo (ar-demo): 8 líneas del ciclo + puntos + histograma + contadores; PDF: corrida Python semilla 42 (data-dense) | Media 0.5036 y varianza 0.0497. Fuente: borrador §11, p. 10-11; codigo/beta22.py. | Expositor 3 | 3:00
+bar-rows | Techo más alto → más tiros perdidos. | «Con M = 1.5 se acepta 2 de cada 3.» + botones de M + mini tabla esperado/real (data-dense) | E[T] = M y geométrica solo en notas y guía. Fuente: borrador §12 y tabla de M, p. 11-12. | Expositor 3 | 2:30
+deck-compare | Conviene con un buen techo; estos son los errores típicos | conviene ✓ frente a errores ✕ en palabras simples (data-dense) | Usos y costo real en notas. Fuente: borrador §12 y §14, p. 12-13. | Expositor 3 | 2:00
 recap | Lo que aprendimos | tres ideas, sin cifras (data-dense) | Cierre con la transición del Anexo A (E3→cierre). Fuente: borrador §15, p. 14; Anexo A, p. 15. | Expositor 3 | 1:30
-question-hook | Preguntas | ronda final: 5 preguntas sobre Von Neumann con botón «Ver respuesta» (reveal-qa; PDF: todas visibles) (data-dense) | 27:00-30:00, modera E3; banco en la guía. Pedido L8. | Todos | 3:00
+question-hook | Preguntas | ronda final: 5 preguntas sencillas con botón «Ver respuesta» (reveal-qa) (data-dense) | 27:00-30:00, modera E3. Pedido L8. | Todos | 3:00

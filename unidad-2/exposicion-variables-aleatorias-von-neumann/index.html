@@ -42,18 +42,6 @@
   :where(.figure-full figure > img, .figure-full figure > svg) { flex: 1; min-height: 0; width: 100%; object-fit: contain; }
   :where(.figure-full figcaption) { font-size: 34px; color: var(--muted); }
 </style>
-<style> /* component: calc-rows (skill academic-slides-flow) */
-  :where(.calc-rows) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
-  :where(.calc-rows li) { display: grid; grid-template-columns: 620px 1fr 300px; align-items: center; gap: 40px;
-    padding: 10px 36px; border-radius: 18px; background: color-mix(in srgb, var(--fg) 6%, transparent); }
-  :where(.calc-rows .f) { font-size: 50px; }
-  :where(.calc-rows .s) { font-size: 44px; color: var(--muted); }
-  /* katex.min.css centers display math with a 1em margin; a row needs it flush left. */
-  .calc-rows .katex-display { margin: 0; text-align: left; }
-  .calc-rows .katex-display > .katex { text-align: left; }
-  :where(.calc-rows .res) { font-family: var(--display); font-weight: var(--dw); font-size: 60px; text-align: right; }
-  :where(.calc-rows li.key .res) { color: var(--a1); }
-</style>
 <style> /* component: sheet-frame (skill academic-slides-flow) */
   :where(.sheet-frame) { --k: var(--a1); --fig-h: 640px; flex: 0 1 auto; margin: 0; display: flex; flex-direction: column; min-width: 0; min-height: 0; border: 4px solid var(--k); background: var(--bg); box-shadow: 14px 14px 0 color-mix(in srgb, var(--k) 22%, transparent); }
   :where(.sheet-frame.k2) { --k: var(--a2); } :where(.sheet-frame.k3) { --k: var(--a3); }
@@ -71,19 +59,6 @@
   :where(.sheet-frame .legend) { flex: 1; gap: 28px; }
   :where(.sheet-frame .legend span) { display: inline-flex; align-items: center; gap: 10px; }
   :where(.sheet-frame .legend .pin) { width: 38px; height: 38px; margin: 0; font-size: 22px; --pin: var(--k); }
-</style>
-<style> /* component: formula-hero (skill academic-slides-flow) */
-  /* Deck fix (for harvest): katex.min.css .katex-display margin beats the :where() reset below; same fix calc-rows ships. */
-  .formula-hero .tex .katex-display { margin: 0; }
-  :where(.formula-hero) { display: flex; flex-direction: column; align-items: center; gap: 64px; }
-  :where(.formula-hero .tex) { font-size: 150px; line-height: 1; }
-  :where(.formula-hero .tex .katex-display) { margin: 0; }
-  :where(.formula-hero .parts) { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 56px; }
-  :where(.formula-hero .parts li) { display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 40px; text-align: center; }
-  :where(.formula-hero .parts b) { font: italic 400 96px/1 KaTeX_Math, serif; }
-  :where(.formula-hero .p1) { color: var(--a1); }
-  :where(.formula-hero .p2) { color: var(--a2); }
-  :where(.formula-hero .p3) { color: var(--a3); }
 </style>
 <style> /* component: pipeline-flow (skill academic-slides-flow) */
   :where(.pipeline-flow) { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 64px; }
@@ -106,14 +81,6 @@
   :where(.pipeline-flow.big .desc) { font-size: 42px; }
   :where(.pipeline-flow .stage.pass) { background: var(--node); color: var(--dot-fg, var(--bg)); }
   :where(.pipeline-flow .stage.pass .tag, .pipeline-flow .stage.pass .lbl) { color: inherit; }
-</style>
-<style> /* component: stair-steps (skill academic-slides-flow) */
-  :where(.stair-steps) { --k: var(--a1); list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 20px; align-items: end; }
-  :where(.stair-steps li) { --r: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; min-height: calc(250px + var(--r) * 52px); padding: 26px 22px 30px;
-    border-top: 14px solid var(--k); background: color-mix(in srgb, var(--k) calc(8% + var(--r) * 4%), transparent); }
-  :where(.stair-steps .n) { margin-bottom: auto; font: var(--dw) 76px/1 var(--display); color: var(--k); }
-  :where(.stair-steps .lbl) { font: var(--dw) 36px/1.05 var(--display); text-transform: var(--tt); letter-spacing: var(--ls); overflow-wrap: anywhere; }
-  :where(.stair-steps .desc) { font-size: 30px; line-height: 1.25; opacity: .85; }
 </style>
 <style> /* component: recap (skill academic-slides-flow) */
   :where(.recap) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 40px; }
@@ -210,9 +177,6 @@
   .ar-keys { margin: 0; display: flex; gap: 22px; font: 600 24px/1.2 var(--mono); color: var(--muted); white-space: nowrap; }
   .ar-keys .ok { color: var(--a1); }
   .ar-duo ~ .ar-stats .ar-ref { font-size: 24px; white-space: nowrap; }
-  :where(.ar-geo-line) { margin: 0; display: flex; align-items: baseline; gap: 22px; padding: 12px 22px; border-left: 10px solid var(--a3);
-    background: color-mix(in srgb, var(--a3) 9%, transparent); font-size: 32px; font-weight: 600; line-height: 1.2; }
-  :where(.ar-geo-line b) { font: var(--dw) 52px/1 var(--display); color: var(--a3); white-space: nowrap; }
   body.print .ar-btn, body.print .ar-status { display: none; }
   body.print .ar-print { display: inline; }
   body.print .ar-fill.obs { transition: none; }
@@ -343,32 +307,31 @@
       <li class="node fx"><span class="pt">3</span><span class="lbl">Evaluar</span><span class="desc">Programarlo y medir su costo</span><span class="chip">E3 · 18–27 min</span></li>
     </ol>
     <p class="lead fx">27–30 min: ronda de preguntas.</p>
-    <aside class="notes">Apertura: «La clase tiene tres tramos: primero entendemos la idea de proponer y filtrar, después el algoritmo con un ejemplo a mano y, al final, cuánto cuesta hacerlo en el computador». Puntos clave: 1) Entender por qué hace falta Von Neumann y qué ingredientes necesita: expositor 1, hasta el minuto 9. 2) Aplicar el algoritmo, ver por qué funciona y resolver Beta(2,2) a mano, con una actividad con ustedes: expositor 2, hasta el minuto 18. 3) Programarlo, verlo correr en vivo y medir su costo: expositor 3, hasta el minuto 27. Los últimos 3 minutos son preguntas. Enlace: «Partimos de lo que ya vio el docente: la transformada inversa».</aside>
+    <aside class="notes">Apertura: «La clase tiene tres partes: primero la idea, después el algoritmo con un ejemplo a mano y, al final, cuánto cuesta hacerlo en el computador». Puntos clave: 1) Entender la idea de tirar candidatos y quedarse con los buenos: expositor 1, hasta el minuto 9. 2) Aplicar el algoritmo y resolver un ejemplo a mano, con una actividad con ustedes: expositor 2, hasta el minuto 18. 3) Verlo correr en vivo y medir su costo: expositor 3, hasta el minuto 27. Los últimos 3 minutos son preguntas. Enlace: «Partimos de un problema que ya conocen».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 02</span></div>
   </section>
 
-  <!-- 03 · Puente: ¿y si F⁻¹ no se puede despejar? (nuevo, versión de 30 minutos) -->
+  <!-- 03 · Puente: hay distribuciones que no se pueden generar directo -->
   <section class="slide alt question-hook" id="puente">
-    <p class="kicker">01 · Punto de partida · la inversa la vio el docente</p>
-    <h1 class="title q">¿Y si F⁻¹ no se puede despejar?</h1>
-    <p class="lead">La inversa <span data-tex="X = F^{-1}(U)" data-inline></span> necesita una F⁻¹ en forma cerrada.</p>
-    <p class="lead">Von Neumann: proponer candidatos y filtrarlos.</p>
-    <aside class="notes">Apertura: «El docente ya nos mostró la transformada inversa: X = F⁻¹(U). Funciona muy bien… siempre que podamos despejar F⁻¹». Puntos clave: 1) No repetimos la inversa: solo recordamos que necesita una acumulada que se pueda invertir de forma cerrada y barata. 2) Muchas densidades no la tienen, o despejarla es costoso: incluso la Beta(2,2) de hoy, con F(x) = 3x² − 2x³, obliga a resolver una cúbica para cada U. 3) Von Neumann cambia la pregunta: en vez de invertir F, proponemos candidatos fáciles de generar y nos quedamos solo con algunos. Enlace: «Veamos qué significa proponer y filtrar».</aside>
+    <p class="kicker">01 · Punto de partida</p>
+    <h1 class="title q" style="font-size: 112px">Hay distribuciones que no se pueden generar directo.</h1>
+    <p class="lead">Entonces: tirar candidatos y quedarse con los buenos.</p>
+    <aside class="notes">Apertura: «El profe ya nos mostró cómo generar algunas distribuciones con una fórmula directa. El problema es que no siempre existe esa fórmula». Puntos clave: 1) No repetimos la transformada inversa: solo recordamos que necesita despejar la acumulada, X = F⁻¹(U), en forma cerrada y barata. 2) Muchas distribuciones no la tienen, o despejarla cuesta mucho: incluso la del ejemplo de hoy, con F(x) = 3x² − 2x³, obliga a resolver una cúbica para cada número. 3) Von Neumann cambia la pregunta: en vez de despejar, tiramos candidatos fáciles de generar y nos quedamos solo con los buenos. Enlace: «Veamos cómo se elige cuáles son los buenos».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 03</span></div>
   </section>
 
-  <!-- 04 · Von Neumann: candidato, filtro y muestra -->
-  <section class="slide deck-case-map" id="von-neumann">
-    <p class="kicker">02 · Von Neumann · proponer y filtrar</p>
-    <h1 class="title sm">Candidato, filtro y muestra final: tres cosas distintas</h1>
+  <!-- 04 · Candidato, filtro y muestra: el dardo -->
+  <section class="slide deck-case-map" id="von-neumann" data-dense>
+    <p class="kicker">02 · Von Neumann · la idea</p>
+    <h1 class="title sm">Tiro un dardo, si cae bajo la curva lo guardo</h1>
     <div class="case-map" aria-label="Del candidato al filtro y a la muestra final">
-      <div class="case-node" style="--node: var(--a2)"><p class="case-role">Candidato</p><strong>Y ~ g</strong><p>Aún no es muestra</p></div>
-      <div class="case-link">U decide</div>
-      <div class="case-node" style="--node: var(--a3)"><p class="case-role">Filtro</p><strong>U ≤ a(Y)</strong><p>Uniforme independiente</p></div>
-      <div class="case-link">aceptado</div>
-      <div class="case-node" style="--node: var(--a1)"><p class="case-role">Muestra final</p><strong>X = Y</strong><p>Solo aceptados</p></div>
+      <div class="case-node" style="--node: var(--a2)"><p class="case-role">Candidato</p><strong>Tiro un dardo</strong><p>Cae en cualquier parte</p></div>
+      <div class="case-link">¿dónde cayó?</div>
+      <div class="case-node" style="--node: var(--a3)"><p class="case-role">Filtro</p><strong>¿Bajo la curva?</strong><p>Sí o no</p></div>
+      <div class="case-link">sí</div>
+      <div class="case-node" style="--node: var(--a1)"><p class="case-role">Muestra</p><strong>Lo guardo</strong><p>Los de encima se descartan</p></div>
     </div>
-    <aside class="notes">Apertura: «Supongamos que podemos generar fácilmente Y desde g, pero buscamos una variable X cuya densidad sea f. Si aceptáramos todos los Y, obtendríamos g y no f». Puntos clave: 1) Y es un candidato: todavía no representa una observación final de f. La propuesta g debe ser fácil de simular y positiva en todos los lugares donde f es positiva. 2) U es una uniforme independiente que decide la aceptación: el filtro acepta con más probabilidad los candidatos favorables a f y con menos los otros. Para que eso sea una probabilidad válida, la curva M·g debe quedar por encima de f en todo el dominio. 3) Si se acepta, el candidato Y se guarda como X; si no, se descarta y el proceso vuelve a comenzar. Un rechazado no se reemplaza por cero ni entra en el histograma final. Frase: «No estamos corrigiendo matemáticamente cada valor: estamos seleccionando probabilísticamente cuáles conservar. La forma final de los aceptados es la que nos interesa». Enlace: «Veámoslo con puntos».</aside>
+    <aside class="notes">Apertura: «Piensen en un juego de dardos: tiro un dardo, y si cae bajo la curva, lo guardo». Puntos clave: 1) El dardo es un candidato: sale de una distribución fácil de generar (en el borrador, Y ~ g). Todavía no es una muestra. 2) El filtro decide con otro número al azar, U, independiente: el candidato se queda si cae bajo la curva que queremos (f). 3) Si se acepta, se guarda tal cual; si no, se descarta y se tira otro. Un descartado no se reemplaza por cero ni entra en el histograma. Frase: «No corregimos cada valor: elegimos al azar cuáles conservar». Enlace: «Veámoslo con muchos dardos».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 04</span></div>
   </section>
 
@@ -393,7 +356,7 @@
       </div></div>
       <figcaption class="sheet-title"><span class="fig">FIG. 02</span><span class="src">● bajo f: se acepta · ○ sobre f: se descarta · ilustración, 70 puntos</span></figcaption>
     </figure>
-    <aside class="notes">Apertura: «Construyamos la intuición geométrica antes de formalizar». Puntos clave: 1) Con propuesta uniforme en [0,1] y una envolvente de altura 1.5: se sortea una posición horizontal Y uniforme entre 0 y 1 y una altura V uniforme entre 0 y 1.5; se acepta si V ≤ f(Y). Eso equivale a sortear U uniforme entre 0 y 1 y aceptar si U ≤ f(Y)/1.5. 2) Frase: «Elijan un x cercano a 0.5: la curva es alta y será fácil quedar por debajo. Elijan un x cercano a 0: la curva es baja y es más probable que rechacemos. Esa diferencia construye la distribución». 3) Al proyectar los aceptados sobre el eje x se obtiene la distribución objetivo: no se conservan las alturas V como parte de la muestra. Enlace: «¿Y si la propuesta no es uniforme? Necesitamos nombrar tres ingredientes».</aside>
+    <aside class="notes">Apertura: «Construyamos la intuición geométrica antes de formalizar». Puntos clave: 1) Con propuesta uniforme en [0,1] y una envolvente de altura 1.5: se sortea una posición horizontal Y uniforme entre 0 y 1 y una altura V uniforme entre 0 y 1.5; se acepta si V ≤ f(Y). Eso equivale a sortear U uniforme entre 0 y 1 y aceptar si U ≤ f(Y)/1.5. 2) Frase: «Elijan un x cercano a 0.5: la curva es alta y será fácil quedar por debajo. Elijan un x cercano a 0: la curva es baja y es más probable que rechacemos. Esa diferencia construye la distribución». 3) Al proyectar los aceptados sobre el eje x se obtiene la distribución objetivo: no se conservan las alturas V como parte de la muestra. Enlace: «Para que esto funcione con cualquier curva necesitamos tres cosas».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 05</span></div>
   </section>
 
@@ -401,112 +364,81 @@
   <section class="slide block-split" id="ingredientes" style="--blk: var(--fg)" data-dense>
     <div class="block-panel">
       <p class="kicker block-role">03 · Ingredientes</p>
-      <h1 class="title sm">Tres ingredientes, tres condiciones</h1>
-      <p class="lead">Normalización, cobertura y dominación, a la vez.</p>
+      <h1 class="title sm">Necesitamos 3 cosas</h1>
+      <p class="lead">Si falta una, el método no funciona.</p>
     </div>
     <div class="block-main">
       <ul class="stat-rows" style="--bigw: 150px">
-        <li class="k1 fx"><span class="big">f</span><span class="txt"><span class="lbl">Densidad objetivo</span><span class="desc">Normalización: f, g ≥ 0 e integran 1</span></span></li>
-        <li class="k2 fx"><span class="big">g</span><span class="txt"><span class="lbl">Propuesta</span><span class="desc">Cobertura: g &gt; 0 donde f &gt; 0</span></span></li>
-        <li class="fx"><span class="big">M</span><span class="txt"><span class="lbl">Cota</span><span class="desc">Dominación: f(x) ≤ M·g(x) en todo x</span></span></li>
+        <li class="k1 fx"><span class="big">f</span><span class="txt"><span class="lbl">La forma que queremos</span><span class="desc">la curva que hay que imitar</span></span></li>
+        <li class="k2 fx"><span class="big">g</span><span class="txt"><span class="lbl">Algo fácil de generar</span><span class="desc">de aquí salen los dardos</span></span></li>
+        <li class="fx"><span class="big">M</span><span class="txt"><span class="lbl">Un techo</span><span class="desc">que tape la curva entera</span></span></li>
       </ul>
+      <p class="lead fx">Necesitamos 3 cosas: la forma que queremos (f), algo fácil de generar (g) y un techo (M) que la tape entera.</p>
     </div>
-    <aside class="notes">Apertura: «El método tiene tres ingredientes, y deben cumplir tres condiciones al mismo tiempo». Puntos clave: 1) f es la densidad objetivo, la ley que queremos reproducir; g es la propuesta, de la que salen los candidatos y que debe ser fácil de simular; M multiplica a g para formar una envolvente M·g por encima de f. 2) Normalización: f(x) ≥ 0, g(x) ≥ 0 y cada una integra 1. Cobertura: si f(x) &gt; 0, entonces g(x) &gt; 0; si no, hay valores que nunca se proponen y el método no puede reproducir f. 3) Dominación: f(x) ≤ M·g(x) para todo x; si M es demasiado pequeño, el cociente f/(M·g) superaría 1 y dejaría de ser una probabilidad. Enlace: «¿Qué tan grande debe ser M?».</aside>
+    <aside class="notes">Apertura: «Para que esto funcione necesitamos solo tres cosas». Puntos clave: 1) f es la forma que queremos imitar; g es algo fácil de generar, de donde salen los candidatos; M es un número que sube a g hasta formar un techo, M·g, que tapa la curva entera. 2) Respaldo, si alguien pregunta por las condiciones formales (no están en la diapositiva): normalización (f y g no negativas e integran 1), cobertura (si f(x) &gt; 0, entonces g(x) &gt; 0; si no, hay valores que nunca se proponen) y dominación (f(x) ≤ M·g(x) para todo x; si no, f/(M·g) superaría 1 y no sería una probabilidad). 3) En el ejemplo de hoy, g es la uniforme: plana, de altura 1. Enlace: «¿Qué tan alto debe ser el techo?».</aside>
     <div class="foot"><span>Von Neumann</span><span class="page">E1 · 06</span></div>
   </section>
 
-  <!-- 07 · La cota M + pase a E2 -->
-  <section class="slide figure-full" id="cota">
-    <p class="kicker">03 · Ingredientes · la cota M · ejemplo Beta(2,2) con g = 1</p>
-    <h1 class="title sm">M debe cubrir el mayor cociente f/g, y nunca es menor que 1</h1>
+  <!-- 07 · El techo toca la punta + pase a E2 -->
+  <section class="slide figure-full" id="cota" data-dense>
+    <p class="kicker">03 · El techo · ejemplo de hoy</p>
+    <h1 class="title sm">¿Qué tan alto va el techo?</h1>
+    <p class="lead">El techo tiene que tocar la punta de la lomita: si es más bajo corta la curva, si es más alto desperdicia.</p>
     <figure>
-      <svg viewBox="0 0 1640 540" role="img" aria-label="Cociente f/g = 6x(1−x): la recta M = 1.5 lo toca en 0.5 desde arriba; la recta M = 1.2 queda por debajo entre 0.28 y 0.72" style="font-family: var(--mono)">
+      <svg viewBox="0 0 1640 520" role="img" aria-label="Lomita con punta en 1.5: el techo 1.5 la toca, el techo 1.2 la corta y el techo 2 deja espacio perdido" style="font-family: var(--mono)">
         <polygon points="507.0,240.0 538.3,228.6 569.6,218.4 600.9,209.4 632.2,201.6 663.5,195.0 694.8,189.6 726.1,185.4 757.4,182.4 788.7,180.6 820.0,180.0 851.3,180.6 882.6,182.4 913.9,185.4 945.2,189.6 976.5,195.0 1007.8,201.6 1039.1,209.4 1070.4,218.4 1101.7,228.6 1133.0,240.0" style="fill: color-mix(in srgb, var(--muted) 35%, transparent)"/>
+        <rect x="120" y="80" width="1400" height="100" style="fill: color-mix(in srgb, var(--muted) 14%, transparent)"/>
         <polyline points="120.0,480.0 148.0,456.5 176.0,433.9 204.0,412.3 232.0,391.7 260.0,372.0 288.0,353.3 316.0,335.5 344.0,318.7 372.0,302.9 400.0,288.0 428.0,274.1 456.0,261.1 484.0,249.1 512.0,238.1 540.0,228.0 568.0,218.9 596.0,210.7 624.0,203.5 652.0,197.3 680.0,192.0 708.0,187.7 736.0,184.3 764.0,181.9 792.0,180.5 820.0,180.0 848.0,180.5 876.0,181.9 904.0,184.3 932.0,187.7 960.0,192.0 988.0,197.3 1016.0,203.5 1044.0,210.7 1072.0,218.9 1100.0,228.0 1128.0,238.1 1156.0,249.1 1184.0,261.1 1212.0,274.1 1240.0,288.0 1268.0,302.9 1296.0,318.7 1324.0,335.5 1352.0,353.3 1380.0,372.0 1408.0,391.7 1436.0,412.3 1464.0,433.9 1492.0,456.5 1520.0,480.0" fill="none" stroke-width="8" stroke-linejoin="round" style="stroke: var(--a1)"/>
         <line x1="120" y1="180" x2="1520" y2="180" stroke-width="7" style="stroke: var(--a3)"/>
         <line x1="120" y1="240" x2="1520" y2="240" stroke-width="5" stroke-dasharray="16 12" style="stroke: var(--muted)"/>
-        <line x1="120" y1="280" x2="1520" y2="280" stroke-width="3" stroke-dasharray="6 10" style="stroke: var(--muted)"/>
-        <g stroke-width="4" style="stroke: var(--fg)"><line x1="120" y1="480" x2="1530" y2="480"/><line x1="120" y1="480" x2="120" y2="70"/></g>
+        <line x1="120" y1="80" x2="1520" y2="80" stroke-width="5" stroke-dasharray="6 10" style="stroke: var(--muted)"/>
+        <g stroke-width="4" style="stroke: var(--fg)"><line x1="120" y1="480" x2="1530" y2="480"/><line x1="120" y1="480" x2="120" y2="60"/></g>
         <circle cx="820" cy="180" r="13" style="fill: var(--a3)"/>
         <g font-size="30" font-weight="600" style="fill: var(--muted)">
-          <text x="105" y="490" text-anchor="end">0</text><text x="105" y="290" text-anchor="end">1</text><text x="105" y="250" text-anchor="end">1.2</text><text x="105" y="190" text-anchor="end">1.5</text>
-          <text x="120" y="522" text-anchor="middle">0</text><text x="820" y="522" text-anchor="middle">0.5</text><text x="1520" y="522" text-anchor="middle">1</text>
+          <text x="105" y="490" text-anchor="end">0</text><text x="105" y="250" text-anchor="end">1.2</text><text x="105" y="190" text-anchor="end">1.5</text><text x="105" y="90" text-anchor="end">2</text>
         </g>
         <g font-size="36" font-weight="600">
-          <text x="1520" y="160" text-anchor="end" style="fill: var(--a3)">M = 1.5 = sup f/g ✓</text>
-          <text x="1520" y="230" text-anchor="end" style="fill: var(--muted)">M = 1.2 ✕</text>
-          <text x="820" y="225" text-anchor="middle" style="fill: var(--fg)">f/(M·g) &gt; 1</text>
-          <text x="140" y="120" style="fill: var(--a1)">f(x)/g(x) = 6x(1−x)</text>
-          <text x="1520" y="315" text-anchor="end" style="fill: var(--muted)">M = 1: inválido salvo f = g</text>
+          <text x="1520" y="68" text-anchor="end" style="fill: var(--muted)">techo 2: muy alto, desperdicia</text>
+          <text x="1520" y="168" text-anchor="end" style="fill: var(--a3)">techo 1.5: toca la punta ✓</text>
+          <text x="1520" y="290" text-anchor="end" style="fill: var(--muted)">techo 1.2: corta la curva ✕</text>
+          <text x="140" y="400" style="fill: var(--a1)">la lomita (f)</text>
         </g>
       </svg>
-      <figcaption><span data-tex="M \ge \sup\{\,f(x)/g(x) : g(x) &gt; 0\,\}" data-inline></span>&ensp;· integrar f ≤ M·g da 1 ≤ M</figcaption>
     </figure>
-    <aside class="notes">Apertura: «¿Qué tan grande debe ser M? Lo suficiente para cubrir el mayor cociente entre la objetivo y la propuesta». Puntos clave: 1) La dominación equivale a pedir M ≥ sup f(x)/g(x) donde g &gt; 0. Se usa un supremo porque queremos el mayor cociente posible, incluso en situaciones en que no exista un máximo alcanzado. En la figura, con Beta(2,2) y g = 1, el cociente llega a 1.5 en x = 0.5: M = 1.5 lo cubre; M = 1.2 queda por debajo en el centro y ahí f/(M·g) supera 1. 2) Como las áreas de f y g valen 1, integrar la desigualdad f ≤ M·g da 1 ≤ M: para densidades normalizadas, M no puede ser menor que 1. 3) Cualquier M superior a la cota funciona, pero cuanto mayor sea M, peor será la eficiencia. Frase: «M es un multiplicador de seguridad: nos garantiza que la regla de aceptación nunca pedirá una probabilidad imposible, mayor que uno». Pase al expositor 2 (Anexo A): «Ya entendimos por qué no basta con generar números uniformes y cómo una envolvente permite visualizar el filtro. Ahora veremos cómo se expresa esa idea en una regla matemática rigurosa y por qué realmente produce la distribución que buscamos».</aside>
+    <aside class="notes">Apertura: «¿Qué tan alto ponemos el techo? Justo a la altura de la punta». Puntos clave: 1) En el ejemplo la lomita llega a 1.5 en el centro. Un techo de 1.5 la toca y la tapa entera. 2) Si el techo es más bajo (1.2), corta la punta: en esa zona se guardarían menos valores de los que corresponde y la forma sale mal. Si es más alto (2), todo sigue correcto, pero se desperdician más dardos. 3) Respaldo formal (no está en la diapositiva): M ≥ sup f(x)/g(x); con g = 1 es el máximo de f, 1.5. Como f y g tienen área 1, integrar f ≤ M·g da M ≥ 1. Frase: «El techo es un margen de seguridad: nunca debe quedar por debajo de la curva». Pase al expositor 2 (Anexo A): «Ya entendimos por qué no basta con generar números uniformes y cómo una envolvente permite visualizar el filtro. Ahora veremos cómo se expresa esa idea en una regla matemática rigurosa y por qué realmente produce la distribución que buscamos».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 07</span></div>
   </section>
 
-  <!-- 08 · Algoritmo (abre el bloque del expositor 2) -->
+  <!-- 08 · Algoritmo en 4 pasos (abre el bloque del expositor 2) -->
   <section class="slide" id="algoritmo" data-dense>
-    <p class="kicker">Expositor 2 · 04 · Algoritmo · pasos</p>
-    <h1 class="title sm">El algoritmo repite 4 pasos hasta reunir n aceptados</h1>
+    <p class="kicker">Expositor 2 · 04 · El algoritmo</p>
+    <h1 class="title sm">4 pasos que se repiten</h1>
     <ol class="pipeline-flow big">
-      <li class="stage k2 fx"><span class="tag">1 · Proponer</span><span class="lbl">Y ~ g</span><span class="desc">Candidato fácil de generar</span></li>
-      <li class="stage k2 fx"><span class="tag">2 · Sortear</span><span class="lbl">U</span><span class="desc">Uniforme (0,1) independiente</span></li>
-      <li class="stage k3 fx"><span class="tag">3 · Comparar</span><span class="lbl">U ≤ a(Y)</span><span class="desc"><span data-tex="a(Y)=\dfrac{f(Y)}{M\,g(Y)}" data-inline></span></span></li>
-      <li class="stage k1 pass fx"><span class="tag">4 · Decidir</span><span class="lbl">X = Y</span><span class="desc">Sí: se guarda. No: se descarta</span></li>
+      <li class="stage k2 fx"><span class="tag">1 · Proponer</span><span class="lbl">Dardo</span><span class="desc">Un candidato fácil de generar</span></li>
+      <li class="stage k2 fx"><span class="tag">2 · Sortear</span><span class="lbl">Azar</span><span class="desc">Otro número entre 0 y 1</span></li>
+      <li class="stage k3 fx"><span class="tag">3 · Comparar</span><span class="lbl">¿Bajo la curva?</span><span class="desc">Comparar con la curva</span></li>
+      <li class="stage k1 pass fx"><span class="tag">4 · Decidir</span><span class="lbl">Guardar</span><span class="desc">o descartar</span></li>
     </ol>
-    <p class="lead fx">↺ Rechazado: volver al paso 1, hasta reunir n aceptados (no n intentos).</p>
-    <aside class="notes">Apertura: «Con f fijada, g elegida con un soporte que cubre al de f y una cota M válida, cada intento usa dos fuentes de azar independientes». Puntos clave: 1) Paso 1: generar un candidato Y desde g. Paso 2: generar U uniforme e independiente. 2) Paso 3: calcular a(Y) = f(Y)/[M·g(Y)] y comparar: se acepta si U ≤ a(Y). 3) Paso 4: si se acepta, Y se guarda como X; si no, se descarta y se vuelve al paso 1. Se repite hasta completar el número solicitado de muestras: n aceptados, no n intentos. (El borrador lo detalla en 8 pasos: los 3 primeros preparan f, g y M; los otros 5 son este ciclo). Enlace: «¿Por qué cada pieza de la regla está ahí?».</aside>
+    <p class="lead fx">↺ Se repite hasta juntar las muestras que necesitamos. Los que sobreviven tienen la forma de f.</p>
+    <aside class="notes">Apertura: «El algoritmo son cuatro pasos que se repiten una y otra vez». Puntos clave: 1) Proponer un candidato desde g y sortear otro número U entre 0 y 1, independiente. 2) Comparar con la curva: se acepta si U ≤ f(Y)/[M·g(Y)], es decir, si el dardo quedó bajo f. Guardar o descartar, y volver a empezar hasta juntar n aceptados (no n intentos). 3) Los que sobreviven tienen la forma de f. Respaldo, si preguntan por qué la regla tiene esa forma: U decide con probabilidad exacta porque P(U ≤ p) = p; dividir por g corrige la frecuencia con que llegan los candidatos; M mantiene el cociente por debajo de 1. Y por qué sale f: la densidad de proponer y aceptar es g · f/(M g) = f/M (la g se cancela), la probabilidad de aceptar es 1/M, y al condicionar queda exactamente f (la demostración completa está en la guía). Enlace: «Hagámoslo con números».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 08</span></div>
   </section>
 
-  <!-- 09 · Por qué U, g y M -->
-  <section class="slide" id="regla">
-    <p class="kicker">04 · Algoritmo · la regla de aceptación</p>
-    <h1 class="title sm">Cada pieza de la regla tiene un porqué</h1>
-    <div class="formula-hero">
-      <div class="tex" role="img" aria-label="U menor o igual que f de Y sobre M por g de Y" data-output="html" data-tex="U \le \htmlClass{p1}{f(Y)}\,/\,\big(\htmlClass{p3}{M}\,\htmlClass{p2}{g(Y)}\big)"></div>
-      <ul class="parts">
-        <li><b>U</b>P(U ≤ p) = p: decide con esa probabilidad</li>
-        <li><b class="p2">g</b>corrige la frecuencia de los candidatos</li>
-        <li><b class="p3">M</b>mantiene el cociente ≤ 1</li>
-      </ul>
-    </div>
-    <aside class="notes">Apertura: «La regla U ≤ f(Y)/[M·g(Y)] parece arbitraria, pero cada pieza tiene una razón». Puntos clave: 1) ¿Por qué aparece U? Para cualquier p entre 0 y 1, el evento U ≤ p tiene probabilidad p. Así, comparar U con a(Y) implementa exactamente una decisión de aceptación con esa probabilidad. 2) ¿Por qué aparece g en el denominador? Porque los candidatos ya llegan con la frecuencia que determina g. El factor f/g corrige esa frecuencia: donde g propone demasiados candidatos respecto de f, el filtro acepta menos; donde se parecen, acepta más. 3) ¿Por qué aparece M? Para reducir el cociente a un valor que nunca supere 1: sin M, f/g podría ser mayor que 1. Enlace: «Falta lo importante: ¿por qué los aceptados siguen f?».</aside>
+  <!-- 09 · Ejemplo Beta(2,2): punta 1.5 → techo 1.5 → regla -->
+  <section class="slide" id="beta" data-dense>
+    <p class="kicker">05 · Ejemplo Beta(2,2) · f(x) = 6x(1−x) · dardos uniformes entre 0 y 1</p>
+    <h1 class="title sm">Ejemplo: una lomita con la punta en 1.5</h1>
+    <ol class="pipeline-flow big">
+      <li class="stage fx"><span class="tag">La forma</span><span class="lbl">Punta 1.5</span><span class="desc">la curva más alta está en el centro</span></li>
+      <li class="stage k3 fx"><span class="tag">El techo</span><span class="lbl">M = 1.5</span><span class="desc">toca justo la punta</span></li>
+      <li class="stage k1 pass fx"><span class="tag">La regla</span><span class="lbl">U ≤ 4Y(1−Y)</span><span class="desc">el azar U queda bajo la curva</span></li>
+    </ol>
+    <p class="lead fx">Ejemplo: una lomita con la punta en 1.5 → techo M = 1.5 → regla: acepto si U ≤ 4Y(1−Y).</p>
+    <aside class="notes">Apertura: «Vamos con un ejemplo concreto: una lomita que tiene su punta en 1.5». Puntos clave: 1) La forma es la Beta(2,2), f(x) = 6x(1−x) entre 0 y 1: más valores cerca del centro. Los dardos salen de la uniforme, g = 1. 2) La punta está en x = 0.5 y vale 1.5, así que el techo es M = 1.5. 3) La regla queda muy simple: U ≤ 6Y(1−Y)/1.5 = 4Y(1−Y). En Y = 0.5 vale 1: ahí se acepta siempre. Respaldo, si piden la cuenta (no está en la diapositiva): f es una densidad porque ∫₀¹(6x − 6x²) dx = [3x² − 2x³]₀¹ = 3 − 2 = 1; la punta sale de f′(x) = 6 − 12x = 0 → x = 0.5, con f″ = −12 &lt; 0, y f(0.5) = 6 · 0.5 · 0.5 = 1.5. Enlace: «Probemos cinco dardos a mano».</aside>
     <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 09</span></div>
   </section>
 
-  <!-- 10 · Demostración intuitiva en una diapositiva -->
-  <section class="slide" id="demostracion" data-dense>
-    <p class="kicker">04 · Algoritmo · ¿por qué funciona? · A = «el candidato se acepta»</p>
-    <h1 class="title sm">La g se cancela: por eso los aceptados siguen f</h1>
-    <p class="lead">Antes del filtro: g. Después del filtro: f.</p>
-    <ol class="stair-steps">
-      <li class="fx" style="--r: 0"><span class="n">1</span><span class="lbl"><span data-tex="P(A \mid y)=\dfrac{f(y)}{M\,g(y)}" data-inline></span></span><span class="desc">dado Y = y, solo decide U</span></li>
-      <li class="fx" style="--r: 1"><span class="n">2</span><span class="lbl"><span data-tex="g(y)\cdot\dfrac{f(y)}{M\,g(y)}=\dfrac{f(y)}{M}" data-inline></span></span><span class="desc">la g se cancela</span></li>
-      <li class="fx" style="--r: 2"><span class="n">3</span><span class="lbl"><span data-tex="P(A)=\displaystyle\int\frac{f(y)}{M}\,dy=\frac{1}{M}" data-inline></span></span><span class="desc">f integra 1</span></li>
-      <li class="fx" style="--r: 3"><span class="n">4</span><span class="lbl"><span data-tex="f(y \mid A)=\dfrac{f(y)/M}{1/M}=f(y)" data-inline></span></span><span class="desc">los aceptados siguen f</span></li>
-    </ol>
-    <aside class="notes">Apertura: «Antes de filtrar, los valores siguen g; después de filtrar, siguen f. No lo suponemos: lo vemos en cuatro escalones». Puntos clave: 1) Llamemos A al evento «el candidato fue aceptado». Escalón 1: dado Y = y, lo único aleatorio que queda es U, y como U es uniforme, P(A | Y = y) = f(y)/[M g(y)], un número entre 0 y 1 gracias a la envolvente. 2) Escalón 2: multiplicamos la densidad con que se propone y, g(y), por su probabilidad de aceptación: g(y) · f(y)/[M g(y)] = f(y)/M. La g se cancela: ese es el corazón del método. 3) Escalón 3: integrando sobre todos los candidatos, P(A) = ∫ f(y)/M dy = 1/M, porque f integra 1. Escalón 4: condicionando a haber sido aceptado, f(y | A) = [f(y)/M] / [1/M] = f(y). Frase: «La cancelación de g y la normalización lo demuestran». Enlace: «Ahora lo hacemos con números: Beta(2,2)».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 10</span></div>
-  </section>
-
-  <!-- 11 · Beta(2,2): f, g = 1 y M = 1.5 -->
-  <section class="slide" id="beta" data-dense>
-    <p class="kicker">05 · Ejemplo Beta(2,2) · pasos 1 a 3</p>
-    <h1 class="title sm">Beta(2,2): f es una densidad, g = 1 la cubre y M = 1.5</h1>
-    <p class="lead">Con g = 1, el mayor cociente f/g es el máximo de f.</p>
-    <ul class="calc-rows">
-      <li><span class="f" data-tex="f(x) = 6x(1-x)"></span><span class="s" data-tex="\int_0^1 (6x - 6x^2)\,dx = 3 - 2"></span><span class="res">área 1</span></li>
-      <li><span class="f" data-tex="g(x) = 1"></span><span class="s" data-tex="g &gt; 0 \ \text{en}\ [0,1]"></span><span class="res">cubre</span></li>
-      <li class="key"><span class="f" data-tex="f'(x) = 6 - 12x = 0"></span><span class="s" data-tex="x = 0.5,\ \ M = f(0.5)"></span><span class="res">1.5</span></li>
-    </ul>
-    <aside class="notes">Apertura: «Hagamos todos los cálculos con un ejemplo: f(x) = 6x(1−x), para x entre 0 y 1». Puntos clave: 1) Paso 1, verificar la objetivo: es no negativa en [0, 1] y su integral vale ∫(6x − 6x²) dx = [3x² − 2x³] de 0 a 1 = 3 − 2 = 1: es una densidad. 2) Paso 2, propuesta uniforme: g(x) = 1 en [0, 1]; se simula directamente y cubre todo el intervalo donde f es positiva. 3) Paso 3, la cota: con g = 1 el mayor cociente f/g es el máximo de f. f′(x) = 6 − 12x = 0 da x = 0.5; f″(x) = −12 &lt; 0 confirma que es máximo y en los extremos f vale 0. Entonces M = f(0.5) = 6 · 0.5 · 0.5 = 1.5. Enlace: «Con M = 1.5 la regla se simplifica mucho».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 11</span></div>
-  </section>
-
-  <!-- 12 · Regla 4Y(1−Y) + cinco intentos a mano -->
+  <!-- 10 · Regla 4Y(1−Y) + cinco intentos a mano -->
   <section class="slide" id="a-mano" data-dense>
     <p class="kicker">05 · Ejemplo Beta(2,2) · pasos 4 y 5 · U ≤ 6Y(1−Y)/1.5 = 4Y(1−Y)</p>
     <h1 class="title sm">Regla U ≤ 4Y(1−Y): de 5 intentos se aceptan 3</h1>
@@ -527,10 +459,10 @@
       </div>
     </div>
     <aside class="notes">Apertura: «Sustituimos f, g y M en la regla: U ≤ 6Y(1−Y)/1.5 = 4Y(1−Y)». Puntos clave: 1) Paso 4: la regla se simplifica porque g(Y) = 1. Comprobamos que 4Y(1−Y) tiene máximo 1 en Y = 0.5: es una probabilidad válida. 2) Paso 5, intentos concretos: para cada uno calculamos 4Y(1−Y) y lo comparamos con U. Intento 1: Y = 0.20 da 0.64 y U = 0.60 queda por debajo: aceptado. Intento 2: Y = 0.80 da otra vez 0.64, pero U = 0.90 lo supera: rechazado. Intento 3: Y = 0.50 da 1.00 y U = 0.80: aceptado. Intento 4: Y = 0.10 da 0.36 y U = 0.50: rechazado. Intento 5: Y = 0.65 da 0.91 y U = 0.70: aceptado. 3) Se aceptan 3 de 5: eficiencia observada 60 %, que no debe confundirse con la teórica 1/1.5 = 66.67 %. Con pocos intentos, las fluctuaciones son normales. Dejar la pregunta en el aire: ¿por qué Y = 0.5 se acepta siempre? La respondemos en la actividad. Enlace: «Ahora ustedes: díctenme un Y y un U».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 12</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 10</span></div>
   </section>
 
-  <!-- 13 · Actividad interactiva + pase a E3 -->
+  <!-- 11 · Actividad interactiva + pase a E3 -->
   <section class="slide" id="actividad" data-dense>
     <p class="kicker">05 · Actividad · el público dicta Y y U · regla U ≤ 4Y(1−Y)</p>
     <h1 class="title sm">Ustedes deciden: ¿se acepta el candidato?</h1>
@@ -571,25 +503,25 @@
         <p class="aa-print">Ejemplo resuelto: intento 1 de la tabla</p>
       </div>
     </div>
-    <aside class="notes">Apertura: «La computadora solo automatiza los mismos pasos que acabamos de hacer en la pizarra. Si podemos decidir un candidato manualmente, ya entendemos el núcleo de la programación». Cómo hacerla en unos 2 minutos: 1) Pedir al público un Y y un U entre 0 y 1; antes de pulsar Decidir, que calculen 4Y(1−Y) y digan si se acepta. Hacer dos o tres intentos: uno cerca de 0.5 y uno cerca de un extremo. 2) Con el mouse: clic en la casilla, escribir el número (con punto decimal), clic en Decidir (o Enter dentro de la casilla). Lo que se escribe en las casillas no cambia de diapositiva ni toca la demo; Esc o un clic fuera de la casilla devuelve el control a las flechas. Si el número no está entre 0 y 1, la diapositiva lo avisa. 3) Cerrar con una pregunta: ¿por qué Y = 0.5 se acepta siempre? (el umbral vale 1). Pase al expositor 3 (Anexo A): «Hemos calculado manualmente los umbrales y demostrado la corrección del método. La siguiente pregunta es qué ocurre al ejecutarlo miles de veces, cuánto cuesta y cómo verificamos que el programa está funcionando».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 13</span></div>
+    <aside class="notes">Apertura: «La computadora solo automatiza los mismos pasos que acabamos de hacer en la pizarra. Si podemos decidir un candidato manualmente, ya entendemos el núcleo de la programación». Cómo hacerla en unos 2 a 3 minutos: 1) Pedir al público un Y y un U entre 0 y 1; antes de pulsar Decidir, que calculen 4Y(1−Y) y digan si se acepta. Hacer dos o tres intentos: uno cerca de 0.5 y uno cerca de un extremo. 2) Con el mouse: clic en la casilla, escribir el número (con punto decimal), clic en Decidir (o Enter dentro de la casilla). Lo que se escribe en las casillas no cambia de diapositiva ni toca la demo; Esc o un clic fuera de la casilla devuelve el control a las flechas. Si el número no está entre 0 y 1, la diapositiva lo avisa. 3) Cerrar con una pregunta: ¿por qué Y = 0.5 se acepta siempre? (el umbral vale 1). Pase al expositor 3 (Anexo A): «Hemos calculado manualmente los umbrales y demostrado la corrección del método. La siguiente pregunta es qué ocurre al ejecutarlo miles de veces, cuánto cuesta y cómo verificamos que el programa está funcionando».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 11</span></div>
   </section>
 
-  <!-- 14 · Demo: código + puntos + histograma (abre el bloque del expositor 3) -->
+  <!-- 12 · Demo: el corazón del código + puntos + histograma (abre el bloque del expositor 3) -->
   <section class="slide ar-slide" id="codigo" data-dense>
-    <p class="kicker">Expositor 3 · 06 · Demo en vivo · mismo código, semilla 42</p>
-    <h1 class="title sm">El código repite lo hecho a mano</h1>
+    <p class="kicker">Expositor 3 · 06 · Demo en vivo · el corazón del código, semilla 42</p>
+    <h1 class="title sm">El código hace lo mismo que hicimos a mano</h1>
     <div class="ar-demo ar-code-run">
-<pre class="ar-code"><code><span class="ln">import numpy as np</span><span class="ln">def beta_22(x):</span><span class="ln">    return 6*x*(1-x)</span><span class="ln">def generar(n, m=1.5, semilla=42):</span><span class="ln">    rng = np.random.default_rng(semilla)</span><span class="ln">    muestras, intentos = [], 0</span><span class="ln">    while len(muestras) &lt; n:</span><span class="ln hl-g">        y = rng.uniform(0, 1)</span><span class="ln hl-g">        u = rng.uniform(0, 1)</span><span class="ln">        intentos += 1</span><span class="ln hl-m">        if u &lt;= beta_22(y) / m:</span><span class="ln hl-f">            muestras.append(y)</span><span class="ln">    return np.array(muestras), intentos</span><span class="ln">x, k = generar(10000, m=<b data-ar="m">1.5</b>)</span></code></pre>
+<pre class="ar-code"><code><span class="ln">rng = np.random.default_rng(42)</span><span class="ln">m = <b data-ar="m">1.5</b></span><span class="ln">while len(muestras) &lt; n:</span><span class="ln hl-g">    y = rng.uniform(0, 1)   # dardo</span><span class="ln hl-g">    u = rng.uniform(0, 1)   # azar</span><span class="ln">    intentos += 1</span><span class="ln hl-m">    if u &lt;= beta_22(y) / m:</span><span class="ln hl-f">        muestras.append(y)  # se guarda</span></code></pre>
       <div class="ar-col">
         <div class="ar-duo">
           <div class="ar-plot" data-view="scatter"><canvas class="ar-pts"></canvas><canvas class="ar-ovl"></canvas></div>
           <div class="ar-plot" data-view="hist"><canvas class="ar-pts"></canvas><canvas class="ar-ovl"></canvas></div>
         </div>
-        <p class="ar-keys"><span class="ok">● aceptado</span><span>○ rechazado</span><span>· derecha: histograma frente a f</span></p>
+        <p class="ar-keys"><span class="ok">● aceptado</span><span>○ rechazado</span><span>· derecha: los guardados frente a la curva</span></p>
         <div class="ar-stats">
           <div class="ar-stat k2"><span class="ar-l">intentos</span><span class="ar-v" data-ar="att">14 969</span><span class="ar-ref">meta <span data-ar="acc">10 000</span></span></div>
-          <div class="ar-stat k3"><span class="ar-l">eficiencia</span><span class="ar-v" data-ar="eff">66.80 %</span><span class="ar-ref">1/M <span data-ar="inv-m">66.67 %</span></span></div>
+          <div class="ar-stat k3"><span class="ar-l">eficiencia</span><span class="ar-v" data-ar="eff">66.80 %</span><span class="ar-ref">vs <span data-ar="inv-m">66.67 %</span></span></div>
           <div class="ar-stat k1"><span class="ar-l">media</span><span class="ar-v" data-ar="mean">0.5036</span><span class="ar-ref">teórica 0.5</span></div>
           <div class="ar-stat k1"><span class="ar-l">varianza</span><span class="ar-v" data-ar="var">0.0497</span><span class="ar-ref">teórica 0.05</span></div>
         </div>
@@ -602,14 +534,15 @@
         </div>
       </div>
     </div>
-    <aside class="notes">Apertura: «Ahora el computador repite esos mismos pasos miles de veces: este es el código del borrador, recortado». Puntos clave: 1) Recorrer el código: las líneas 8 y 9 son los dos sorteos, Y y U; la línea 11 es la regla; la línea 12 guarda solo los aceptados, mientras intentos cuenta todos. La semilla 42 permite repetir la corrida. 2) Pulsar Iniciar (o la tecla S): a la izquierda, los puntos naranjas quedan bajo f y los grises encima; a la derecha, el histograma de densidad (density=True: el área de sus barras suma 1) se acerca a la curva f. 3) Al terminar: 10 000 aceptados en 14 969 intentos, eficiencia 66.80 %, media 0.5036 frente a 0.5 y varianza 0.0497 frente a 0.05: exactamente lo que imprime Python con semilla 42, porque el navegador usa el mismo generador que numpy (PCG64, dato técnico TIP). Es una verificación empírica: no sustituye a la demostración. Antes de exponer: abrir el HTML y pulsar Reiniciar (tecla R) en esta diapositiva. Si la demo falla, los mismos números están en el PDF. Enlace: «Funciona. ¿Pero cuánto nos costó?».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 14</span></div>
+    <aside class="notes">Apertura: «Ahora la computadora tira miles de dardos por nosotros. Este es el corazón del código del borrador». Puntos clave: 1) Recorrer las líneas: 1, el generador con semilla 42 (la misma corrida siempre); 4 y 5, el dardo y el azar; 7, la regla; 8, se guarda solo si pasa, mientras intentos cuenta todos. 2) Pulsar Iniciar (o la tecla S): a la izquierda, los dardos naranjas quedan bajo la curva y los grises encima; a la derecha, el histograma de los guardados se va pareciendo a la lomita. 3) Al terminar: 10 000 guardados en 14 969 intentos, 66.80 %, media 0.5036 (teórica 0.5) y varianza 0.0497 (teórica 0.05): exactamente lo que imprime Python con semilla 42, porque el navegador usa el mismo generador que numpy (PCG64, dato técnico TIP). Es una comprobación con datos, no una demostración. Antes de exponer: pulsar Reiniciar (tecla R) en esta diapositiva. Si la demo falla, los mismos números están en el PDF. Enlace: «Funciona. ¿Cuánto nos costó?».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 12</span></div>
   </section>
 
-  <!-- 15 · Costo: aceptación 1/M, E[T] = M y selector de M -->
+  <!-- 13 · Costo: techo más alto, más tiros perdidos (selector de M) -->
   <section class="slide ar-slide" id="eficiencia" data-dense>
-    <p class="kicker">07 · Costo · demo en vivo · cambiar M con los botones o las teclas 1-4</p>
-    <h1 class="title sm">Cada muestra cuesta en promedio M intentos</h1>
+    <p class="kicker">07 · Costo · demo en vivo · cambiar el techo con los botones o las teclas 1-4</p>
+    <h1 class="title sm">Techo más alto → más tiros perdidos.</h1>
+    <p class="lead">Con M = 1.5 se acepta 2 de cada 3.</p>
     <div class="ar-demo ar-m-run">
       <div class="ar-col">
         <div class="ar-controls">
@@ -617,7 +550,7 @@
           <button class="ar-btn" type="button" data-ar-m="2" aria-pressed="false">M = 2</button>
           <button class="ar-btn" type="button" data-ar-m="3" aria-pressed="false">M = 3</button>
           <button class="ar-btn" type="button" data-ar-m="6" aria-pressed="false">M = 6</button>
-          <span class="ar-print">Gráfico: M = 6 · valores: codigo/beta22.py, semilla 42</span>
+          <span class="ar-print">Gráfico: techo M = 6 · valores: codigo/beta22.py, semilla 42</span>
         </div>
         <div class="ar-plot" data-view="scatter"><canvas class="ar-pts"></canvas><canvas class="ar-ovl"></canvas></div>
         <div class="ar-controls">
@@ -628,8 +561,7 @@
         </div>
       </div>
       <div class="ar-mrows">
-        <p class="ar-geo-line"><b>E[T] = M</b><span>T geométrica · aceptación 1/M</span></p>
-        <div class="ar-mhead"><span>M</span><span>aceptación: 1/M vs observada</span><span>intentos n·M</span></div>
+        <div class="ar-mhead"><span>techo M</span><span>se acepta: esperado y real</span><span>tiros</span></div>
         <div class="ar-mrow" data-m="1.5"><span class="ar-m">1.5</span>
           <div class="ar-bars"><span class="ar-track"><span class="ar-fill theo" style="--v: 66.67"></span></span><span class="ar-track"><span class="ar-fill obs" style="--v: 66.80"></span></span>
             <span class="ar-bv">66.67 % · obs. <b data-ar-row="eff">66.80 %</b></span></div>
@@ -648,66 +580,66 @@
           <div class="ar-att"><span class="ar-big">60 000</span><span class="ar-small">obs. <span data-ar-row="att">59 983</span></span></div></div>
       </div>
     </div>
-    <aside class="notes">Apertura: «El algoritmo puede estar matemáticamente correcto y aun así ser ineficiente». Puntos clave: 1) La demostración dio P(A) = 1/M: cada intento se acepta con probabilidad 1/M. El número de intentos T hasta una aceptación es geométrico, con E[T] = M: para n muestras se esperan n·M intentos, no exactamente (con M = 1.5 se esperaban 15 000 y la corrida usó 14 969). 2) Cambiar M en vivo con los botones o las teclas 1 a 4. Corrida de Python, semilla 42, 10 000 muestras: M = 1.5 → 66.80 % con 14 969 intentos; M = 2 → 50.02 % (19 991); M = 3 → 33.21 % (30 107); M = 6 → 16.67 % (59 983). La teoría da 66.67, 50, 33.33 y 16.67 %, y 15 000, 20 000, 30 000 y 60 000 intentos. 3) Con M = 6 la forma sigue siendo correcta; lo que cambia es el desperdicio. Por eso M se elige lo más ajustado posible: el supremo de f/g. Frase: «El algoritmo puede estar matemáticamente correcto y aun así ser ineficiente». Enlace: «Entonces, ¿cuándo conviene usarlo?».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 15</span></div>
+    <aside class="notes">Apertura: «Todo funciona, pero ¿cuánto desperdiciamos? Depende de qué tan alto esté el techo». Puntos clave: 1) Con M = 1.5 se acepta 2 de cada 3: la tasa esperada es 1/M = 66.67 % y la corrida dio 66.80 %. 2) Subir el techo en vivo con los botones o las teclas 1 a 4. Corrida de Python, semilla 42, 10 000 muestras: M = 1.5 → 66.80 % con 14 969 tiros; M = 2 → 50.02 % (19 991); M = 3 → 33.21 % (30 107); M = 6 → 16.67 % (59 983). Lo esperado: 66.67, 50, 33.33 y 16.67 %, y 15 000, 20 000, 30 000 y 60 000 tiros. 3) Con M = 6 la forma sigue saliendo bien; lo que cambia es el desperdicio. Frase: «Correcto no es lo mismo que eficiente». Respaldo (no está en la diapositiva): el número de tiros T hasta aceptar uno es geométrico, P(T = k) = (1 − 1/M)^(k−1) · 1/M, con promedio E[T] = M; para n muestras se esperan n·M tiros, no exactamente. Enlace: «Entonces, ¿cuándo conviene usarlo?».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 13</span></div>
   </section>
 
-  <!-- 16 · Cuándo conviene / errores (absorbe usos y costo) -->
+  <!-- 14 · Cuándo conviene / errores -->
   <section class="slide deck-compare" id="conviene" data-dense>
-    <p class="kicker">08 · Uso del método · criterios, costo y aplicaciones</p>
-    <h1 class="title sm">Conviene con una buena envolvente; falla con estos errores</h1>
+    <p class="kicker">08 · Cuándo usarlo</p>
+    <h1 class="title sm">Conviene con un buen techo; estos son los errores típicos</h1>
     <div class="compare-pair">
       <div class="compare-side"><h2>Conviene cuando</h2>
-        <p class="compare-trait" data-mark="yes">No hay inversa sencilla y f se evalúa</p>
-        <p class="compare-trait" data-mark="yes">Propuesta barata y envolvente ajustada</p>
-        <p class="compare-trait" data-mark="yes">La aceptación es razonable</p></div>
+        <p class="compare-trait" data-mark="yes">No hay fórmula directa para generarla</p>
+        <p class="compare-trait" data-mark="yes">Los dardos son baratos y el techo, ajustado</p>
+        <p class="compare-trait" data-mark="yes">Se guardan bastantes dardos</p></div>
       <div class="compare-side"><h2>Errores frecuentes</h2>
-        <p class="compare-trait" data-mark="no">M menor que el máximo de f/g</p>
-        <p class="compare-trait" data-mark="no">g = 0 donde f &gt; 0</p>
-        <p class="compare-trait" data-mark="no">Contar rechazados como muestras</p></div>
+        <p class="compare-trait" data-mark="no">Techo más bajo que la punta</p>
+        <p class="compare-trait" data-mark="no">Dardos que no cubren toda la curva</p>
+        <p class="compare-trait" data-mark="no">Contar los descartados como muestras</p></div>
     </div>
-    <p class="compare-takeaway">Costo real: rechazos + generar Y + evaluar f y g. Evitar si no hay cota finita o la dimensión es alta.</p>
-    <aside class="notes">Apertura: «Con todo lo visto, ¿cuándo conviene usar aceptación-rechazo?». Puntos clave: 1) Conviene cuando no se dispone de una inversa sencilla pero f se puede evaluar, cuando existe una propuesta fácil de generar con soporte correcto y envolvente ajustada, y cuando la tasa de aceptación es razonable. Aplicaciones ilustrativas del borrador: tiempos de servicio en hospitales, tiempos de respuesta en redes, montos de siniestros en seguros, tiempos de reparación en manufactura. 2) El costo real no es solo 1/M: también cuenta generar cada candidato y evaluar f y g; una propuesta con más aceptación puede ser más lenta si es cara de generar. Evitarlo o compararlo con alternativas cuando no se puede demostrar una cota finita o en dimensiones altas, donde la aceptación es extremadamente baja. 3) Errores frecuentes: usar M menor que el máximo de f/g; escoger g = 0 donde f &gt; 0; contar rechazados como muestras finales; confundir un histograma parecido con una prueba de corrección. Enlace: transición de cierre (diapositiva siguiente).</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 16</span></div>
+    <p class="compare-takeaway">También cuesta generar cada dardo y evaluar la curva, no solo los que se pierden.</p>
+    <aside class="notes">Apertura: «Con todo lo visto, ¿cuándo conviene usar este método?». Puntos clave: 1) Conviene cuando no hay fórmula directa (no hay inversa sencilla) pero la curva se puede evaluar, cuando los candidatos son baratos de generar y el techo queda ajustado, y cuando se guarda una buena parte de los dardos. Usos del borrador: tiempos de servicio en hospitales, tiempos de respuesta en redes, montos de siniestros en seguros, tiempos de reparación en manufactura. 2) El costo real no es solo lo que se descarta: también cuesta generar cada candidato y evaluar f y g. Evitarlo si no se puede encontrar un techo finito o en muchas dimensiones, donde casi todo se rechaza. 3) Errores típicos: techo más bajo que la punta (M menor que el máximo de f/g); dardos que no cubren toda la curva (g = 0 donde f &gt; 0); contar los descartados como muestras; creer que un histograma parecido es una demostración. Enlace: transición de cierre (diapositiva siguiente).</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 14</span></div>
   </section>
 
-  <!-- 17 · Cierre -->
+  <!-- 15 · Cierre -->
   <section class="slide" id="cierre" data-dense>
     <p class="kicker">Cierre</p>
     <h1 class="title sm">Lo que aprendimos</h1>
     <ol class="recap">
-      <li><span class="dot">1</span>Un simulador no necesita números al azar, necesita números con la forma correcta</li>
-      <li><span class="dot">2</span>Si F⁻¹ no se despeja, se propone y se filtra</li>
-      <li><span class="dot">3</span>Que el método sea correcto no lo hace eficiente</li>
+      <li><span class="dot">1</span>Un simulador necesita números con la forma correcta</li>
+      <li><span class="dot">2</span>Si no se puede generar directo: tirar dardos y quedarse con los buenos</li>
+      <li><span class="dot">3</span>Siempre sale bien; el techo decide cuánto cuesta</li>
     </ol>
-    <p class="lead fx">Aceptación-rechazo convierte candidatos fáciles de simular en muestras de otra distribución mediante un filtro probabilístico.</p>
-    <aside class="notes">Apertura (Anexo A, cierre): «El método es válido siempre que exista una propuesta con soporte adecuado y una envolvente correcta. Pero una implementación correcta debe ir acompañada de comprobaciones estadísticas y análisis de eficiencia». Puntos clave: 1) Un simulador no necesita números al azar, necesita números con la forma correcta: el computador solo da uniformes, y generar una variable aleatoria es transformarlos en la distribución que representa el fenómeno. 2) Si F⁻¹ no se despeja, se propone y se filtra: Von Neumann obtiene la distribución sin invertir nada, proponiendo candidatos fáciles y aceptándolos con probabilidad f/(M·g). 3) Que el método sea correcto no lo hace eficiente: si la propuesta cubre a la objetivo y la envolvente nunca queda por debajo, los aceptados siguen exactamente la forma buscada; cuánto cuesta llegar depende de qué tan ajustada esté la envolvente. Si el docente pide evidencia: en la demo la media dio 0.5036 frente a 0.5, y la aceptación fue 66.80 % con M = 1.5 contra 16.67 % con M = 6, con la misma forma final. Frase final: «Aceptación-rechazo convierte candidatos fáciles de simular en muestras de otra distribución mediante un filtro probabilístico. Su valor está en la flexibilidad, y su principal compromiso es la cantidad de rechazos».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 17</span></div>
+    <p class="lead fx">Von Neumann convierte candidatos fáciles en muestras con la forma que queremos, filtrándolos al azar.</p>
+    <aside class="notes">Apertura (Anexo A, cierre): «El método es válido siempre que exista una propuesta con soporte adecuado y una envolvente correcta. Pero una implementación correcta debe ir acompañada de comprobaciones estadísticas y análisis de eficiencia». Puntos clave: 1) Un simulador no necesita números al azar, necesita números con la forma correcta: el computador solo da uniformes, y generar una variable aleatoria es transformarlos en la distribución que representa el fenómeno. 2) Si no se puede generar directo, se tiran dardos y se guardan los buenos: Von Neumann obtiene la distribución sin despejar nada. 3) Que el método sea correcto no lo hace eficiente: si la propuesta cubre a la objetivo y la envolvente nunca queda por debajo, los aceptados siguen exactamente la forma buscada; cuánto cuesta llegar depende de qué tan ajustada esté la envolvente. Si el docente pide evidencia: en la demo la media dio 0.5036 frente a 0.5, y la aceptación fue 66.80 % con M = 1.5 contra 16.67 % con M = 6, con la misma forma final. Frase final: «Aceptación-rechazo convierte candidatos fáciles de simular en muestras de otra distribución mediante un filtro probabilístico. Su valor está en la flexibilidad, y su principal compromiso es la cantidad de rechazos».</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 15</span></div>
   </section>
 
-  <!-- 18 · Ronda final de preguntas (27:00–30:00) -->
+  <!-- 16 · Ronda final de preguntas (27:00–30:00) -->
   <section class="slide" id="preguntas" data-dense>
     <p class="kicker">Ronda final</p>
     <h1 class="title sm">Preguntas</h1>
     <ol class="rq-list">
-      <li class="rq-item"><p class="rq-q">¿Qué se hace con un candidato rechazado?</p>
+      <li class="rq-item"><p class="rq-q">¿Qué se hace con un dardo que cae encima de la curva?</p>
         <p class="rq-a" id="rq-a1" hidden><b>Respuesta</b>Se descarta: no entra en la muestra.</p>
         <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a1">Ver respuesta</button></li>
-      <li class="rq-item"><p class="rq-q">¿Dónde debe quedar la envolvente M·g?</p>
-        <p class="rq-a" id="rq-a2" hidden><b>Respuesta</b>Siempre por encima de f.</p>
+      <li class="rq-item"><p class="rq-q">¿Dónde debe quedar el techo?</p>
+        <p class="rq-a" id="rq-a2" hidden><b>Respuesta</b>Siempre por encima de la curva, tocando la punta.</p>
         <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a2">Ver respuesta</button></li>
-      <li class="rq-item"><p class="rq-q">¿Con qué probabilidad se acepta un candidato?</p>
-        <p class="rq-a" id="rq-a3" hidden><b>Respuesta</b>1/M: con M = 1.5, dos de cada tres.</p>
+      <li class="rq-item"><p class="rq-q">Con M = 1.5, ¿cuántos dardos se guardan de cada 3?</p>
+        <p class="rq-a" id="rq-a3" hidden><b>Respuesta</b>2 de cada 3.</p>
         <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a3">Ver respuesta</button></li>
-      <li class="rq-item"><p class="rq-q">En Beta(2,2), ¿por qué Y = 0.5 se acepta siempre?</p>
-        <p class="rq-a" id="rq-a4" hidden><b>Respuesta</b>Porque 4Y(1−Y) vale 1: cualquier U pasa.</p>
+      <li class="rq-item"><p class="rq-q">En el ejemplo, ¿por qué Y = 0.5 se acepta siempre?</p>
+        <p class="rq-a" id="rq-a4" hidden><b>Respuesta</b>Porque ahí está la punta: 4Y(1−Y) vale 1 y cualquier U pasa.</p>
         <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a4">Ver respuesta</button></li>
-      <li class="rq-item"><p class="rq-q">Si M crece, ¿el método se vuelve más rápido o más lento?</p>
-        <p class="rq-a" id="rq-a5" hidden><b>Respuesta</b>Más lento: se rechazan más candidatos.</p>
+      <li class="rq-item"><p class="rq-q">Si subimos el techo, ¿el método es más rápido o más lento?</p>
+        <p class="rq-a" id="rq-a5" hidden><b>Respuesta</b>Más lento: se pierden más tiros.</p>
         <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a5">Ver respuesta</button></li>
     </ol>
-    <aside class="notes">Apertura: «Cerramos con cinco preguntas rápidas sobre Von Neumann: piensen la respuesta antes de que la mostremos». Ronda final, de 27:00 a 30:00 (3 minutos): la modera el expositor 3 y responde quien tenga el tema (E1: preguntas 1 y 2; E2: 3 y 4; E3: 5). Cómo hacerla: 1) Leer la pregunta en voz alta, sin pulsar nada. 2) Esperar unos segundos para que el público piense y tomar una respuesta. 3) Pulsar «Ver respuesta» con el mouse para confirmarla en una frase. El clic no cambia de diapositiva; el mismo botón vuelve a ocultar la respuesta. Con 3 minutos alcanzan las 5 preguntas (unos 35 segundos cada una); si falta tiempo, hacer solo 2 o 3; si sobra, seguir con el banco de la guía de expositores.</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">Todos · 18</span></div>
+    <aside class="notes">Apertura: «Cerramos con cinco preguntas rápidas sobre Von Neumann: piensen la respuesta antes de que la mostremos». Ronda final, de 27:00 a 30:00 (3 minutos): la modera el expositor 3 y responde quien tenga el tema (E1: preguntas 1 y 2 · E2: 3 y 4 · E3: 5). Cómo hacerla: 1) Leer la pregunta en voz alta, sin pulsar nada. 2) Esperar unos segundos para que el público piense y tomar una respuesta. 3) Pulsar «Ver respuesta» con el mouse para confirmarla en una frase. El clic no cambia de diapositiva; el mismo botón vuelve a ocultar la respuesta. Con 3 minutos alcanzan las 5 preguntas (unos 35 segundos cada una); si falta tiempo, hacer solo 2 o 3; si sobra, seguir con el banco de la guía de expositores.</aside>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">Todos · 16</span></div>
   </section>
 
   <div id="notes"></div>
@@ -765,7 +697,7 @@ document.addEventListener("click", (event) => {
 </script>
 <script>
 "use strict";
-// Actividad de la diapositiva 13 (componente local accept-activity): el público dicta Y y U, se decide con U ≤ 4Y(1−Y).
+// Actividad de la diapositiva 11 (componente local accept-activity): el público dicta Y y U, se decide con U ≤ 4Y(1−Y).
 // Las teclas escritas en las casillas no llegan a la navegación ni a la demo; Enter decide y Esc sale de la casilla.
 (function () {
   const box = document.querySelector(".aa-wrap");
