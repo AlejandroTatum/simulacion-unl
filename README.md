@@ -19,6 +19,7 @@ Repositorio con las prácticas (APE) y actividades autónomas (AA) de la asignat
 | 2 | 5 | Implementación y análisis del Generador Congruencial Lineal en Python y Java | [unidad-2/ape-5-generador-congruencial-lineal](unidad-2/ape-5-generador-congruencial-lineal) |
 | 2 | 6 | Validación estadística de números pseudoaleatorios mediante Chi-cuadrado y Kolmogorov-Smirnov | [unidad-2/ape-6-validacion-chi-cuadrado-ks](unidad-2/ape-6-validacion-chi-cuadrado-ks) |
 | 2 | 7 | Estimación de resultados mediante el método de Monte Carlo | [unidad-2/ape-7-monte-carlo](unidad-2/ape-7-monte-carlo) |
+| 2 | 8 | Generación de variables aleatorias mediante el método de Transformada Inversa | [unidad-2/ape-8-transformada-inversa](unidad-2/ape-8-transformada-inversa) |
 
 ## Actividades autónomas
 
