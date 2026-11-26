@@ -78,6 +78,14 @@
   .ar-geo .ar-tex .katex-display > .katex { text-align: left; }
   :where(.ar-geo .ar-big3) { font: var(--dw) 96px/1 var(--display); letter-spacing: var(--ls); color: var(--a3); }
   :where(.ar-geo p) { margin: 0; font-size: 34px; line-height: 1.25; }
+  /* 30-minute version (slides 14-15): code + scatter + histogram in one slide (.ar-duo + .ar-keys) and the E[T] = M strip (.ar-geo-line). */
+  :where(.ar-duo) { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+  .ar-keys { margin: 0; display: flex; gap: 22px; font: 600 24px/1.2 var(--mono); color: var(--muted); white-space: nowrap; }
+  .ar-keys .ok { color: var(--a1); }
+  .ar-duo ~ .ar-stats .ar-ref { font-size: 24px; white-space: nowrap; }
+  :where(.ar-geo-line) { margin: 0; display: flex; align-items: baseline; gap: 22px; padding: 12px 22px; border-left: 10px solid var(--a3);
+    background: color-mix(in srgb, var(--a3) 9%, transparent); font-size: 32px; font-weight: 600; line-height: 1.2; }
+  :where(.ar-geo-line b) { font: var(--dw) 52px/1 var(--display); color: var(--a3); white-space: nowrap; }
   body.print .ar-btn, body.print .ar-status { display: none; }
   body.print .ar-print { display: inline; }
   body.print .ar-fill.obs { transition: none; }

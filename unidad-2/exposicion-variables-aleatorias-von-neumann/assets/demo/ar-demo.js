@@ -89,7 +89,7 @@
     for (let i = 0; i <= 100; i++) { const x = i / 100; i ? ctx.lineTo(X(x), Y(beta22(x))) : ctx.moveTo(X(x), Y(beta22(x))); }
     ctx.stroke();
     ctx.fillStyle = C.f; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
-    ctx.fillText("f(x)", X(0.5) + 16, Y(1.5) - 6);
+    if (w >= 640) ctx.fillText("f(x)", X(0.5) + 16, Y(1.5) - 6); // gráfico angosto: sin etiqueta, choca con M·g
     return { X, Y };
   }
 
@@ -130,7 +130,7 @@
     for (let i = 0; i <= 120; i++) { const x = i / 120; i ? ctx.lineTo(X(x), Y(beta22(x))) : ctx.moveTo(X(x), Y(beta22(x))); }
     ctx.stroke();
     ctx.fillStyle = C.f; ctx.font = "700 30px " + C.mono; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
-    ctx.fillText("f(x) = 6x(1−x)", X(0.62), Y(1.62));
+    ctx.fillText(w < 640 ? "f(x)" : "f(x) = 6x(1−x)", X(0.62), Y(1.62)); // gráfico angosto: solo «f(x)»
   }
 
   /* ---------- estado compartido en pantalla ---------- */
