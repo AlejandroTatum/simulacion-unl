@@ -294,21 +294,20 @@
     <p class="lead">Aceptación-Rechazo de Von Neumann</p>
     <p class="lead">Objetivo: generar valores con la distribución correcta y medir cuánto cuesta.</p>
     <aside class="notes">Apertura: «Buenos días. Hoy respondemos una pregunta concreta: si la computadora solo nos da números uniformes y la acumulada no se puede invertir, ¿cómo obtenemos valores que sigan otra distribución?». Puntos clave: 1) Somos tres expositores, unos 9 minutos cada uno: la idea de Von Neumann y sus ingredientes (expositor 1), el algoritmo, por qué funciona y el ejemplo a mano con una actividad (expositor 2), el código en vivo y su costo (expositor 3); al final, 3 minutos de preguntas. 2) Objetivo: generar valores con la distribución correcta y medir cuánto cuesta hacerlo. Enlace: «Esta es la ruta de la clase».</aside>
-    <div class="foot"><span>Simulación · UNL</span><span class="page">E1 · 01</span></div>
+    <div class="foot"><span>Simulación · UNL</span><span class="page">01</span></div>
   </section>
 
   <!-- 02 · Objetivo de la clase -->
   <section class="slide" id="objetivos" data-dense>
-    <p class="kicker">Objetivo de la clase · 30 minutos</p>
+    <p class="kicker">Objetivo de la clase</p>
     <h1 class="title sm">Al final podrán generar una variable aleatoria y medir su costo</h1>
     <ol class="rail-timeline" style="--a1: var(--fg)">
-      <li class="node fx"><span class="pt">1</span><span class="lbl">Entender</span><span class="desc">La idea: proponer y filtrar</span><span class="chip">E1 · 0–9 min</span></li>
-      <li class="node fx"><span class="pt">2</span><span class="lbl">Aplicar</span><span class="desc">El algoritmo y Beta(2,2) a mano</span><span class="chip">E2 · 9–18 min</span></li>
-      <li class="node fx"><span class="pt">3</span><span class="lbl">Evaluar</span><span class="desc">Programarlo y medir su costo</span><span class="chip">E3 · 18–27 min</span></li>
+      <li class="node fx"><span class="pt">1</span><span class="lbl">Entender</span><span class="desc">La idea: proponer y filtrar</span></li>
+      <li class="node fx"><span class="pt">2</span><span class="lbl">Aplicar</span><span class="desc">El algoritmo y Beta(2,2) a mano</span></li>
+      <li class="node fx"><span class="pt">3</span><span class="lbl">Evaluar</span><span class="desc">Programarlo y medir su costo</span></li>
     </ol>
-    <p class="lead fx">27–30 min: ronda de preguntas.</p>
     <aside class="notes">Apertura: «La clase tiene tres partes: primero la idea, después el algoritmo con un ejemplo a mano y, al final, cuánto cuesta hacerlo en el computador». Puntos clave: 1) Entender la idea de tirar candidatos y quedarse con los buenos: expositor 1, hasta el minuto 9. 2) Aplicar el algoritmo y resolver un ejemplo a mano, con una actividad con ustedes: expositor 2, hasta el minuto 18. 3) Verlo correr en vivo y medir su costo: expositor 3, hasta el minuto 27. Los últimos 3 minutos son preguntas. Enlace: «Partimos de un problema que ya conocen».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 02</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">02</span></div>
   </section>
 
   <!-- 03 · Puente: hay distribuciones que no se pueden generar directo -->
@@ -317,7 +316,7 @@
     <h1 class="title q" style="font-size: 112px">Hay distribuciones que no se pueden generar directo.</h1>
     <p class="lead">Entonces: tirar candidatos y quedarse con los buenos.</p>
     <aside class="notes">Apertura: «El profe ya nos mostró cómo generar algunas distribuciones con una fórmula directa. El problema es que no siempre existe esa fórmula». Puntos clave: 1) No repetimos la transformada inversa: solo recordamos que necesita despejar la acumulada, X = F⁻¹(U), en forma cerrada y barata. 2) Muchas distribuciones no la tienen, o despejarla cuesta mucho: incluso la del ejemplo de hoy, con F(x) = 3x² − 2x³, obliga a resolver una cúbica para cada número. 3) Von Neumann cambia la pregunta: en vez de despejar, tiramos candidatos fáciles de generar y nos quedamos solo con los buenos. Enlace: «Veamos cómo se elige cuáles son los buenos».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 03</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">03</span></div>
   </section>
 
   <!-- 04 · Candidato, filtro y muestra: el dardo -->
@@ -332,7 +331,7 @@
       <div class="case-node" style="--node: var(--a1)"><p class="case-role">Muestra</p><strong>Lo guardo</strong><p>Los de encima se descartan</p></div>
     </div>
     <aside class="notes">Apertura: «Piensen en un juego de dardos: tiro un dardo, y si cae bajo la curva, lo guardo». Puntos clave: 1) El dardo es un candidato: sale de una distribución fácil de generar (en el borrador, Y ~ g). Todavía no es una muestra. 2) El filtro decide con otro número al azar, U, independiente: el candidato se queda si cae bajo la curva que queremos (f). 3) Si se acepta, se guarda tal cual; si no, se descarta y se tira otro. Un descartado no se reemplaza por cero ni entra en el histograma. Frase: «No corregimos cada valor: elegimos al azar cuáles conservar». Enlace: «Veámoslo con muchos dardos».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 04</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">04</span></div>
   </section>
 
   <!-- 05 · Demostración visual con puntos -->
@@ -357,7 +356,7 @@
       <figcaption class="sheet-title"><span class="fig">FIG. 02</span><span class="src">● bajo f: se acepta · ○ sobre f: se descarta · ilustración, 70 puntos</span></figcaption>
     </figure>
     <aside class="notes">Apertura: «Construyamos la intuición geométrica antes de formalizar». Puntos clave: 1) Con propuesta uniforme en [0,1] y una envolvente de altura 1.5: se sortea una posición horizontal Y uniforme entre 0 y 1 y una altura V uniforme entre 0 y 1.5; se acepta si V ≤ f(Y). Eso equivale a sortear U uniforme entre 0 y 1 y aceptar si U ≤ f(Y)/1.5. 2) Frase: «Elijan un x cercano a 0.5: la curva es alta y será fácil quedar por debajo. Elijan un x cercano a 0: la curva es baja y es más probable que rechacemos. Esa diferencia construye la distribución». 3) Al proyectar los aceptados sobre el eje x se obtiene la distribución objetivo: no se conservan las alturas V como parte de la muestra. Enlace: «Para que esto funcione con cualquier curva necesitamos tres cosas».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 05</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">05</span></div>
   </section>
 
   <!-- 06 · Tres ingredientes y tres condiciones -->
@@ -376,7 +375,7 @@
       <p class="lead fx">Necesitamos 3 cosas: la forma que queremos (f), algo fácil de generar (g) y un techo (M) que la tape entera.</p>
     </div>
     <aside class="notes">Apertura: «Para que esto funcione necesitamos solo tres cosas». Puntos clave: 1) f es la forma que queremos imitar; g es algo fácil de generar, de donde salen los candidatos; M es un número que sube a g hasta formar un techo, M·g, que tapa la curva entera. 2) Respaldo, si alguien pregunta por las condiciones formales (no están en la diapositiva): normalización (f y g no negativas e integran 1), cobertura (si f(x) &gt; 0, entonces g(x) &gt; 0; si no, hay valores que nunca se proponen) y dominación (f(x) ≤ M·g(x) para todo x; si no, f/(M·g) superaría 1 y no sería una probabilidad). 3) En el ejemplo de hoy, g es la uniforme: plana, de altura 1. Enlace: «¿Qué tan alto debe ser el techo?».</aside>
-    <div class="foot"><span>Von Neumann</span><span class="page">E1 · 06</span></div>
+    <div class="foot"><span>Von Neumann</span><span class="page">06</span></div>
   </section>
 
   <!-- 07 · El techo toca la punta + pase a E2 -->
@@ -406,12 +405,12 @@
       </svg>
     </figure>
     <aside class="notes">Apertura: «¿Qué tan alto ponemos el techo? Justo a la altura de la punta». Puntos clave: 1) En el ejemplo la lomita llega a 1.5 en el centro. Un techo de 1.5 la toca y la tapa entera. 2) Si el techo es más bajo (1.2), corta la punta: en esa zona se guardarían menos valores de los que corresponde y la forma sale mal. Si es más alto (2), todo sigue correcto, pero se desperdician más dardos. 3) Respaldo formal (no está en la diapositiva): M ≥ sup f(x)/g(x); con g = 1 es el máximo de f, 1.5. Como f y g tienen área 1, integrar f ≤ M·g da M ≥ 1. Frase: «El techo es un margen de seguridad: nunca debe quedar por debajo de la curva». Pase al expositor 2 (Anexo A): «Ya entendimos por qué no basta con generar números uniformes y cómo una envolvente permite visualizar el filtro. Ahora veremos cómo se expresa esa idea en una regla matemática rigurosa y por qué realmente produce la distribución que buscamos».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E1 · 07</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">07</span></div>
   </section>
 
   <!-- 08 · Algoritmo en 4 pasos (abre el bloque del expositor 2) -->
   <section class="slide" id="algoritmo" data-dense>
-    <p class="kicker">Expositor 2 · 04 · El algoritmo</p>
+    <p class="kicker">04 · El algoritmo</p>
     <h1 class="title sm">4 pasos que se repiten</h1>
     <ol class="pipeline-flow big">
       <li class="stage k2 fx"><span class="tag">1 · Proponer</span><span class="lbl">Dardo</span><span class="desc">Un candidato fácil de generar</span></li>
@@ -421,7 +420,7 @@
     </ol>
     <p class="lead fx">↺ Se repite hasta juntar las muestras que necesitamos. Los que sobreviven tienen la forma de f.</p>
     <aside class="notes">Apertura: «El algoritmo son cuatro pasos que se repiten una y otra vez». Puntos clave: 1) Proponer un candidato desde g y sortear otro número U entre 0 y 1, independiente. 2) Comparar con la curva: se acepta si U ≤ f(Y)/[M·g(Y)], es decir, si el dardo quedó bajo f. Guardar o descartar, y volver a empezar hasta juntar n aceptados (no n intentos). 3) Los que sobreviven tienen la forma de f. Respaldo, si preguntan por qué la regla tiene esa forma: U decide con probabilidad exacta porque P(U ≤ p) = p; dividir por g corrige la frecuencia con que llegan los candidatos; M mantiene el cociente por debajo de 1. Y por qué sale f: la densidad de proponer y aceptar es g · f/(M g) = f/M (la g se cancela), la probabilidad de aceptar es 1/M, y al condicionar queda exactamente f (la demostración completa está en la guía). Enlace: «Hagámoslo con números».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 08</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">08</span></div>
   </section>
 
   <!-- 09 · Ejemplo Beta(2,2): punta 1.5 → techo 1.5 → regla -->
@@ -435,7 +434,7 @@
     </ol>
     <p class="lead fx">Ejemplo: una lomita con la punta en 1.5 → techo M = 1.5 → regla: acepto si U ≤ 4Y(1−Y).</p>
     <aside class="notes">Apertura: «Vamos con un ejemplo concreto: una lomita que tiene su punta en 1.5». Puntos clave: 1) La forma es la Beta(2,2), f(x) = 6x(1−x) entre 0 y 1: más valores cerca del centro. Los dardos salen de la uniforme, g = 1. 2) La punta está en x = 0.5 y vale 1.5, así que el techo es M = 1.5. 3) La regla queda muy simple: U ≤ 6Y(1−Y)/1.5 = 4Y(1−Y). En Y = 0.5 vale 1: ahí se acepta siempre. Respaldo, si piden la cuenta (no está en la diapositiva): f es una densidad porque ∫₀¹(6x − 6x²) dx = [3x² − 2x³]₀¹ = 3 − 2 = 1; la punta sale de f′(x) = 6 − 12x = 0 → x = 0.5, con f″ = −12 &lt; 0, y f(0.5) = 6 · 0.5 · 0.5 = 1.5. Enlace: «Probemos cinco dardos a mano».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 09</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">09</span></div>
   </section>
 
   <!-- 10 · Regla 4Y(1−Y) + cinco intentos a mano -->
@@ -459,7 +458,7 @@
       </div>
     </div>
     <aside class="notes">Apertura: «Sustituimos f, g y M en la regla: U ≤ 6Y(1−Y)/1.5 = 4Y(1−Y)». Puntos clave: 1) Paso 4: la regla se simplifica porque g(Y) = 1. Comprobamos que 4Y(1−Y) tiene máximo 1 en Y = 0.5: es una probabilidad válida. 2) Paso 5, intentos concretos: para cada uno calculamos 4Y(1−Y) y lo comparamos con U. Intento 1: Y = 0.20 da 0.64 y U = 0.60 queda por debajo: aceptado. Intento 2: Y = 0.80 da otra vez 0.64, pero U = 0.90 lo supera: rechazado. Intento 3: Y = 0.50 da 1.00 y U = 0.80: aceptado. Intento 4: Y = 0.10 da 0.36 y U = 0.50: rechazado. Intento 5: Y = 0.65 da 0.91 y U = 0.70: aceptado. 3) Se aceptan 3 de 5: eficiencia observada 60 %, que no debe confundirse con la teórica 1/1.5 = 66.67 %. Con pocos intentos, las fluctuaciones son normales. Dejar la pregunta en el aire: ¿por qué Y = 0.5 se acepta siempre? La respondemos en la actividad. Enlace: «Ahora ustedes: díctenme un Y y un U».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 10</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">10</span></div>
   </section>
 
   <!-- 11 · Actividad interactiva + pase a E3 -->
@@ -504,12 +503,12 @@
       </div>
     </div>
     <aside class="notes">Apertura: «La computadora solo automatiza los mismos pasos que acabamos de hacer en la pizarra. Si podemos decidir un candidato manualmente, ya entendemos el núcleo de la programación». Cómo hacerla en unos 2 a 3 minutos: 1) Pedir al público un Y y un U entre 0 y 1; antes de pulsar Decidir, que calculen 4Y(1−Y) y digan si se acepta. Hacer dos o tres intentos: uno cerca de 0.5 y uno cerca de un extremo. 2) Con el mouse: clic en la casilla, escribir el número (con punto decimal), clic en Decidir (o Enter dentro de la casilla). Lo que se escribe en las casillas no cambia de diapositiva ni toca la demo; Esc o un clic fuera de la casilla devuelve el control a las flechas. Si el número no está entre 0 y 1, la diapositiva lo avisa. 3) Cerrar con una pregunta: ¿por qué Y = 0.5 se acepta siempre? (el umbral vale 1). Pase al expositor 3 (Anexo A): «Hemos calculado manualmente los umbrales y demostrado la corrección del método. La siguiente pregunta es qué ocurre al ejecutarlo miles de veces, cuánto cuesta y cómo verificamos que el programa está funcionando».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E2 · 11</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">11</span></div>
   </section>
 
   <!-- 12 · Demo: el corazón del código + puntos + histograma (abre el bloque del expositor 3) -->
   <section class="slide ar-slide" id="codigo" data-dense>
-    <p class="kicker">Expositor 3 · 06 · Demo en vivo · el corazón del código, semilla 42</p>
+    <p class="kicker">06 · Demo en vivo · el corazón del código, semilla 42</p>
     <h1 class="title sm">El código hace lo mismo que hicimos a mano</h1>
     <div class="ar-demo ar-code-run">
 <pre class="ar-code"><code><span class="ln">rng = np.random.default_rng(42)</span><span class="ln">m = <b data-ar="m">1.5</b></span><span class="ln">while len(muestras) &lt; n:</span><span class="ln hl-g">    y = rng.uniform(0, 1)   # dardo</span><span class="ln hl-g">    u = rng.uniform(0, 1)   # azar</span><span class="ln">    intentos += 1</span><span class="ln hl-m">    if u &lt;= beta_22(y) / m:</span><span class="ln hl-f">        muestras.append(y)  # se guarda</span></code></pre>
@@ -535,7 +534,7 @@
       </div>
     </div>
     <aside class="notes">Apertura: «Ahora la computadora tira miles de dardos por nosotros. Este es el corazón del código del borrador». Puntos clave: 1) Recorrer las líneas: 1, el generador con semilla 42 (la misma corrida siempre); 4 y 5, el dardo y el azar; 7, la regla; 8, se guarda solo si pasa, mientras intentos cuenta todos. 2) Pulsar Iniciar (o la tecla S): a la izquierda, los dardos naranjas quedan bajo la curva y los grises encima; a la derecha, el histograma de los guardados se va pareciendo a la lomita. 3) Al terminar: 10 000 guardados en 14 969 intentos, 66.80 %, media 0.5036 (teórica 0.5) y varianza 0.0497 (teórica 0.05): exactamente lo que imprime Python con semilla 42, porque el navegador usa el mismo generador que numpy (PCG64, dato técnico TIP). Es una comprobación con datos, no una demostración. Antes de exponer: pulsar Reiniciar (tecla R) en esta diapositiva. Si la demo falla, los mismos números están en el PDF. Enlace: «Funciona. ¿Cuánto nos costó?».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 12</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">12</span></div>
   </section>
 
   <!-- 13 · Costo: techo más alto, más tiros perdidos (selector de M) -->
@@ -581,7 +580,7 @@
       </div>
     </div>
     <aside class="notes">Apertura: «Todo funciona, pero ¿cuánto desperdiciamos? Depende de qué tan alto esté el techo». Puntos clave: 1) Con M = 1.5 se acepta 2 de cada 3: la tasa esperada es 1/M = 66.67 % y la corrida dio 66.80 %. 2) Subir el techo en vivo con los botones o las teclas 1 a 4. Corrida de Python, semilla 42, 10 000 muestras: M = 1.5 → 66.80 % con 14 969 tiros; M = 2 → 50.02 % (19 991); M = 3 → 33.21 % (30 107); M = 6 → 16.67 % (59 983). Lo esperado: 66.67, 50, 33.33 y 16.67 %, y 15 000, 20 000, 30 000 y 60 000 tiros. 3) Con M = 6 la forma sigue saliendo bien; lo que cambia es el desperdicio. Frase: «Correcto no es lo mismo que eficiente». Respaldo (no está en la diapositiva): el número de tiros T hasta aceptar uno es geométrico, P(T = k) = (1 − 1/M)^(k−1) · 1/M, con promedio E[T] = M; para n muestras se esperan n·M tiros, no exactamente. Enlace: «Entonces, ¿cuándo conviene usarlo?».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 13</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">13</span></div>
   </section>
 
   <!-- 14 · Cuándo conviene / errores -->
@@ -600,7 +599,7 @@
     </div>
     <p class="compare-takeaway">También cuesta generar cada dardo y evaluar la curva, no solo los que se pierden.</p>
     <aside class="notes">Apertura: «Con todo lo visto, ¿cuándo conviene usar este método?». Puntos clave: 1) Conviene cuando no hay fórmula directa (no hay inversa sencilla) pero la curva se puede evaluar, cuando los candidatos son baratos de generar y el techo queda ajustado, y cuando se guarda una buena parte de los dardos. Usos del borrador: tiempos de servicio en hospitales, tiempos de respuesta en redes, montos de siniestros en seguros, tiempos de reparación en manufactura. 2) El costo real no es solo lo que se descarta: también cuesta generar cada candidato y evaluar f y g. Evitarlo si no se puede encontrar un techo finito o en muchas dimensiones, donde casi todo se rechaza. 3) Errores típicos: techo más bajo que la punta (M menor que el máximo de f/g); dardos que no cubren toda la curva (g = 0 donde f &gt; 0); contar los descartados como muestras; creer que un histograma parecido es una demostración. Enlace: transición de cierre (diapositiva siguiente).</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 14</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">14</span></div>
   </section>
 
   <!-- 15 · Cierre -->
@@ -614,7 +613,7 @@
     </ol>
     <p class="lead fx">Von Neumann convierte candidatos fáciles en muestras con la forma que queremos, filtrándolos al azar.</p>
     <aside class="notes">Apertura (Anexo A, cierre): «El método es válido siempre que exista una propuesta con soporte adecuado y una envolvente correcta. Pero una implementación correcta debe ir acompañada de comprobaciones estadísticas y análisis de eficiencia». Puntos clave: 1) Un simulador no necesita números al azar, necesita números con la forma correcta: el computador solo da uniformes, y generar una variable aleatoria es transformarlos en la distribución que representa el fenómeno. 2) Si no se puede generar directo, se tiran dardos y se guardan los buenos: Von Neumann obtiene la distribución sin despejar nada. 3) Que el método sea correcto no lo hace eficiente: si la propuesta cubre a la objetivo y la envolvente nunca queda por debajo, los aceptados siguen exactamente la forma buscada; cuánto cuesta llegar depende de qué tan ajustada esté la envolvente. Si el docente pide evidencia: en la demo la media dio 0.5036 frente a 0.5, y la aceptación fue 66.80 % con M = 1.5 contra 16.67 % con M = 6, con la misma forma final. Frase final: «Aceptación-rechazo convierte candidatos fáciles de simular en muestras de otra distribución mediante un filtro probabilístico. Su valor está en la flexibilidad, y su principal compromiso es la cantidad de rechazos».</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">E3 · 15</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">15</span></div>
   </section>
 
   <!-- 16 · Ronda final de preguntas (27:00–30:00) -->
@@ -639,7 +638,7 @@
         <button type="button" class="rq-btn" aria-expanded="false" aria-controls="rq-a5">Ver respuesta</button></li>
     </ol>
     <aside class="notes">Apertura: «Cerramos con cinco preguntas rápidas sobre Von Neumann: piensen la respuesta antes de que la mostremos». Ronda final, de 27:00 a 30:00 (3 minutos): la modera el expositor 3 y responde quien tenga el tema (E1: preguntas 1 y 2 · E2: 3 y 4 · E3: 5). Cómo hacerla: 1) Leer la pregunta en voz alta, sin pulsar nada. 2) Esperar unos segundos para que el público piense y tomar una respuesta. 3) Pulsar «Ver respuesta» con el mouse para confirmarla en una frase. El clic no cambia de diapositiva; el mismo botón vuelve a ocultar la respuesta. Con 3 minutos alcanzan las 5 preguntas (unos 35 segundos cada una); si falta tiempo, hacer solo 2 o 3; si sobra, seguir con el banco de la guía de expositores.</aside>
-    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">Todos · 16</span></div>
+    <div class="foot"><span>Variables aleatorias · Von Neumann</span><span class="page">16</span></div>
   </section>
 
   <div id="notes"></div>
