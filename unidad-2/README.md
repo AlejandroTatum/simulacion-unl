@@ -8,3 +8,4 @@ Prácticas (APE) de la unidad 2. Cada una en su carpeta `ape-<m>-<tema>/`.
 | 6 | Validación estadística de números pseudoaleatorios mediante Chi-cuadrado y Kolmogorov-Smirnov | [ape-6-validacion-chi-cuadrado-ks](ape-6-validacion-chi-cuadrado-ks) |
 | 7 | Estimación de resultados mediante el método de Monte Carlo | [ape-7-monte-carlo](ape-7-monte-carlo) |
 | 8 | Generación de variables aleatorias mediante el método de Transformada Inversa | [ape-8-transformada-inversa](ape-8-transformada-inversa) |
+| 9 | Generación de variables aleatorias mediante el método de aceptación-rechazo de Von Neumann | [ape-9-aceptacion-rechazo-von-neumann](ape-9-aceptacion-rechazo-von-neumann) |
